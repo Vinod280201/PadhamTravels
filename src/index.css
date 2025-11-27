@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+
+/* --- Custom Horizontal Scroll Animation --- */
+
+/* 1. Define the Keyframes */
+@keyframes scroll-x {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); } /* Moves by the width of the original set */
+}
+
+/* 2. Define the Custom Animation Utility Class */
+@layer utilities {
+  .animate-infinite-scroll {
+    animation: scroll-x 25s linear infinite; /* Apply the keyframes */
+  }
+}
+
+.slick-slide > div {
+  margin: 0 20px 50px 20px; /* Adjust the margin between slides */
+}
