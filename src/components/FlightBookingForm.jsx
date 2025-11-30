@@ -8,7 +8,7 @@ import { ClassSelector } from './ClassSelector';
 export const FlightBookingForm = () => {
 
  return (
-    <div className='bg-white w-[22%] pb-1 rounded-4xl absolute  bottom-1.5 shadow shadow-gray-600'>
+    <div className='bg-white w-auto md:mr-15 xl:w-[22%] pb-1 rounded-4xl md:absolute md:bottom-1.5 shadow shadow-gray-600 mx-4'>
         <div className='flex justify-center mt-2 py-1'>
             <p className='font-semibold text-2xl'>Search Flight</p>
         </div>

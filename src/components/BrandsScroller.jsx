@@ -1,5 +1,5 @@
 import Indigo from '../assets/indigo.png'
-import SpiceJet from '../assets/spicejet.JPEG'
+import SpiceJet from '../assets/spicejet.jpeg'
 import AirIndia from '../assets/airindia.jpeg'
 import AirIndiaExpress from '../assets/airIndiaExpress.jpeg'
 import Vistara from '../assets/vistara.jpeg'

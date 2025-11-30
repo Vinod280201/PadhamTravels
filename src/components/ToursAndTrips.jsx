@@ -53,30 +53,3 @@ export const ToursAndTrips = () => {
       </div>
   )
 }
-
-{/* }
-
-{/* <div className='mt-20'> 
-            <Slider {...settings}>
-            {TRIPS_AND_TOURS.map((trip) =>(
-              <div className='bg-white rounded-lg'>
-                <div className='h-40 pt-4 rounded-t-lg flex justify-center items-center'>
-                  <img src={trip.image} alt='' className='h-36 w-44 rounded-lg'/>
-                </div>
-                
-                <div className='flex flex-col justify-center items-center gap-3 p-4'>
-                  <p className='font-semibold'>{trip.title}</p>
-                  <p  className='text-sm'>
-                    <span className='text-gray-600'>Starting from</span> 
-                    <span className='font-medium text-red-500'> {trip.amount}</span>
-                  </p>
-                  <button className='relative mt-5 px-4 py-2 rounded-md text-white font-bold
-                   bg-yellow-600 transition-all duration-300 hover:bg-yellow-400 
-                   cursor-pointer hover:text-gray-600'>
-                        CHECK OUT NOW
-                  </button>
-                </div>
-              </div>
-            ) )}
-            </Slider>
-          </div>*/}

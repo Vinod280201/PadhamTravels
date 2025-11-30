@@ -7,18 +7,21 @@ export const Header = () => {
     <div className='w-full h-[80%] bg-cover bg-no-repeat bg-center'
       style={{ backgroundImage: `url(${LandingPageimg1})` }}>             {/*Background Image*/}
 
-      <HeaderNav />
+      {/* show only on md+ when nav is part of header */}
+      <div className="hidden lg:block">
+        <HeaderNav />
+      </div>
 
-      <div className='grid grid-cols-2 h-[86.3%]'>
-        <div className='flex p-5 ml-20 items-center'>
+      <div className='grid grid-cols-1 md:grid-cols-2 h-[86.3%]'>
+        <div className='hidden md:flex p-5 mt-50 lg:mt-2 lg:ml-20 items-center flex-nowrap'>
           <div>
-            <p className='text-xl text-white'>PADHAM TRAVELS</p>
-            <p className='text-5xl text-white'>We Are Very Reliable</p>
-            <p className='text-5xl text-yellow-400'>Professional, Experienced</p>
-            <p className='text-sm text-white mt-3'>
+            <p className='md:text-md xl:text-xl text-white whitespace-nowrap'>PADHAM TRAVELS</p>
+            <p className='md:text-3xl xl:text-5xl text-white whitespace-nowrap'>We Are Very Reliable</p>
+            <p className='md:text-3xl xl:text-5xl text-yellow-400 whitespace-nowrap'>Professional, Experienced</p>
+            <p className='md:text-xs xl:text-sm text-white mt-3'>
               <span className='text-yellow-400'>Padham Travels</span> is the versatile website emporing you
             </p>
-            <p className='text-sm text-white'>
+            <p className='md:text-xs lg:text-sm text-white'>
               full-service airline offering <span className='text-yellow-400'>reduce fares.</span>
             </p>
             <div className='flex'>
@@ -29,7 +32,7 @@ export const Header = () => {
           </div>   
         </div>
 
-        <div className='flex ml-35 mt-10 h-[90%]'>
+        <div className='flex xl:ml-35 max-md:justify-center mt-10 h-[90%]'>
           <FlightBookingForm />
         </div>
       </div>
