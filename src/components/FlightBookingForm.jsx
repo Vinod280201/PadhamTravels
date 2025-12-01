@@ -1,6 +1,5 @@
 import { InputText } from './InputText'
 import { GiAirplaneDeparture, GiAirplaneArrival } from "react-icons/gi";
-import { MdFlightClass } from "react-icons/md";
 import { DatePickerComp } from './DatePickerComp';
 import TravellerCounter from './TravellerCounter';
 import { ClassSelector } from './ClassSelector';

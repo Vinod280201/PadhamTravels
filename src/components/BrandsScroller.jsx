@@ -17,7 +17,7 @@ export const BrandsScroller = () => {
     const scrollImages = [...images, ...images]; 
 
   return (
-    <div className='px-20 mt-50'>
+    <div className='px-10 md:px-20 mt-40 md:mt-45 lg:mt-50'>
         <div className="flex w-full overflow-hidden gap-10 py-4">
       
             {/* The key is the custom utility class applied here: 
@@ -27,7 +27,7 @@ export const BrandsScroller = () => {
                 {scrollImages.map((src, index) => (
                 <img 
                     key={src + index}
-                    className="w-50 h-25 mr-8"
+                    className="w-30 h-15 mr-2 md:w-40 md:h-20 md:mr-5 lg:w-50 lg:h-25 lg:mr-8"
                     src={src}
                     alt={`Scrolling image ${index}`}
                 />
