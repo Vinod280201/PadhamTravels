@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/forms";
 
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
+
 /* --- Custom Horizontal Scroll Animation --- */
 
 /* 1. Define the Keyframes */
@@ -16,6 +19,16 @@
   }
 }
 
+/* #slider-boxes {
+  display: flex !important ;
+}
+
 .slick-slide > div {
-  margin: 0 20px 50px 20px; /* Adjust the margin between slides */
+  margin: 0 20px 50px 20px; /* Adjust the margin between slides 
+} */
+.slick-slider {
+  visibility: hidden;
+}
+.slick-initialized {
+  visibility: visible;
 }

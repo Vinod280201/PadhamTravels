@@ -12,49 +12,57 @@ export const TOURS_AND_PACKAGES = [
         id: 1,
         title: "Explore the Kashmir",
         amount: "Rs.4999",
-        image: KashmirImage
+        image: KashmirImage,
+        isPopular: true
     },
     {
         id: 2,
         title: "Explore the Himachal",
         amount: "Rs.4999",
-        image: HimachalImage
+        image: HimachalImage,
+        isPopular: true
     },
     {
         id: 3,
         title: "Explore the Kerala",
         amount: "Rs.4999",
-        image: KeralaImage
+        image: KeralaImage,
+        isPopular: true
     },
     {
         id: 4,
         title: "Explore the Rajasthan",
         amount: "Rs.4999",
-        image: RajasthanImage
+        image: RajasthanImage,
+        isPopular: true
     },
     {
-        id: 4,
+        id: 5,
         title: "Explore the Manali",
         amount: "Rs.4999",
-        image: ManaliImage
+        image: ManaliImage,
+        isPopular: true
     },
     {
-        id: 4,
+        id: 6,
         title: "Explore the Goa",
         amount: "Rs.4999",
-        image: GoaImage
+        image: GoaImage,
+        isPopular: false
     },
     {
-        id: 4,
+        id: 7,
         title: "Explore the Mumbai",
         amount: "Rs.4999",
-        image: MumbaiImage
+        image: MumbaiImage,
+        isPopular: false
     },
     {
-        id: 4,
+        id: 8,
         title: "Explore the Agra",
         amount: "Rs.4999",
-        image: AgraImage
+        image: AgraImage,
+        isPopular: true
     },
 ]
 
