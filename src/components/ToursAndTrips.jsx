@@ -62,7 +62,7 @@ export const ToursAndTrips = () => {
             </>
           )
         }
-        <div className='grid p-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 snap-x snap-mandatory transition-transform duration-300 overflow-hidden'>
+        <div className='grid p-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 transition-transform duration-300 overflow-hidden'>
           {visibleItems.map((trip) => (
             <ToursAndTripsCard key={trip.id} trip={trip} />
           ))}
@@ -74,7 +74,7 @@ export const ToursAndTrips = () => {
 
 const ToursAndTripsCard = ({trip}) => {
   return (
-    <div className='snap-end bg-white rounded-lg shadow-gray-600 shadow-md overflow-hidden hover:shadow-lg 
+    <div className='bg-white rounded-lg shadow-gray-600 shadow-md overflow-hidden hover:shadow-lg 
     transition-all starting:opacity-0 starting:translate-x-20 duration-600'>
         <div className='relative pb-[70%] overflow-hidden'>
           <img 
