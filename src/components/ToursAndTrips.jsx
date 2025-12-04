@@ -39,7 +39,7 @@ export const ToursAndTrips = () => {
 
   return (
 
-    <section className='h-[45%] md:h-[60%] w-full mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8 bg-[#1a63a8]'>
+    <section className='h-[45%] md:h-[60%] max-w-full mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8 bg-[#1a63a8]'>
       <div className='p-6 sm:p-10'>
         <p className='text-xs text-white text-center font-medium'>T O U R S &nbsp; &nbsp;& &nbsp; &nbsp;P A C K A G E S</p>
         <p className=' text-white text-3xl text-center mt-1'>
@@ -47,7 +47,7 @@ export const ToursAndTrips = () => {
         </p>
       </div>
        
-      <div className='relative px-5 mx-2 overflow-hidden'>
+      <div className='relative px-1 mx-1 lg:px-5 lg:mx-2 overflow-hidden'>
         {
           TRIPS_AND_TOURS.length > itemsToShow && (
             <>
@@ -62,7 +62,7 @@ export const ToursAndTrips = () => {
             </>
           )
         }
-        <div className='grid p-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 transition-transform duration-300 overflow-hidden'>
+        <div className='grid p-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 snap-x snap-mandatory transition-transform duration-300 overflow-hidden'>
           {visibleItems.map((trip) => (
             <ToursAndTripsCard key={trip.id} trip={trip} />
           ))}
@@ -74,7 +74,7 @@ export const ToursAndTrips = () => {
 
 const ToursAndTripsCard = ({trip}) => {
   return (
-    <div className='bg-white rounded-lg shadow-gray-600 shadow-md overflow-hidden hover:shadow-lg 
+    <div className='snap-end bg-white rounded-lg shadow-gray-600 shadow-md overflow-hidden hover:shadow-lg 
     transition-all starting:opacity-0 starting:translate-x-20 duration-600'>
         <div className='relative pb-[70%] overflow-hidden'>
           <img 
@@ -99,7 +99,7 @@ const ToursAndTripsCard = ({trip}) => {
           </div>
           <button className='w-full mt-4 px-4 py-2 rounded-md text-white font-bold bg-yellow-600
               transition-all duration-300 hover:bg-yellow-400
-              cursor-pointer hover:text-gray-600'>CHECK OUT NOW</button>
+              cursor-pointer hover:text-gray-600 whitespace-nowrap'>CHECK OUT NOW</button>
         </div>
     </div>
   )

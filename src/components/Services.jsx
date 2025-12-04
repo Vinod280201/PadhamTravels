@@ -6,14 +6,14 @@ import IndianRupeeImage from '../assets/rupee.png'
 
 export const Services = () => {
   return (
-    <div className="w-full mt-30 md:mt-20 mb-5 lg:px-25 py-8 px-8 md:px-8 ">
+    <div className="max-w-full mt-30 md:mt-20 mb-5 lg:px-25 py-8 px-8 md:px-8 ">
 
       {/* grid: 2 columns on small/medium, 3 on large */}
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 lg:ml-30 gap-6 md:gap-8">
         
         {/* section header */}
         <div className="flex flex-col gap-3">
-            <div className="mb-6 md:mb-8 lg:mb-10">
+            <div className="mt-10 md:mt-0 md:mb-8 lg:mb-10">
                 <p className="text-xs md:text-sm tracking-widest whitespace-nowrap">B E S T &nbsp; &nbsp;C H O I C E</p>
                 <h2 className="text-2xl md:text-3xl lg:text-4xl mt-1 font-semibold">
                     Why Should <br /> You Use

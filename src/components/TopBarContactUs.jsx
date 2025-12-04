@@ -6,7 +6,7 @@ import { FaWhatsapp, FaInstagram, FaThreads } from "react-icons/fa6";
 export const TopBarContactUs = () => {
   return (
      // hide on small devices, show from md and up:
-      <div className="hidden lg:block">
+      <div className="hidden lg:block overflow-x-hidden">
         <div className="grid grid-cols-2 gap-2">
             <div className='flex justify-center h-14'>
                 <div className='flex items-center'>

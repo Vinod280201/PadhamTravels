@@ -41,17 +41,17 @@ export const Footer = () => {
           </div>
 
           {/* Column 2 - Get In Touch */}
-          <div className='flex flex-col gap-4 md:ml-12 md:mt-15'>
+          <div className='flex flex-col gap-4 md:ml-12 md:mt-10'>
             <h2 className='font-bold text-xl text-yellow-500'>Get In Touch</h2>
             <div className='flex items-start gap-3'>
-              <BiPhoneCall size={20} className='mt-0.5 text-yellow-300'/>
+              <BiPhoneCall size={20} className='mt-0.5 text-yellow-400'/>
               <div>
                 <p className='text-sm'>+91 99442 29209</p>
                 <p className='text-xs text-gray-300'>Call us for bookings & support</p>
               </div>
             </div>
             <div className='flex items-start gap-3'>
-              <MdEmail size={20} className='mt-0.5 text-yellow-300' />
+              <MdEmail size={20} className='mt-0.5 text-yellow-400' />
               <div>
                 <p className='text-sm'>padhamtravel@gmail.com</p>
                 <p className='text-xs text-gray-300'>We usually reply within 24 hours</p>
@@ -60,7 +60,7 @@ export const Footer = () => {
           </div>
 
           {/* Column 3 - Policies */}
-          <div className='flex flex-col gap-3 md:ml-12 md:pl-6 md:mt-15'>
+          <div className='flex flex-col gap-3 md:ml-12 md:pl-6 md:mt-10'>
             <h2 className='font-bold text-xl text-yellow-500'>Policies</h2>
             <nav className='flex flex-col gap-2 text-sm text-gray-200'>
               <a href="#" className='hover:text-yellow-400 transition-colors'>Terms of Service</a>
@@ -70,7 +70,7 @@ export const Footer = () => {
           </div>
 
           {/* Column 4 - Quick Links */}
-          <div className='flex flex-col gap-3 md:pl-6 md:mt-15'>
+          <div className='flex flex-col gap-3 md:pl-6 md:mt-10'>
             <h2 className='font-bold text-xl text-yellow-500'>Quick Links</h2>
             <nav className='flex flex-col gap-2 text-sm text-gray-200'>
               <a href="#" className='hover:text-yellow-400 transition-colors'>About Us</a>

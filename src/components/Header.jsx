@@ -1,10 +1,10 @@
-import LandingPageimg1 from "../assets/LandingPageimg2.jpeg"
+import LandingPageimg1 from "../assets/LandingPageimg3.jpeg"
 import { HeaderNav } from "./HeaderNav"
 import { FlightBookingForm } from "./FlightBookingForm"
 
 export const Header = () => {
   return (
-    <div className='w-full h-[60%] md:h-[80%] bg-cover bg-no-repeat bg-center'
+    <div className='max-w-full h-[60%] md:h-[80%] bg-cover bg-no-repeat bg-center'
       style={{ backgroundImage: `url(${LandingPageimg1})` }}>             {/*Background Image*/}
 
       {/* show only on md+ when nav is part of header */}
@@ -32,7 +32,7 @@ export const Header = () => {
           </div>   
         </div>
 
-        <div className='flex xl:ml-35 max-md:justify-center mt-10 h-[90%]'>
+        <div className='flex px-3 xl:ml-35 max-md:justify-center mt-15 md:mt-10 mb-5 h-[90%]'>
           <FlightBookingForm />
         </div>
       </div>

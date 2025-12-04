@@ -7,7 +7,7 @@ export const HeaderNav = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="w-full px-4 lg:px-6 lg:pl-8 lg:pr-12 xl:pr-60 py-3 bg-transparent flex items-center justify-between z-50 relative">
+    <header className="w-full px-4 lg:px-6 lg:pl-8 lg:pr-12 xl:pr-60 py-3 bg-transparent flex items-center justify-between z-50 relative overflow-x-hidden">
       {/* left: logo */}
       <div className="flex items-center gap-3">
         <img

@@ -8,7 +8,7 @@ import { ToursAndTrips } from "../../components/ToursAndTrips"
 
 export const LandingPage = () => {
     return (
-        <div className="w-screen h-screen">
+        <div className="w-full h-screen box-border">
             <TopBarContactUs />
             {/* show nav only on small devices and keep it outside Header */}
             <div className="block lg:hidden">

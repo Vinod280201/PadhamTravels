@@ -7,13 +7,13 @@ import { ClassSelector } from './ClassSelector';
 export const FlightBookingForm = () => {
 
  return (
-    <div className='bg-white w-auto md:mr-15 xl:w-[22%] pb-1 rounded-4xl md:absolute md:bottom-1.5 shadow shadow-gray-600 mx-4'>
+    <div className='bg-white w-auto md:mr-15 xl:w-[22%] pb-1 rounded-4xl md:absolute md:bottom-1.5 shadow shadow-gray-600 mx-4 overflow-x-hidden'>
         <div className='flex justify-center mt-2 py-1'>
-            <p className='font-semibold text-2xl'>Search Flight</p>
+            <p className='font-bold md:font-semibold text-2xl'>Search Flight</p>
         </div>
         
 
-        <div className='flex bg-black text-white justify-center mt-2 py-3'>
+        <div className='flex bg-black text-white justify-center mt-2 py-4 md:py-3'>
             <div className='flex items-center'>
                 <input type='radio' id='oneway' name='triptype' value='1' className='form-radio h-3 w-3 border-2 border-gray-300 checked:border-yellow-400 checked:bg-yellow-400 focus:outline-none focus:ring-0 text-yellow-400'/>
                 <label htmlFor="oneway" className='text-sm ml-2'>One Way</label>
