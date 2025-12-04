@@ -6,7 +6,7 @@ import IndianRupeeImage from '../assets/rupee.png'
 
 export const Services = () => {
   return (
-    <div className="w-full mt-20 mb-5 lg:px-25 py-8 px-8 md:px-8 ">
+    <div className="w-full mt-30 md:mt-20 mb-5 lg:px-25 py-8 px-8 md:px-8 ">
 
       {/* grid: 2 columns on small/medium, 3 on large */}
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 lg:ml-30 gap-6 md:gap-8">
