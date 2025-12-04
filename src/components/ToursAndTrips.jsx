@@ -39,7 +39,7 @@ export const ToursAndTrips = () => {
 
   return (
 
-    <section className='h-[60%] w-full mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8 bg-[#1a63a8]'>
+    <section className='h-[40%] sm:h-[60%] w-full mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8 bg-[#1a63a8]'>
       <div className='p-6 sm:p-10'>
         <p className='text-xs text-white text-center font-medium'>T O U R S &nbsp; &nbsp;& &nbsp; &nbsp;P A C K A G E S</p>
         <p className=' text-white text-3xl text-center mt-1'>
