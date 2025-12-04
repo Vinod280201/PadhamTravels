@@ -4,7 +4,7 @@ import { FlightBookingForm } from "./FlightBookingForm"
 
 export const Header = () => {
   return (
-    <div className='w-full h-[80%] bg-cover bg-no-repeat bg-center'
+    <div className='w-full h-[60%] md:h-[80%] bg-cover bg-no-repeat bg-center'
       style={{ backgroundImage: `url(${LandingPageimg1})` }}>             {/*Background Image*/}
 
       {/* show only on md+ when nav is part of header */}
