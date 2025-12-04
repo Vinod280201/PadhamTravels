@@ -19,39 +19,41 @@ export const HeaderNav = () => {
 
       {/* desktop / tablet nav */}
       <nav className="hidden lg:flex items-center gap-5 flex-nowrap">
-        <a href='index.html' className="whitespace-nowrap">
-          <div className='hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1'>
-            <p className='text-white'>HOME</p>
+        <a href="index.html" className="whitespace-nowrap">
+          <div className="hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1">
+            <p className="text-white">HOME</p>
           </div>
         </a>
-        <a href='index.html' className='ml-5 whitespace-nowrap'>
-          <div className='hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1'>
-            <p className='text-white'>ABOUT US</p>
+        <a href="index.html" className="ml-5 whitespace-nowrap">
+          <div className="hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1">
+            <p className="text-white">ABOUT US</p>
           </div>
         </a>
-        <a href='index.html' className='ml-5 whitespace-nowrap'>
-          <div className='hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1'>
-            <p className='text-white'>FLIGHTS</p>
+        <a href="index.html" className="ml-5 whitespace-nowrap">
+          <div className="hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1">
+            <p className="text-white">FLIGHTS</p>
           </div>
         </a>
-        <a href='index.html' className='ml-5 whitespace-nowrap'>
-          <div className='hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1'>
-            <p className='text-white'>BOOKING TERMS</p>
+        <a href="index.html" className="ml-5 whitespace-nowrap">
+          <div className="hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1">
+            <p className="text-white">BOOKING TERMS</p>
           </div>
         </a>
-        <a href='index.html' className='ml-5 whitespace-nowrap'>
-          <div className='hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1'>
-            <p className='text-white'>GET IN TOUCH</p>
+        <a href="index.html" className="ml-5 whitespace-nowrap">
+          <div className="hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1">
+            <p className="text-white">GET IN TOUCH</p>
           </div>
         </a>
 
         {/* Sign In button — mobile color is blue, md+ overrides to yellow */}
-        <button className='flex items-center h-12 relative rounded-sm  px-4 py-1.5 font-bold 
+        <button
+          className="flex items-center h-12 relative rounded-sm  px-4 py-1.5 font-bold 
               transition-all duration-300 border-2 ml-5
               lg:text-yellow-400 lg:border-white lg:hover:bg-yellow-400 lg:hover:text-gray-600
-              cursor-pointer whitespace-nowrap'>
-                <IoPersonCircle size={25} className='mr-2'/>
-                SIGN IN
+              cursor-pointer whitespace-nowrap"
+        >
+          <IoPersonCircle size={25} className="mr-2" />
+          SIGN IN
         </button>
       </nav>
 
@@ -63,7 +65,7 @@ export const HeaderNav = () => {
           onClick={() => {}}
           aria-label="Sign In (mobile)"
         >
-         <IoPersonCircle size={18} className='mr-1'/>
+          <IoPersonCircle size={18} className="mr-1" />
           SIGN IN
         </button>
 
@@ -79,15 +81,47 @@ export const HeaderNav = () => {
       {/* mobile menu (slides down) */}
       <div
         className={`absolute left-10 right-10 top-full rounded-b-lg bg-black/80 text-white transform transition-all duration-200 ease-in-out lg:hidden z-40 ${
-          open ? "max-h-[400px] opacity-100 py-4" : "max-h-0 opacity-0 overflow-hidden"
+          open
+            ? "max-h-[400px] opacity-100 py-4"
+            : "max-h-0 opacity-0 overflow-hidden"
         }`}
       >
         <div className="flex flex-col gap-3 px-6">
-          <a href="#" onClick={() => setOpen(false)} className="py-2 border-b border-white/40 hover:font-medium hover:text-lg">Home</a>
-          <a href="#" onClick={() => setOpen(false)} className="py-2 border-b border-white/40 hover:font-medium">About Us</a>
-          <a href="#" onClick={() => setOpen(false)} className="py-2 border-b border-white/40 hover:font-medium">Flights</a>
-          <a href="#" onClick={() => setOpen(false)} className="py-2 border-b border-white/40 hover:font-medium">Booking Terms</a>
-          <a href="#" onClick={() => setOpen(false)} className="py-2 border-b border-white/40 hover:font-medium">Get In Touch</a>
+          <a
+            href="#"
+            onClick={() => setOpen(false)}
+            className="py-2 border-b border-white/40 hover:font-medium hover:text-lg"
+          >
+            Home
+          </a>
+          <a
+            href="#"
+            onClick={() => setOpen(false)}
+            className="py-2 border-b border-white/40 hover:font-medium"
+          >
+            About Us
+          </a>
+          <a
+            href="#"
+            onClick={() => setOpen(false)}
+            className="py-2 border-b border-white/40 hover:font-medium"
+          >
+            Flights
+          </a>
+          <a
+            href="#"
+            onClick={() => setOpen(false)}
+            className="py-2 border-b border-white/40 hover:font-medium"
+          >
+            Booking Terms
+          </a>
+          <a
+            href="#"
+            onClick={() => setOpen(false)}
+            className="py-2 border-b border-white/40 hover:font-medium"
+          >
+            Get In Touch
+          </a>
           <button
             className="mt-2 px-3 py-2 rounded-md font-medium border-2 border-white text-yellow-400 
             bg-transparent hover:bg-yellow-400 hover:text-gray-600 hover:font-bold transition"
@@ -101,9 +135,8 @@ export const HeaderNav = () => {
   );
 };
 
-
-
-{/* 
+{
+  /* 
 
   import { IoPersonCircle } from "react-icons/io5";
 import LogoImage from '../assets/logo.png'
@@ -129,4 +162,5 @@ import LogoImage from '../assets/logo.png'
       </div>
   )
 }
-  */}
+  */
+}
