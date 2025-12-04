@@ -22,7 +22,7 @@ export const DatePickerComp = () => {
               placeholderText="Select a Date"
               fixedHeight
               closeOnScroll
-              popperPlacement="right-start"
+              popperPlacement="top-center"
               className='ml-3.5 h-5 px-0 mt-0.5 outline-none border-none focus:outline-none focus:ring-0 text-sm w-[95%]'
             />
         </div>
