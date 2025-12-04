@@ -2,9 +2,6 @@ import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import TRIPS_AND_TOURS from '../constants/AppConstants.jsx';
 import { useState } from 'react';
 
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-
 export const ToursAndTrips = () => {
 
     const [currentIndex, setCurrentIndex] = useState(0);
