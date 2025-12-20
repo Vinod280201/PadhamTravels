@@ -1,10 +1,11 @@
-import { BrandsScroller } from "../../components/BrandsScroller";
-import { Footer } from "../../components/Footer";
-import { Header } from "../../components/Header";
-import { HeaderNav } from "../../components/HeaderNav";
-import { Services } from "../../components/Services";
-import { TopBarContactUs } from "../../components/TopBarContactUs";
-import { ToursAndTrips } from "../../components/ToursAndTrips";
+import React from "react";
+import { BrandsScroller } from "@/components/landingPage/BrandsScroller";
+import { Footer } from "@/components/landingPage/Footer";
+import { Header } from "@/components/landingPage/Header";
+import { HeaderNav } from "@/components/landingPage/HeaderNav";
+import { Services } from "@/components/landingPage/Services";
+import { TopBarContactUs } from "@/components/landingPage/TopBarContactUs";
+import { ToursAndTrips } from "@/components/landingPage/ToursAndTrips";
 
 export const LandingPage = () => {
   return (
