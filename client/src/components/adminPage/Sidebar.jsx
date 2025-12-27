@@ -1,5 +1,5 @@
 import LogoImg from "@/assets/logo.png";
-import ProfileImg from "@/assets/profile.png";
+import ProfileImg from "@/assets/Profile.png";
 import {
   ChevronFirst,
   ChevronLast,
