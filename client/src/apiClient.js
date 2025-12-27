@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:3000/api";
+const API_BASE = "https://padham-travels-api.onrender.com";
 
 async function handleResponse(res) {
   // Success → just return
