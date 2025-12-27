@@ -1,4 +1,4 @@
-import { Stats } from "@/components/adminPage/stats";
+import { Stats } from "@/components/adminPage/Stats";
 import { RecentBookings } from "@/components/adminPage/RecentBookings";
 import { QuickActions } from "@/components/adminPage/QuickActions";
 
