@@ -1,33 +1,49 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 export function useAuthUser() {
-  const [user, setUser] = useState(null); // { name, email, role } or null
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
 
   useEffect(() => {
+    let cancelled = false;
+
     const fetchUser = async () => {
+      setLoading(true);
       try {
         const res = await fetch("http://localhost:3000/api/auth/get-user", {
           method: "GET",
           credentials: "include",
         });
+
+        if (res.status === 401 || res.status === 403) {
+          if (!cancelled) setUser(null);
+          return;
+        }
+
         const data = await res.json();
-        if (data.status) {
-          setUser(data.user);
-          console.log("useAuthUser data.user =", data.user);
-        } else {
-          setUser(null);
+
+        if (!cancelled) {
+          if (data.status) {
+            setUser(data.user);
+          } else {
+            setUser(null);
+          }
         }
       } catch (err) {
-        setUser(null);
+        if (!cancelled) setUser(null);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     fetchUser();
-  }, []);
 
-  // return state and setter so you can update after login/logout
+    return () => {
+      cancelled = true;
+    };
+  }, [location.pathname]);
+
   return { user, loading, setUser };
 }

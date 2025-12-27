@@ -1,10 +1,11 @@
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import TRIPS_AND_TOURS from "@/constants/AppConstants";
 import { useState } from "react";
+import CONSTANTS from "@/constants/AppConstants";
 
 export const ToursAndTrips = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsToShow, setItemsToShow] = useState(1);
+  const TRIPS_AND_TOURS = CONSTANTS.TOURS_AND_PACKAGES;
 
   const updateItemsToShow = () => {
     if (window.innerWidth >= 1024) {

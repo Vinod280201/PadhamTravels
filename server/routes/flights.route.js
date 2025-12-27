@@ -1,6 +1,6 @@
 import express from "express";
 import { searchFlights } from "../controllers/flights.controller.js";
-import { authenticate } from "../middleware/authenticate.js";
+import { authenticate } from "../middlewares/authenticate.js";
 
 const router = express.Router();
 

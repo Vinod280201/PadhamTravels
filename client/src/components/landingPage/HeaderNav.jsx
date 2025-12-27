@@ -20,8 +20,14 @@ export const HeaderNav = () => {
     } catch (e) {
       // ignore
     } finally {
-      setUser(null); // remove user from React state
-      navigate("/");
+      // 1) clear auth info used by RequireAuth
+      localStorage.removeItem("authUser");
+
+      // 2) clear any React state you keep
+      setUser(null);
+
+      // 3) redirect to landing)
+      window.location.assign("/");
     }
   };
 

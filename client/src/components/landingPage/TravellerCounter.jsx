@@ -22,7 +22,7 @@ const TravellerCounter = ({
   // Function to format the counts into a single string for the text box
   const formatTravellerCount = () => {
     const total = adults + children;
-    const totalText = `${total} Traveller${total !== 1 ? "s" : ""}`;
+    const totalText = `${total} Passenger${total !== 1 ? "s" : ""}`;
 
     // Include details only if children are present
     const details =
@@ -38,7 +38,7 @@ const TravellerCounter = ({
         <div className="flex justify-between">
           <p className="text-sm text-gray-600">Total Selected</p>
           <p className="text-sm font-medium text-yellow-600 text-end mt-0.5 ">
-            Travellers
+            Passengers
           </p>
         </div>
 

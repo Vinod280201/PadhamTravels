@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import AuthRoute from "./routes/auth.route.js";
 import flightsRoutes from "./routes/flights.route.js";
+import toursRoutes from "./routes/tours.route.js";
 
 dotenv.config();
 const app = express();
@@ -18,7 +19,8 @@ app.use(
   })
 );
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
+
 app.listen(port, () => {
   console.log("Our server is running on port:", port);
 });
@@ -34,3 +36,4 @@ mongoose
 //router
 app.use("/api/auth", AuthRoute);
 app.use("/api/flights", flightsRoutes);
+app.use("/api/tours", toursRoutes);

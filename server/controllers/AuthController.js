@@ -6,10 +6,6 @@ export const Register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "1h", // access token valid for 1 hour
-    });
-
     //check if user is already registered or not
     const checkRegisterationStatus = await User.findOne({ email });
     if (checkRegisterationStatus) {
@@ -124,4 +120,52 @@ export const Logout = async (req, res) => {
       message: "Internal Server Error",
     });
   }
+};
+
+export const requireAuth = async (req, res, next) => {
+  try {
+    const token = req.cookies?.access_token; // cookie set in Login
+
+    if (!token) {
+      return res.status(401).json({
+        status: false,
+        message: "Not authenticated",
+      });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findById(decoded.id).lean().exec();
+    if (!user) {
+      return res.status(401).json({
+        status: false,
+        message: "User not found",
+      });
+    }
+
+    req.user = user; // attach to request
+    next();
+  } catch (error) {
+    console.error("AUTH MIDDLEWARE ERROR:", error);
+    return res.status(401).json({
+      status: false,
+      message: "Invalid or expired token",
+    });
+  }
+};
+
+export const Me = (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({
+      status: false,
+      message: "Not authenticated",
+    });
+  }
+
+  const { _id, name, email, role } = req.user;
+
+  return res.status(200).json({
+    status: true,
+    user: { id: _id, name, email, role },
+  });
 };

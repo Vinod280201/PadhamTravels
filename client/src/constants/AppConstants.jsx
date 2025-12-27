@@ -7,6 +7,7 @@ import GoaImage from "../assets/goa.jpg";
 import MumbaiImage from "../assets/mumbai.jpg";
 import AgraImage from "../assets/agra.jpg";
 
+// Home page tours & packages data
 export const TOURS_AND_PACKAGES = [
   {
     id: 1,
@@ -66,4 +67,101 @@ export const TOURS_AND_PACKAGES = [
   },
 ];
 
-export default TOURS_AND_PACKAGES;
+// Admin → Manage Bookings table data
+export const BOOKINGS = [
+  {
+    id: "BK-1001",
+    bookingRef: "PDM2501001",
+    customer: "Rajesh Kumar",
+    email: "rajesh.k@email.com",
+    flight: "AI-202 DEL → BLR",
+    date: "2025-12-03",
+    passengers: 2,
+    amount: "₹8,400",
+    status: "Confirmed",
+  },
+  {
+    id: "BK-1002",
+    bookingRef: "PDM2501002",
+    customer: "Priya Sharma",
+    email: "priya.s@email.com",
+    flight: "6E-456 BOM → GOI",
+    date: "2025-12-08",
+    passengers: 1,
+    amount: "₹2,800",
+    status: "Pending",
+  },
+  {
+    id: "BK-1003",
+    bookingRef: "PDM2501003",
+    customer: "Amit Patel",
+    email: "amit.p@email.com",
+    flight: "SG-789 HYD → CCU",
+    date: "2025-12-12",
+    passengers: 3,
+    amount: "₹15,600",
+    status: "Confirmed",
+  },
+  {
+    id: "BK-1004",
+    bookingRef: "PDM2501004",
+    customer: "Sneha Reddy",
+    email: "sneha.r@email.com",
+    flight: "UK-321 DEL → DXB",
+    date: "2025-12-18",
+    passengers: 2,
+    amount: "₹15,600",
+    status: "Confirmed",
+  },
+  {
+    id: "BK-1005",
+    bookingRef: "PDM2501005",
+    customer: "Vikram Singh",
+    email: "vikram.s@email.com",
+    flight: "AI-105 BLR → SIN",
+    date: "2025-12-18",
+    passengers: 1,
+    amount: "₹6,500",
+    status: "Cancelled",
+  },
+  {
+    id: "BK-1006",
+    bookingRef: "PDM2501006",
+    customer: "Anjali Desai",
+    email: "anjali.d@email.com",
+    flight: "6E-234 DEL → GOA",
+    date: "2025-12-18",
+    passengers: 4,
+    amount: "₹12,000",
+    status: "Confirmed",
+  },
+  {
+    id: "BK-1007",
+    bookingRef: "PDM2501007",
+    customer: "Rahul Verma",
+    email: "rahul.v@email.com",
+    flight: "AI-567 BOM → LON",
+    date: "2025-12-22",
+    passengers: 2,
+    amount: "₹82,000",
+    status: "Pending",
+  },
+  {
+    id: "BK-1008",
+    bookingRef: "PDM2501008",
+    customer: "Kavita Nair",
+    email: "kavita.n@email.com",
+    flight: "SG-890 MAA → DXB",
+    date: "2025-12-25",
+    passengers: 3,
+    amount: "₹24,300",
+    status: "Confirmed",
+  },
+];
+
+const CONSTANTS = {
+  TOURS_AND_PACKAGES,
+  BOOKINGS,
+};
+
+export default CONSTANTS;
