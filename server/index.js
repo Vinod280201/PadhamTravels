@@ -30,9 +30,6 @@ app.use(
   })
 );
 
-// handle preflight requests
-app.options("*", cors());
-
 // === Common middleware ===
 app.use(express.json());
 app.use(cookieParser());
