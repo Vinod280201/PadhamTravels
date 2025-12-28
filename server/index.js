@@ -9,12 +9,16 @@ import toursRoutes from "./routes/tours.route.js";
 
 dotenv.config();
 const app = express();
+const allowedOrigins = [
+  "http://localhost:5173", // local Vite
+  "https://YOUR-VERCEL-APP.vercel.app", // real Vercel URL here frontend hosted on Vercel
+];
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     credentials: true,
   })
 );
