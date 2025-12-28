@@ -7,7 +7,7 @@ import { FiLogOut } from "react-icons/fi";
 const AdminLayout = () => {
   const { user } = useAuthUser();
   const navigate = useNavigate();
-  const baseUrl = "http://localhost:3000";
+  const baseUrl = "https://padham-travels-api.onrender.com"; //http://localhost:3000
 
   const handleLogout = async () => {
     try {

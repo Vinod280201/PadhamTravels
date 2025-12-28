@@ -19,7 +19,7 @@ import LoginPageImg from "@/assets/loginpageimg1.jpg";
 import LogoImg from "@/assets/logo.png";
 
 export const LoginPage = () => {
-  const baseUrl = "http://localhost:3000";
+  const baseUrl = "https://padham-travels-api.onrender.com"; //http://localhost:3000
 
   const navigate = useNavigate();
   const location = useLocation();

@@ -13,7 +13,7 @@ const MainNavbar = () => {
   const { user } = useAuthUser();
   const navigate = useNavigate();
   const location = useLocation();
-  const baseUrl = "http://localhost:3000";
+  const baseUrl = "https://padham-travels-api.onrender.com"; //http://localhost:3000
 
   const handleLogout = async () => {
     try {

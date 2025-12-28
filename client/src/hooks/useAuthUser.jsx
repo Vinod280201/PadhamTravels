@@ -12,10 +12,13 @@ export function useAuthUser() {
     const fetchUser = async () => {
       setLoading(true);
       try {
-        const res = await fetch("http://localhost:3000/api/auth/get-user", {
-          method: "GET",
-          credentials: "include",
-        });
+        const res = await fetch(
+          "https://padham-travels-api.onrender.com/api/auth/get-user",
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
 
         if (res.status === 401 || res.status === 403) {
           if (!cancelled) setUser(null);
