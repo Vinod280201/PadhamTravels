@@ -83,9 +83,8 @@ export const Login = async (req, res) => {
 
     res.cookie("access_token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      // no expires, no maxAge -> removed when browser session ends
+      secure: true, // required for SameSite=None
+      sameSite: "none", // allow cross-site (Vercel -> Render)
     });
 
     res.status(200).json({
@@ -106,8 +105,8 @@ export const Logout = async (req, res) => {
     // clear the same cookie you set in Login
     res.clearCookie("access_token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true,
+      sameSite: "none",
     });
 
     return res.status(200).json({

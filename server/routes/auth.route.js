@@ -11,11 +11,17 @@ import { authorizeAdmin } from "../middlewares/adminAuthenticate.js";
 
 const router = express.Router();
 
+// Auth routes
 router.post("/register", Register);
 router.post("/login", Login);
-router.get("/get-user", authenticate, (req, res) => {
-  res.status(200).json({ status: true, user: req.user });
-});
+
+// Get current user (used by frontend after login)
+router.get("/get-user", requireAuth, Me);
+
+// Optional: same info at /me
+router.get("/me", requireAuth, Me);
+
+// Admin-only route example
 router.get("/admin/dashboard", authenticate, authorizeAdmin, (req, res) => {
   res.status(200).json({
     status: true,
@@ -23,8 +29,8 @@ router.get("/admin/dashboard", authenticate, authorizeAdmin, (req, res) => {
     user: req.user,
   });
 });
-router.get("/me", requireAuth, Me);
 
+// Logout
 router.post("/logout", Logout);
 
 export default router;
