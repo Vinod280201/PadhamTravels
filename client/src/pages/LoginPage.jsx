@@ -16,11 +16,13 @@ import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import LoginPageImg from "@/assets/loginpageimg1.jpg";
-import LogoImg from "@/assets/logo.png";
 
 export const LoginPage = () => {
   const baseUrl = "https://padham-travels-api.onrender.com"; //http://localhost:3000
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0c757cfde29f0cbf6dc57e282b86e72388a64d91
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from || "/home";

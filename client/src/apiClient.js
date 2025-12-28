@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const API_BASE = "https://padham-travels-api.onrender.com/api";
+=======
+const API_BASE = "https://padham-travels-api.onrender.com"; //http://localhost:3000
+>>>>>>> 0c757cfde29f0cbf6dc57e282b86e72388a64d91
 
 async function handleResponse(res) {
   // Success → just return
