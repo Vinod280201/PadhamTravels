@@ -18,7 +18,11 @@ import { toast } from "sonner";
 import LoginPageImg from "@/assets/loginpageimg1.jpg";
 
 export const RegisterPage = () => {
+<<<<<<< HEAD
+  const baseUrl = "https://padham-travels-api.onrender.com"; //http://localhost:3000
+=======
   const baseUrl = "https://padham-travels-api.onrender.com"; //"http://localhost:3000";
+>>>>>>> 0c757cfde29f0cbf6dc57e282b86e72388a64d91
 
   const navigate = useNavigate();
 
