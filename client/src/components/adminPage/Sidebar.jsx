@@ -53,9 +53,12 @@ export const Sidebar = () => {
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/auth/me", {
-          credentials: "include", // send cookie
-        });
+        const res = await fetch(
+          "https://padham-travels-api.onrender.com/api/auth/me",
+          {
+            credentials: "include", // send cookie
+          }
+        );
 
         if (!res.ok) {
           console.log("ME not ok:", res.status);

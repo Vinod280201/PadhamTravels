@@ -15,11 +15,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import RegisterPageImg from "@/assets/registrationpagebg3.jpg";
 import LoginPageImg from "@/assets/loginpageimg1.jpg";
 
 export const RegisterPage = () => {
-  const baseUrl = "http://localhost:3000";
+  const baseUrl = "https://padham-travels-api.onrender.com"; //"http://localhost:3000";
 
   const navigate = useNavigate();
 
