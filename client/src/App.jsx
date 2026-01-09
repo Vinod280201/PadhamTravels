@@ -11,12 +11,11 @@ import ManageBookings from "./pages/AdminPages/ManageBookings";
 import BookingCalendar from "./pages/AdminPages/BookingCalendar";
 import ManageTours from "./pages/AdminPages/ManageTours";
 import { BookFlights } from "./pages/AdminPages/BookFlights";
-import { Sidebar } from "./components/adminPage/Sidebar";
 import AdminLayout from "./pages/AdminPages/AdminLayout";
 import ToursDisplay from "./pages/ToursAndPackages/ToursDisplay";
-import { HomePage } from "./pages/HomePage";
 import AboutUs from "./pages/AboutUsPage";
 import TermsAndConditions from "./pages/TermsAndConditions";
+import { HomePage } from "./pages/HomePage";
 
 function App() {
   return (

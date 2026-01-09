@@ -4,9 +4,9 @@ import { BrandsScroller } from "@/components/landingPage/BrandsScroller";
 import { Footer } from "@/components/landingPage/Footer";
 import { Services } from "@/components/landingPage/Services";
 import { ToursAndTrips } from "@/components/landingPage/ToursAndTrips";
-import { HeaderHome } from "@/components/landingPage/HeaderHome";
 import ReviewsCarousel from "@/components/landingPage/ReviewsCarousel";
 import { StatSection } from "@/components/landingPage/StatSection";
+import { HeaderHome } from "@/components/landingPage/HeaderHome";
 
 export const HomePage = () => {
   return (
