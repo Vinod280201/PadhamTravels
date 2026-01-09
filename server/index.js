@@ -15,25 +15,38 @@ const app = express();
 
 // === CORS setup ===
 const allowedOrigins = [
-  "http://localhost:5173", // local Vite
-  "https://padham-travels.vercel.app", // your real Vercel frontend URL https://padham-travels.vercel.app/
+  "http://localhost:5173", // Local development
+  "https://padham-travels.vercel.app", // Deployed frontend
 ];
 
 app.use(
   cors({
-    origin(origin, callback) {
-      // allow requests with no origin (mobile apps, curl, etc.)
+    origin: function (origin, callback) {
+      // allow requests with no origin (like mobile apps, curl, or Postman)
       if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error("Not allowed by CORS"));
+
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        return callback(null, true);
+      } else {
+        console.log("Blocked by CORS:", origin); // Log the blocked origin for debugging
+        return callback(new Error("Not allowed by CORS"));
+      }
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Explicitly allow these methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Explicitly allow headers
   })
 );
 
 // === Common middleware ===
 app.use(express.json());
 app.use(cookieParser());
+
+// === Health Check Route (Crucial for Deployment) ===
+// Most hosting services ping this root url to see if your app is alive.
+app.get("/", (req, res) => {
+  res.status(200).send("API is running successfully");
+});
 
 // === Routes ===
 app.use("/api/auth", AuthRoute);
