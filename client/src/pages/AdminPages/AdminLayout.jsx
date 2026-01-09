@@ -5,9 +5,9 @@ import { useAuthUser } from "@/hooks/useAuthUser";
 import { FiLogOut } from "react-icons/fi";
 
 const AdminLayout = () => {
-  const { user } = useAuthUser();
+  const { user, setUser } = useAuthUser();
   const navigate = useNavigate();
-  const baseUrl = "https://padham-travels-api.onrender.com"; //http://localhost:3000
+  const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
   const handleLogout = async () => {
     try {
@@ -15,15 +15,14 @@ const AdminLayout = () => {
         method: "POST",
         credentials: "include",
       });
+    } catch (e) {
+      // ignore
     } finally {
-      // 1) clear auth info used by RequireAuth
       localStorage.removeItem("authUser");
-
-      // 2) clear any React state you keep
+      console.log("🧹 CLEARED localStorage");
       setUser(null);
-
-      // 3) redirect to login (or landing)
-      window.location.assign("/login"); // or navigate("/login")
+      console.log("👤 SET USER TO NULL");
+      navigate("/", { replace: true });
     }
   };
 

@@ -48,7 +48,7 @@ const ManageTours = () => {
         setLoading(true);
         setError(null);
 
-        const res = await apiGet("/tours");
+        const res = await apiGet("/admin/tours");
         const data = await res.json();
         setTours(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -103,11 +103,11 @@ const ManageTours = () => {
       setError(null);
 
       if (!editingId) {
-        const res = await apiPost("/tours", payload);
+        const res = await apiPost("/admin/tours", payload);
         const created = await res.json();
         setTours((prev) => [...prev, created]);
       } else {
-        const res = await apiPut(`/tours/${editingId}`, payload);
+        const res = await apiPut(`/admin/tours/${editingId}`, payload);
         const updated = await res.json();
 
         setTours((prev) =>
@@ -156,7 +156,7 @@ const ManageTours = () => {
     if (!window.confirm("Are you sure you want to delete this tour?")) return;
 
     try {
-      await apiDelete(`/tours/${id}`);
+      await apiDelete(`/admin/tours/${id}`);
 
       setTours((prev) => prev.filter((t) => t.id !== id && t._id !== id));
     } catch (err) {

@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import LoginPageImg from "@/assets/loginpageimg1.jpg";
 
 export const LoginPage = () => {
-  const baseUrl = "https://padham-travels-api.onrender.com"; //http://localhost:3000
+  const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
   const navigate = useNavigate();
   const location = useLocation();

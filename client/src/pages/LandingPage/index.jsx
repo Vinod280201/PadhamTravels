@@ -6,6 +6,8 @@ import { HeaderNav } from "@/components/landingPage/HeaderNav";
 import { Services } from "@/components/landingPage/Services";
 import { TopBarContactUs } from "@/components/landingPage/TopBarContactUs";
 import { ToursAndTrips } from "@/components/landingPage/ToursAndTrips";
+import ReviewsCarousel from "@/components/landingPage/ReviewsCarousel";
+import { StatSection } from "@/components/landingPage/StatSection";
 
 export const LandingPage = () => {
   return (
@@ -19,6 +21,8 @@ export const LandingPage = () => {
       <Services />
       <ToursAndTrips />
       <BrandsScroller />
+      <ReviewsCarousel />
+      <StatSection />
       <Footer />
     </div>
   );

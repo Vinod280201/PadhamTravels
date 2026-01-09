@@ -5,6 +5,7 @@ export function useAuthUser() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
+  const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
   useEffect(() => {
     let cancelled = false;
@@ -12,13 +13,10 @@ export function useAuthUser() {
     const fetchUser = async () => {
       setLoading(true);
       try {
-        const res = await fetch(
-          "https://padham-travels-api.onrender.com/api/auth/get-user",
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
+        const res = await fetch(`${baseUrl}/api/auth/get-user`, {
+          method: "GET",
+          credentials: "include",
+        });
 
         if (res.status === 401 || res.status === 403) {
           if (!cancelled) setUser(null);

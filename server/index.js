@@ -6,7 +6,8 @@ import cors from "cors";
 
 import AuthRoute from "./routes/auth.route.js";
 import flightsRoutes from "./routes/flights.route.js";
-import toursRoutes from "./routes/tours.route.js";
+import toursRouter from "./routes/tours.route.js"; // 👈 PUBLIC
+import adminToursRouter from "./routes/admin-tours.route.js"; // 👈 ADMIN
 
 dotenv.config();
 
@@ -37,7 +38,8 @@ app.use(cookieParser());
 // === Routes ===
 app.use("/api/auth", AuthRoute);
 app.use("/api/flights", flightsRoutes);
-app.use("/api/tours", toursRoutes);
+app.use("/api/tours", toursRouter);
+app.use("/api/admin/tours", adminToursRouter);
 
 // === Database connection ===
 mongoose
