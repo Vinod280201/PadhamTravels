@@ -53,12 +53,11 @@ export const Sidebar = () => {
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const res = await fetch(
-          "https://padham-travels-api.onrender.com/api/auth/me",
-          {
-            credentials: "include", // send cookie
-          }
-        );
+        const baseUrl =
+          import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+        const res = await fetch(`${baseUrl}/api/auth/me`, {
+          credentials: "include", // send cookie
+        });
 
         if (!res.ok) {
           console.log("ME not ok:", res.status);

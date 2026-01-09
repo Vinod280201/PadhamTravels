@@ -10,7 +10,7 @@ export const BrandsScroller = () => {
   const scrollImages = [...images, ...images];
 
   return (
-    <div className="px-7 md:px-20 mt-30 md:mt-35 lg:mt-40 overflow-x-hidden">
+    <div className="mx-6 md:mx-12 px-4 md:px-10 mt-35 md:mt-40 lg:mt-45 border-t border-gray-500 border-b overflow-x-hidden">
       <div className="flex w-full overflow-hidden gap-10 py-4">
         {/* The key is the custom utility class applied here: 
              className="... animate-infinite-scroll"

@@ -1,4 +1,7 @@
-const API_BASE = "https://padham-travels-api.onrender.com/api";
+const API_BASE =
+  (import.meta.env.VITE_API_BASE_URL || "http://localhost:3000") + "/api";
+
+console.log("🔌 API_BASE:", API_BASE);
 
 async function handleResponse(res) {
   // Success → just return

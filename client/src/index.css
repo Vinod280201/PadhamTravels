@@ -26,6 +26,84 @@
   }
 }
 
+/* ToursAndTrips - 4 cards */
+.embla.tours {
+  --slide-spacing: 1rem;
+  --slide-size: 100%;
+}
+.embla.tours .embla__container {
+  gap: var(--slide-spacing);
+}
+.embla.tours .embla__slide {
+  flex: 0 0 var(--slide-size);
+  min-width: 0;
+  padding: calc(var(--slide-spacing) / 2);
+}
+
+/* Reviews - 3 cards */
+.embla.reviews {
+  --slide-spacing: 1.25rem;
+  --slide-size: 100%;
+}
+.embla.reviews .embla__container {
+  gap: var(--slide-spacing);
+}
+.embla.reviews .embla__slide {
+  flex: 0 0 var(--slide-size);
+  min-width: 0;
+  padding: calc(var(--slide-spacing) / 2);
+}
+
+/* Mobile: 1 card */
+@media (min-width: 640px) {
+  .embla.tours,
+  .embla.reviews {
+    --slide-size: 50%;
+  }
+}
+
+/* Tablet: 2-3 cards */
+@media (min-width: 768px) {
+  .embla.tours {
+    --slide-size: 33.333%;
+  }
+  .embla.reviews {
+    --slide-size: 33.333%;
+  }
+}
+
+/* Desktop: 4 vs 3 cards */
+@media (min-width: 1024px) {
+  .embla.tours {
+    --slide-size: 24%;
+    --slide-spacing: 1.25rem;
+  }
+  .embla.reviews {
+    --slide-size: 32.2%;
+    --slide-spacing: 1.5rem;
+  }
+}
+
+.carousel-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid hsl(var(--muted-foreground));
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-dot-active {
+  background: hsl(var(--primary));
+  border-color: hsl(var(--primary));
+  transform: scale(1.2);
+}
+
+.carousel-dot-inactive:hover {
+  background: hsl(var(--primary) / 0.2);
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
