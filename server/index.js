@@ -6,8 +6,8 @@ import cors from "cors";
 
 import AuthRoute from "./routes/auth.route.js";
 import flightsRoutes from "./routes/flights.route.js";
-import toursRouter from "./routes/tours.route.js"; // 👈 PUBLIC
-import adminToursRouter from "./routes/admin-tours.route.js"; // 👈 ADMIN
+import toursRouter from "./routes/tours.route.js";
+import adminToursRouter from "./routes/admin-tours.route.js";
 
 dotenv.config();
 
