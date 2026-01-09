@@ -171,196 +171,198 @@ export const FlightsSearchResultsPage = () => {
     });
   };
   return (
-    <div className="min-h-screen bg-slate-200 text-white p-4">
+    <div className="min-h-screen bg-slate-200 text-white">
       <MainNavbar />
 
       {/* Search summary + modify form (collapsible later) */}
-      <div className="bg-slate-500 p-5 rounded-md mb-6">
-        <div className="flex justify-between items-center">
-          <div className="flex justify-center flex-1">
-            <h1 className="text-center font-semibold text-3xl text-white">
-              Modify Your Flight Search →
-            </h1>
-            <button
-              type="button"
-              onClick={handleModifyClick}
-              className="ml-2 px-4 py-2 rounded-md border border-slate-400 text-sm font-semibold bg-yellow-400 text-slate-800 hover:bg-yellow-500"
-            >
-              {showSearchForm ? "Hide flight search" : "Click here to modify"}
-            </button>
-          </div>
-          <button
-            type="button"
-            onClick={goToBestDeals}
-            className="px-4 py-2 ml-2 flex items-center justify-center rounded-md border border-slate-400 text-sm font-semibold bg-slate-200 text-slate-800 hover:bg-white hover:font-semibold cursor-pointer"
-          >
-            <img
-              src={BestDeals}
-              alt="Beast Deals"
-              className="w-3 mb-1 mr-2 lg:w-10 h-auto object-contain"
-            />
-            View Best Deals
-          </button>
-        </div>
-
-        {showSearchForm && (
-          <div className="bg-white rounded-md mx-30 mt-4 pb-5 p-10">
-            <FlightsSearchForm
-              from={from}
-              to={to}
-              setFrom={setFrom}
-              setTo={setTo}
-              departDate={departDate}
-              setDepartDate={setDepartDate}
-              returnDate={returnDate}
-              setReturnDate={setReturnDate}
-              tripType={tripType}
-              setTripType={setTripType}
-              paxData={paxData}
-              setPaxData={setPaxData}
-              travelClass={travelClass}
-              setTravelClass={setTravelClass}
-              benefitTypes={benefitTypes}
-              setBenefitTypes={setBenefitTypes}
-              loading={loading}
-              hasSearched={hasSearched}
-              onSubmit={handleModifySearch}
-            />
-          </div>
-        )}
-      </div>
-
-      {/* Filters + results layout */}
-      <div className="mt-3">
-        {/* Top bar with Filters button and result count */}
-        <div>
-          <div className="flex items-center justify-between text-slate-800">
-            <div>
+      <div className="p-4">
+        <div className="bg-slate-500 p-5 rounded-md mt-3 mb-6">
+          <div className="flex justify-between items-center">
+            <div className="flex justify-center flex-1">
+              <h1 className="text-center font-semibold text-3xl text-white">
+                Modify Your Flight Search →
+              </h1>
               <button
                 type="button"
-                onClick={() => setShowFilters((prev) => !prev)}
-                className="px-4 py-1.5 rounded-md border border-slate-400 text-sm font-semibold bg-white text-slate-800 hover:bg-slate-100"
-                disabled={!loading && flights.length === 0} //  disabled when no flights
+                onClick={handleModifyClick}
+                className="ml-2 px-4 py-2 rounded-md border border-slate-400 text-sm font-semibold bg-yellow-400 text-slate-800 hover:bg-yellow-500"
               >
-                {showFilters ? "Hide filters" : "Show filters"}
+                {showSearchForm ? "Hide flight search" : "Click here to modify"}
               </button>
             </div>
-            <div>
-              <h1 className="text-center font-bold text-3xl mb-4">
-                Your Flight Results: {from} → {to}
-              </h1>
-              <p className="text-center text-lg font-medium">
-                {departDate} {tripType === "roundtrip" && `→ ${returnDate}`} •{" "}
-                {adult} {pluralize(adult, "Adult", "Adults")}
-                {child > 0 &&
-                  `, ${child} ${pluralize(child, "Child", "Children")}`}
-                {infant > 0 &&
-                  `, ${infant} ${pluralize(infant, "Infant", "Infants")}`}
-              </p>
-            </div>
-
-            <div>
-              <span className="text-sm text-slate-700">
-                {!loading && flights.length > 0
-                  ? `${flights.length} Flights found`
-                  : !loading
-                  ? "No flights found"
-                  : "Searching..."}
-              </span>
-            </div>
+            <button
+              type="button"
+              onClick={goToBestDeals}
+              className="px-4 py-2 ml-2 flex items-center justify-center rounded-md border border-slate-400 text-sm font-semibold bg-slate-200 text-slate-800 hover:bg-white hover:font-semibold cursor-pointer"
+            >
+              <img
+                src={BestDeals}
+                alt="Beast Deals"
+                className="w-3 mb-1 mr-2 lg:w-10 h-auto object-contain"
+              />
+              View Best Deals
+            </button>
           </div>
 
-          {/* 2-column layout */}
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-            {/* Left: filters column */}
-            {showFilters && (
-              <div className="md:col-span-1 my-3 bg-white border border-slate-700 rounded-lg p-3 text-slate-800">
-                {/* Filters moved here */}
-                <div className="flex flex-col gap-4">
-                  {/* Stops checkboxes */}
-                  <div className="flex flex-col gap-1">
-                    <span className="text-xs font-semibold text-slate-700">
-                      Stops
-                    </span>
-                    <label className="flex items-center text-xs text-slate-700">
-                      <input
-                        type="checkbox"
-                        className="mr-2"
-                        checked={nonstopOnly}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          setNonstopOnly(checked);
-                          if (checked) setOneStopOrLess(false);
-                        }}
-                      />
-                      Nonstop only
-                    </label>
-                    <label className="flex items-center text-xs text-slate-700">
-                      <input
-                        type="checkbox"
-                        className="mr-2"
-                        checked={oneStopOrLess}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          setOneStopOrLess(checked);
-                          if (checked) setNonstopOnly(false);
-                        }}
-                      />
-                      1 stop or fewer
-                    </label>
-                  </div>
-
-                  {/* Airlines checkboxes */}
-                  <div className="flex flex-col gap-1">
-                    <span className="text-xs font-semibold text-slate-700">
-                      Airlines
-                    </span>
-                    {[
-                      { code: "AI", label: "Air India" },
-                      { code: "6E", label: "IndiGo" },
-                      { code: "UK", label: "Vistara" },
-                    ].map((a) => {
-                      const checked = airlines.includes(a.code);
-                      return (
-                        <label
-                          key={a.code}
-                          className="flex items-center text-xs text-slate-700"
-                        >
-                          <input
-                            type="checkbox"
-                            className="mr-2"
-                            checked={checked}
-                            onChange={(e) => {
-                              toggleAirline(a.code, e.target.checked);
-                            }}
-                          />
-                          {a.label}
-                        </label>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Right: flights column */}
-            <div className={showFilters ? "md:col-span-5" : "md:col-span-6"}>
-              {loading ? (
-                <div className="bg-slate-700 p-5 rounded-lg">
-                  <FlightsResultsSkeleton />
-                </div>
-              ) : (
-                <FlightsSearchResults
-                  flights={flights}
-                  hasSearched={hasSearched}
-                  loading={loading}
-                />
-              )}
+          {showSearchForm && (
+            <div className="bg-white rounded-md mx-30 mt-4 pb-5 p-10">
+              <FlightsSearchForm
+                from={from}
+                to={to}
+                setFrom={setFrom}
+                setTo={setTo}
+                departDate={departDate}
+                setDepartDate={setDepartDate}
+                returnDate={returnDate}
+                setReturnDate={setReturnDate}
+                tripType={tripType}
+                setTripType={setTripType}
+                paxData={paxData}
+                setPaxData={setPaxData}
+                travelClass={travelClass}
+                setTravelClass={setTravelClass}
+                benefitTypes={benefitTypes}
+                setBenefitTypes={setBenefitTypes}
+                loading={loading}
+                hasSearched={hasSearched}
+                onSubmit={handleModifySearch}
+              />
             </div>
-          </div>
+          )}
         </div>
 
-        <FlightPageFooter />
+        {/* Filters + results layout */}
+        <div className="mt-3">
+          {/* Top bar with Filters button and result count */}
+          <div>
+            <div className="flex items-center justify-between text-slate-800">
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setShowFilters((prev) => !prev)}
+                  className="px-4 py-1.5 rounded-md border border-slate-400 text-sm font-semibold bg-white text-slate-800 hover:bg-slate-100"
+                  disabled={!loading && flights.length === 0} //  disabled when no flights
+                >
+                  {showFilters ? "Hide filters" : "Show filters"}
+                </button>
+              </div>
+              <div>
+                <h1 className="text-center font-bold text-3xl mb-4">
+                  Your Flight Results: {from} → {to}
+                </h1>
+                <p className="text-center text-lg font-medium">
+                  {departDate} {tripType === "roundtrip" && `→ ${returnDate}`} •{" "}
+                  {adult} {pluralize(adult, "Adult", "Adults")}
+                  {child > 0 &&
+                    `, ${child} ${pluralize(child, "Child", "Children")}`}
+                  {infant > 0 &&
+                    `, ${infant} ${pluralize(infant, "Infant", "Infants")}`}
+                </p>
+              </div>
+
+              <div>
+                <span className="text-sm text-slate-700">
+                  {!loading && flights.length > 0
+                    ? `${flights.length} Flights found`
+                    : !loading
+                    ? "No flights found"
+                    : "Searching..."}
+                </span>
+              </div>
+            </div>
+
+            {/* 2-column layout */}
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+              {/* Left: filters column */}
+              {showFilters && (
+                <div className="md:col-span-1 my-3 bg-white border border-slate-700 rounded-lg p-3 text-slate-800">
+                  {/* Filters moved here */}
+                  <div className="flex flex-col gap-4">
+                    {/* Stops checkboxes */}
+                    <div className="flex flex-col gap-1">
+                      <span className="text-xs font-semibold text-slate-700">
+                        Stops
+                      </span>
+                      <label className="flex items-center text-xs text-slate-700">
+                        <input
+                          type="checkbox"
+                          className="mr-2"
+                          checked={nonstopOnly}
+                          onChange={(e) => {
+                            const checked = e.target.checked;
+                            setNonstopOnly(checked);
+                            if (checked) setOneStopOrLess(false);
+                          }}
+                        />
+                        Nonstop only
+                      </label>
+                      <label className="flex items-center text-xs text-slate-700">
+                        <input
+                          type="checkbox"
+                          className="mr-2"
+                          checked={oneStopOrLess}
+                          onChange={(e) => {
+                            const checked = e.target.checked;
+                            setOneStopOrLess(checked);
+                            if (checked) setNonstopOnly(false);
+                          }}
+                        />
+                        1 stop or fewer
+                      </label>
+                    </div>
+
+                    {/* Airlines checkboxes */}
+                    <div className="flex flex-col gap-1">
+                      <span className="text-xs font-semibold text-slate-700">
+                        Airlines
+                      </span>
+                      {[
+                        { code: "AI", label: "Air India" },
+                        { code: "6E", label: "IndiGo" },
+                        { code: "UK", label: "Vistara" },
+                      ].map((a) => {
+                        const checked = airlines.includes(a.code);
+                        return (
+                          <label
+                            key={a.code}
+                            className="flex items-center text-xs text-slate-700"
+                          >
+                            <input
+                              type="checkbox"
+                              className="mr-2"
+                              checked={checked}
+                              onChange={(e) => {
+                                toggleAirline(a.code, e.target.checked);
+                              }}
+                            />
+                            {a.label}
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Right: flights column */}
+              <div className={showFilters ? "md:col-span-5" : "md:col-span-6"}>
+                {loading ? (
+                  <div className="bg-slate-700 p-5 rounded-lg">
+                    <FlightsResultsSkeleton />
+                  </div>
+                ) : (
+                  <FlightsSearchResults
+                    flights={flights}
+                    hasSearched={hasSearched}
+                    loading={loading}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+
+          <FlightPageFooter />
+        </div>
       </div>
     </div>
   );

@@ -58,49 +58,51 @@ export const FlightsSearchPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 text-white p-4">
+    <div className="min-h-screen bg-slate-100 text-white">
       <MainNavbar />
 
-      <div className="bg-slate-600 p-5 rounded-md">
-        <div className="flex justify-center items-center p-5">
-          <h1 className="text-center font-semibold text-3xl text-white">
-            Book Your Flights Online Now!
-          </h1>
-          <img
-            src={FlightTicket}
-            alt="Flight Ticket Img"
-            className="w-3 ml-2 lg:w-12 h-auto object-contain"
-          />
-        </div>
+      <div className="p-4">
+        <div className="bg-slate-600 p-5 rounded-md mt-3">
+          <div className="flex justify-center items-center p-5">
+            <h1 className="text-center font-semibold text-3xl text-white">
+              Book Your Flights Online Now!
+            </h1>
+            <img
+              src={FlightTicket}
+              alt="Flight Ticket Img"
+              className="w-3 ml-2 lg:w-12 h-auto object-contain"
+            />
+          </div>
 
-        <div className="bg-white rounded-md mx-30 pb-5 p-10">
-          <FlightsSearchForm
-            from={from}
-            to={to}
-            setFrom={setFrom}
-            setTo={setTo}
-            departDate={departDate}
-            setDepartDate={setDepartDate}
-            returnDate={returnDate}
-            setReturnDate={setReturnDate}
-            tripType={tripType}
-            setTripType={setTripType}
-            loading={loading}
-            hasSearched={false} // Always false on search page
-            paxData={paxData}
-            setPaxData={setPaxData}
-            travelClass={travelClass}
-            setTravelClass={setTravelClass}
-            benefitTypes={benefitTypes}
-            setBenefitTypes={setBenefitTypes}
-            onSubmit={handleSearch}
-          />
+          <div className="bg-white rounded-md mx-30 pb-5 p-10">
+            <FlightsSearchForm
+              from={from}
+              to={to}
+              setFrom={setFrom}
+              setTo={setTo}
+              departDate={departDate}
+              setDepartDate={setDepartDate}
+              returnDate={returnDate}
+              setReturnDate={setReturnDate}
+              tripType={tripType}
+              setTripType={setTripType}
+              loading={loading}
+              hasSearched={false} // Always false on search page
+              paxData={paxData}
+              setPaxData={setPaxData}
+              travelClass={travelClass}
+              setTravelClass={setTravelClass}
+              benefitTypes={benefitTypes}
+              setBenefitTypes={setBenefitTypes}
+              onSubmit={handleSearch}
+            />
+          </div>
         </div>
+        <section id="best-deals">
+          <FlightsDealsOffers />
+        </section>
+        <FlightPageFooter />
       </div>
-      <section id="best-deals">
-        <FlightsDealsOffers />
-      </section>
-      <FlightPageFooter />
     </div>
   );
 };

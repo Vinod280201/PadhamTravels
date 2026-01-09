@@ -1,23 +1,18 @@
 import LandingPageimg1 from "@/assets/LandingPageimg3.jpeg";
-import { HeaderNav } from "./HeaderNav";
 import { FlightBookingForm } from "./FlightBookingForm";
 import { useNavigate } from "react-router-dom";
 
-export const Header = () => {
+export const HeaderHome = () => {
   const navigate = useNavigate();
+
   return (
     <div
       className="max-w-full relative min-h-[60vh] md:min-h-[80vh] bg-cover bg-no-repeat bg-center"
       style={{ backgroundImage: `url(${LandingPageimg1})` }}
     >
-      {" "}
-      {/*Background Image*/}
-      {/* show only on md+ when nav is part of header */}
-      <div className="hidden lg:block">
-        <HeaderNav />
-      </div>
+      {/* 👈 NO HeaderNav */}
       <div className="grid grid-cols-1 md:grid-cols-2 h-[86.3%]">
-        <div className="hidden md:flex lg:pt-35 lg:ml-20 items-center flex-nowrap">
+        <div className="hidden md:flex lg:pt-55 lg:ml-20 items-center flex-nowrap">
           <div>
             <p className="md:text-md xl:text-xl text-white whitespace-nowrap">
               PADHAM TRAVELS
@@ -39,9 +34,7 @@ export const Header = () => {
             <div className="flex">
               <button
                 onClick={() => navigate("/flights")}
-                className="relative mt-3 px-4 py-2 rounded-md text-gray-600 font-bold bg-yellow-400
-              transition-all duration-300 hover:bg-white 
-              cursor-pointer hover:text-yellow-600"
+                className="relative mt-3 px-4 py-2 rounded-md text-gray-600 font-bold bg-yellow-400 transition-all duration-300 hover:bg-white cursor-pointer hover:text-yellow-600"
               >
                 FIND FLIGHTS
               </button>

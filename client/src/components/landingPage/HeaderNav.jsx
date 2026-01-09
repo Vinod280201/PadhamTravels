@@ -10,24 +10,22 @@ export const HeaderNav = () => {
   const { user, setUser } = useAuthUser();
   console.log("HeaderNav user =", user);
   const navigate = useNavigate();
+  const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
   const handleLogout = async () => {
     try {
-      await fetch("https://padham-travels-api.onrender.com/api/auth/logout", {
+      await fetch(`${baseUrl}/api/auth/logout`, {
         method: "POST",
         credentials: "include",
       });
     } catch (e) {
       // ignore
     } finally {
-      // 1) clear auth info used by RequireAuth
       localStorage.removeItem("authUser");
-
-      // 2) clear any React state you keep
+      console.log("🧹 CLEARED localStorage");
       setUser(null);
-
-      // 3) redirect to landing)
-      window.location.assign("/");
+      console.log("👤 SET USER TO NULL");
+      navigate("/", { replace: true });
     }
   };
 
@@ -49,7 +47,7 @@ export const HeaderNav = () => {
             <p className="text-white">HOME</p>
           </div>
         </Link>
-        <Link to="index.html" className="ml-5 whitespace-nowrap">
+        <Link to="/about-us" className="ml-5 whitespace-nowrap">
           <div className="hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1">
             <p className="text-white">ABOUT US</p>
           </div>
@@ -59,14 +57,14 @@ export const HeaderNav = () => {
             <p className="text-white">FLIGHTS</p>
           </div>
         </Link>
-        <Link to="index.html" className="ml-5 whitespace-nowrap">
+        <Link to="/tours-and-packages" className="ml-5 whitespace-nowrap">
           <div className="hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1">
-            <p className="text-white">BOOKING TERMS</p>
+            <p className="text-white">TOURS & PACKAGES</p>
           </div>
         </Link>
-        <Link to="index.html" className="ml-5 whitespace-nowrap">
+        <Link to="/terms-and-conditions" className="ml-5 whitespace-nowrap">
           <div className="hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1">
-            <p className="text-white">GET IN TOUCH</p>
+            <p className="text-white">BOOKING TERMS</p>
           </div>
         </Link>
 
