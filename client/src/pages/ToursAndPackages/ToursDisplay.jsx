@@ -1,10 +1,13 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { MapPin, Clock, Star, Search } from "lucide-react";
+import { MapPin, Clock, Star, Search, FileText } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import MainNavbar from "@/components/layout/MainNavbar";
 import { apiGet } from "@/apiClient";
+
+// 1. Define Backend Base URL
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 export const ToursDisplay = () => {
   const [tours, setTours] = useState([]);
@@ -12,43 +15,49 @@ export const ToursDisplay = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // shared fetch function
-  const fetchTours = useCallback(async () => {
+  // Modified fetch function to handle "Silent" updates
+  const fetchTours = useCallback(async (isBackground = false) => {
     try {
-      setLoading(true);
+      // Only show the big loading spinner if it's NOT a background refresh
+      if (!isBackground) {
+        setLoading(true);
+      }
       setError(null);
 
       const res = await apiGet("/tours");
-
       const data = await res.json();
+
+      // Update data silently
       setTours(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("LOAD TOURS ERROR", err);
-      setError(err.message || "Could not load tours.");
+      // Only show error on screen if it's the first load
+      if (!isBackground) {
+        setError(err.message || "Could not load tours.");
+      }
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // initial load
+  // 1. Initial Load (Shows Spinner)
   useEffect(() => {
-    fetchTours();
+    fetchTours(false);
   }, [fetchTours]);
 
-  // “Live” refresh when tab becomes active (e.g. after admin edits)
+  // 2. Silent Polling (Runs every 30 seconds, NO Spinner)
   useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        fetchTours();
-      }
-    };
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
+    // Set up the interval
+    const intervalId = setInterval(() => {
+      console.log("🔄 Checking for tour updates in background...");
+      fetchTours(true); // true = Background mode
+    }, 30000); // 30 seconds (Adjust as needed)
+
+    // Cleanup when user leaves page
+    return () => clearInterval(intervalId);
   }, [fetchTours]);
 
-  // filter list
+  // Filter list
   const filteredTours = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
     if (!term) return tours;
@@ -72,7 +81,7 @@ export const ToursDisplay = () => {
 
       {/* Hero Section */}
       <div className="bg-linear-to-r from-slate-800 to-slate-700 text-white py-8 px-4 mt-3">
-        <div className="max-w-7xl mx-20">
+        <div className="max-w-7xl mx-auto md:mx-20">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <div>
               <h1 className="text-5xl font-bold mb-2">
@@ -83,8 +92,8 @@ export const ToursDisplay = () => {
               </p>
             </div>
 
-            {/* search bar */}
-            <div className="w-full ml-30">
+            {/* search bar - FIXED: Removed md:ml-30 to prevent overflow */}
+            <div className="w-full">
               <p className="text-sm uppercase tracking-wide text-slate-200 mb-2">
                 Search tours &amp; packages
               </p>
@@ -123,13 +132,14 @@ export const ToursDisplay = () => {
             {filteredTours.map((tour) => (
               <Card
                 key={tour.id || tour._id}
-                className="border-slate-300 overflow-hidden py-3 hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+                className="overflow-hidden p-0 border-gray-300 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 flex flex-col h-full"
                 data-testid={`tour-display-card-${tour.id || tour._id}`}
               >
                 {/* Tour Image */}
-                <div className="relative h-64 overflow-hidden">
+                <div className="relative h-64 overflow-hidden shrink-0">
                   <img
-                    src={tour.image}
+                    // ✅ FIX: Prepend API_BASE to the image path
+                    src={tour.image ? `${API_BASE}${tour.image}` : ""}
                     alt={tour.name}
                     className="w-full h-full object-cover"
                     loading="lazy"
@@ -139,21 +149,9 @@ export const ToursDisplay = () => {
                         "https://via.placeholder.com/800x400?text=Image+Unavailable";
                     }}
                   />
-                  {tour.available === 0 && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                      <Badge className="bg-red-500 text-white text-lg px-4 py-2">
-                        Sold Out
-                      </Badge>
-                    </div>
-                  )}
-                  {tour.available > 0 && tour.available < 5 && (
-                    <Badge className="absolute top-4 right-4 bg-orange-500 text-white">
-                      Only {tour.available} left!
-                    </Badge>
-                  )}
                 </div>
 
-                <CardContent className="px-4 mb-3">
+                <CardContent className="px-4 mb-3 flex flex-col grow">
                   {/* Rating */}
                   <div className="flex items-center gap-2 mb-2">
                     <div className="flex items-center gap-1">
@@ -168,7 +166,7 @@ export const ToursDisplay = () => {
                   </div>
 
                   {/* Tour Name */}
-                  <h3 className="text-2xl font-bold text-slate-900 mb-3">
+                  <h3 className="text-2xl font-bold text-slate-900 mb-2">
                     {tour.name}
                   </h3>
 
@@ -185,11 +183,11 @@ export const ToursDisplay = () => {
                   </div>
 
                   {/* Highlights */}
-                  <div className="mb-4">
+                  <div className="mb-4 grow">
                     <p className="text-sm font-semibold text-slate-700 mb-2">
                       Highlights:
                     </p>
-                    <div className="flex items-center gap-2 overflow-hidden">
+                    <div className="flex items-center gap-2 overflow-hidden flex-wrap">
                       {(tour.highlights || [])
                         .slice(0, 3)
                         .map((highlight, i) => (
@@ -213,24 +211,48 @@ export const ToursDisplay = () => {
                   </div>
 
                   {/* Price & CTA */}
-                  <div className="flex items-center justify-between pt-4 border-t border-slate-200">
-                    <div>
-                      <p className="text-sm text-slate-500">Starting from</p>
-                      <p className="text-2xl font-bold text-slate-900">
-                        {tour.price}
-                      </p>
+                  <div className="flex flex-col pt-2 border-t border-slate-200">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-slate-500">
+                            Starting from
+                          </p>
+                          <p className="text-2xl font-bold text-slate-900">
+                            {tour.price}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="mt-0">
+                        {/* Itinerary Button */}
+                        {tour.itinerary ? (
+                          <Button
+                            variant="outline"
+                            className="w-full border-orange-200 text-orange-700 hover:bg-orange-50 hover:text-orange-800"
+                            onClick={() =>
+                              // ✅ FIX: Prepend API_BASE to PDF path too
+                              window.open(
+                                `${API_BASE}${tour.itinerary}`,
+                                "_blank"
+                              )
+                            }
+                          >
+                            <FileText className="w-4 h-4" />
+                            Itinerary
+                          </Button>
+                        ) : (
+                          <div />
+                        )}
+
+                        <Button
+                          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold mt-2"
+                          data-testid={`book-tour-${tour.id || tour._id}-btn`}
+                        >
+                          Book Now
+                        </Button>
+                      </div>
                     </div>
-                    <Button
-                      className={`${
-                        tour.available === 0
-                          ? "bg-slate-400 cursor-not-allowed"
-                          : "bg-orange-500 hover:bg-orange-600"
-                      } text-white font-semibold rounded-lg px-6 py-2`}
-                      disabled={tour.available === 0}
-                      data-testid={`book-tour-${tour.id || tour._id}-btn`}
-                    >
-                      {tour.available === 0 ? "Sold Out" : "Book Now"}
-                    </Button>
                   </div>
                 </CardContent>
               </Card>

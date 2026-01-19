@@ -6,85 +6,131 @@ import CONSTANTS from "@/constants/AppConstants";
 export const ToursAndTrips = () => {
   const TRIPS_AND_TOURS = CONSTANTS.TOURS_AND_PACKAGES;
 
+  // Embla options
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
-    align: "start",
+    align: "start", // Aligns slides to start for clean grid on desktop
     slidesToScroll: 1,
-    breakpoints: {
-      "(min-width: 640px)": { slidesPerView: 2 },
-      "(min-width: 768px)": { slidesPerView: 3 },
-      "(min-width: 1024px)": { slidesPerView: 4 },
-    },
+    containScroll: "trimSnaps",
   });
 
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState([]);
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+  const scrollTo = useCallback(
+    (index) => emblaApi && emblaApi.scrollTo(index),
+    [emblaApi]
+  );
 
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
+  const onInit = useCallback((emblaApi) => {
+    setScrollSnaps(emblaApi.scrollSnapList());
+  }, []);
+
+  const onSelect = useCallback((emblaApi) => {
+    setSelectedIndex(emblaApi.selectedScrollSnap());
     setCanScrollPrev(emblaApi.canScrollPrev());
     setCanScrollNext(emblaApi.canScrollNext());
-  }, [emblaApi]);
+  }, []);
 
   useEffect(() => {
     if (!emblaApi) return;
-    onSelect();
-    emblaApi.on("select", onSelect);
+    onInit(emblaApi);
+    onSelect(emblaApi);
+    emblaApi.on("reInit", onInit);
     emblaApi.on("reInit", onSelect);
+    emblaApi.on("select", onSelect);
     return () => {
-      emblaApi.off("select", onSelect);
+      emblaApi.off("reInit", onInit);
       emblaApi.off("reInit", onSelect);
+      emblaApi.off("select", onSelect);
     };
-  }, [emblaApi, onSelect]);
+  }, [emblaApi, onInit, onSelect]);
 
   return (
-    <section className="h-[40%] md:h-[55%] max-w-full mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8 bg-[#1a63a8]">
-      <div className="p-6 sm:p-10">
-        <p className="text-xs text-white text-center font-medium">
-          T O U R S &nbsp; &nbsp;& &nbsp; &nbsp;P A C K A G E S
-        </p>
-        <p className="text-white text-3xl text-center mt-1">
-          Places to <span className="text-white font-bold"> Explore</span>
-        </p>
-      </div>
+    <section className="w-full h-auto py-8 sm:py-12 bg-[#1a63a8]">
+      {/* CONTAINER PADDING UPDATE:
+         - Increased lg/xl padding (px-12/px-20) to make room for the arrows 
+           which are now pushed further outside the slides.
+      */}
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-20">
+        {/* Header Section */}
+        <div className="mb-8 sm:mb-12 text-center">
+          <p className="text-xs sm:text-sm text-gray-200 font-medium tracking-[0.2em] uppercase mb-2">
+            Tours & Packages
+          </p>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl text-white font-light">
+            Places to <span className="font-bold">Explore</span>
+          </h2>
+        </div>
 
-      <div className="relative px-1 mx-1 lg:px-5 lg:mx-5">
-        <div className="embla tours overflow-hidden" ref={emblaRef}>
-          <div className="embla__container flex h-full">
-            {TRIPS_AND_TOURS.map((trip) => (
-              <div
-                key={trip.id}
-                className="embla__slide flex-[0_0_100%] p-[--slide-spacing]"
+        {/* Carousel Container */}
+        <div className="relative group/carousel">
+          <div className="embla overflow-hidden" ref={emblaRef}>
+            <div className="embla__container flex m-4 md:-ml-4">
+              {TRIPS_AND_TOURS.map((trip) => (
+                <div
+                  key={trip.id}
+                  // RESPONSIVE LAYOUT UPDATE:
+                  // Mobile: flex-[0_0_100%] px-8 -> Single small card
+                  // Tablet (sm): flex-[0_0_50%] -> 2 cards
+                  // Laptop/Desktop (lg): flex-[0_0_25%] -> Exactly 4 cards fully visible
+                  className="embla__slide flex-[0_0_100%] px-8 sm:px-0 sm:pl-4 sm:flex-[0_0_50%] lg:flex-[0_0_25%] min-w-0"
+                >
+                  <ToursAndTripsCard trip={trip} />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Navigation Buttons (Desktop/Tablet Only) */}
+          {TRIPS_AND_TOURS.length > 0 && (
+            <>
+              {/* Previous Button - Pushed further left (lg:-left-12) */}
+              <button
+                onClick={scrollPrev}
+                className="hidden sm:flex absolute -left-4 lg:-left-12 xl:-left-16 top-1/2 -translate-y-1/2 
+                  w-10 h-10 lg:w-12 lg:h-12 items-center justify-center rounded-full 
+                  shadow-lg transition-all duration-300 z-10
+                  bg-white text-gray-800 hover:bg-yellow-500 hover:text-white cursor-pointer"
+                aria-label="Previous slide"
               >
-                <ToursAndTripsCard trip={trip} />
-              </div>
+                <FiChevronLeft size={24} />
+              </button>
+
+              {/* Next Button - Pushed further right (lg:-right-12) */}
+              <button
+                onClick={scrollNext}
+                className="hidden sm:flex absolute -right-4 lg:-right-12 xl:-right-16 top-1/2 -translate-y-1/2 
+                  w-10 h-10 lg:w-12 lg:h-12 items-center justify-center rounded-full 
+                  shadow-lg transition-all duration-300 z-10
+                  bg-white text-gray-800 hover:bg-yellow-500 hover:text-white cursor-pointer"
+                aria-label="Next slide"
+              >
+                <FiChevronRight size={24} />
+              </button>
+            </>
+          )}
+
+          {/* Pagination Dots (Mobile Only) */}
+          <div className="flex sm:hidden justify-center mt-6 gap-2">
+            {scrollSnaps.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => scrollTo(index)}
+                className={`transition-all duration-300 rounded-full ${
+                  index === selectedIndex
+                    ? "w-8 h-2 bg-white"
+                    : "w-2 h-2 bg-white/40 hover:bg-white/60"
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
             ))}
           </div>
         </div>
-
-        {TRIPS_AND_TOURS.length > 4 && (
-          <>
-            <button
-              onClick={scrollPrev}
-              className="absolute -left-4 top-1/2 -translate-y-1/2 bg-gray-200 rounded-full shadow-md p-1 sm:p-2 z-10 hover:scale-105 sm:hover:scale-110 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={!canScrollPrev}
-              aria-label="Previous tours"
-            >
-              <FiChevronLeft className="text-gray-700 text-lg sm:text-xl" />
-            </button>
-            <button
-              onClick={scrollNext}
-              className="absolute -right-4 top-1/2 -translate-y-1/2 bg-gray-200 rounded-full shadow-md p-1 sm:p-2 z-10 hover:scale-105 sm:hover:scale-110 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={!canScrollNext}
-              aria-label="Next tours"
-            >
-              <FiChevronRight className="text-gray-700 text-lg sm:text-xl" />
-            </button>
-          </>
-        )}
       </div>
     </section>
   );
@@ -92,30 +138,48 @@ export const ToursAndTrips = () => {
 
 const ToursAndTripsCard = ({ trip }) => {
   return (
-    <div className="w-full h-full bg-white rounded-lg shadow-gray-600 shadow-md overflow-hidden hover:shadow-lg transition-all starting:opacity-0 starting:translate-x-20 duration-600">
-      <div className="relative pb-[70%] overflow-hidden">
+    // CARD: Padded white border (p-3) + Rounded Corners
+    <div className="group/card h-full flex flex-col bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-3 p-3">
+      {/* IMAGE: Rounded to fit inside the white border */}
+      <div className="relative aspect-4/3 w-full overflow-hidden rounded-xl">
         <img
           src={trip.image}
           alt={trip.title}
-          className="absolute pt-2.5 px-3.5 w-full h-full object-cover hover:scale-105 sm:hover:scale-110 transition-transform duration-500"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110"
         />
+
+        {/* Popular Badge */}
         {trip.isPopular && (
-          <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-3xl">
+          <span className="absolute top-3 left-3 bg-red-600 text-white text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
             POPULAR
           </span>
         )}
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
       </div>
-      <div className="p-3 sm:p-4">
-        <h3 className="font-semibold text-base sm:text-lg mb-1 line-clamp-1">
+
+      {/* CONTENT */}
+      <div className="flex flex-col grow pt-4 px-1">
+        <h3 className="font-bold text-lg sm:text-xl text-gray-800 mb-2 line-clamp-1 group-hover/card:text-[#1a63a8] transition-colors">
           {trip.title}
         </h3>
-        <div className="text-sm sm:text-base text-gray-600">
-          <span className="text-gray-600">Starting from</span>
-          <span className="font-medium text-red-500"> {trip.amount}</span>
+
+        {/* Price Section */}
+        <div className="mt-auto pt-2 border-t border-gray-100">
+          <div className="flex items-baseline justify-between mb-4">
+            <span className="text-xs sm:text-sm text-gray-500 font-medium">
+              Starting from
+            </span>
+            <span className="text-lg sm:text-xl font-bold text-red-600">
+              {trip.amount}
+            </span>
+          </div>
+
+          <button className="w-full py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-bold text-white bg-yellow-500 hover:bg-[#1a63a8] transition-colors duration-300 shadow-sm active:scale-95">
+            CHECK OUT NOW
+          </button>
         </div>
-        <button className="w-full mt-4 px-4 py-2 rounded-md text-white font-bold bg-yellow-600 transition-all duration-300 hover:bg-yellow-400 cursor-pointer hover:text-gray-600 whitespace-nowrap">
-          CHECK OUT NOW
-        </button>
       </div>
     </div>
   );

@@ -61,20 +61,24 @@ export const FlightsSearchPage = () => {
     <div className="min-h-screen bg-slate-100 text-white">
       <MainNavbar />
 
-      <div className="p-4">
-        <div className="bg-slate-600 p-5 rounded-md mt-3">
-          <div className="flex justify-center items-center p-5">
-            <h1 className="text-center font-semibold text-3xl text-white">
+      <div className="p-2 md:p-4">
+        {/* Main gray container */}
+        <div className="bg-slate-600 p-3 md:p-5 rounded-md mt-3 shadow-lg">
+          {/* Title Section */}
+          <div className="flex justify-center items-center p-3 md:p-5">
+            <h1 className="text-center font-semibold text-xl md:text-3xl text-white">
               Book Your Flights Online Now!
             </h1>
             <img
               src={FlightTicket}
               alt="Flight Ticket Img"
-              className="w-3 ml-2 lg:w-12 h-auto object-contain"
+              className="w-8 ml-2 md:w-12 h-auto object-contain"
             />
           </div>
 
-          <div className="bg-white rounded-md mx-30 pb-5 p-10">
+          {/* White Form Container - Made Responsive */}
+          {/* Changed mx-30 to mx-auto with max-width for better control */}
+          <div className="bg-white rounded-md w-full max-w-7xl mx-auto pb-5 p-4 md:p-8 lg:p-10 text-slate-800">
             <FlightsSearchForm
               from={from}
               to={to}
@@ -87,7 +91,7 @@ export const FlightsSearchPage = () => {
               tripType={tripType}
               setTripType={setTripType}
               loading={loading}
-              hasSearched={false} // Always false on search page
+              hasSearched={false}
               paxData={paxData}
               setPaxData={setPaxData}
               travelClass={travelClass}
@@ -98,9 +102,11 @@ export const FlightsSearchPage = () => {
             />
           </div>
         </div>
-        <section id="best-deals">
+
+        <section id="best-deals" className="mt-6">
           <FlightsDealsOffers />
         </section>
+
         <FlightPageFooter />
       </div>
     </div>

@@ -22,9 +22,7 @@ export const RegisterPage = () => {
 
   const navigate = useNavigate();
 
-  {
-    /* Defining the schema for form validation using Zod */
-  }
+  /* Defining the schema for form validation using Zod */
   const formSchema = z
     .object({
       name: z.string().min(3, {
@@ -40,11 +38,10 @@ export const RegisterPage = () => {
     })
     .refine((data) => data.password === data.confirm_password, {
       message: "Passwords do not match",
+      path: ["confirm_password"], // Point error to confirm_password field
     });
 
-  {
-    /* Initialising the Form */
-  }
+  /* Initialising the Form */
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,9 +52,7 @@ export const RegisterPage = () => {
     },
   });
 
-  {
-    /* Handling form submission of Form */
-  }
+  /* Handling form submission of Form */
   const handleForm = async (values) => {
     try {
       const response = await fetch(`${baseUrl}/api/auth/register`, {
@@ -70,7 +65,6 @@ export const RegisterPage = () => {
 
       // Check for the specific 409 Conflict status
       if (response.status === 409) {
-        // User already registered scenario
         toast("Registration Failed", {
           description: data.message || "User already registered.",
           style: {
@@ -78,22 +72,20 @@ export const RegisterPage = () => {
             color: "white",
           },
         });
-        return; // Stop execution
+        return;
       }
 
       if (data.status) {
         toast("Registration Status!", {
-          //for successful registration
           description: data.message,
           style: {
-            background: "##3ac435",
+            background: "#3ac435",
             color: "white",
           },
         });
         navigate("/login");
       } else {
         toast("Registration Status!", {
-          //other non-409 backend failures (e.g., Mongoose Validation Error if 500)
           description: data.message,
           style: {
             background: "#eb5449",
@@ -102,7 +94,6 @@ export const RegisterPage = () => {
         });
       }
     } catch (error) {
-      // Network/fetch error (e.g., server down)
       toast("Registration Status!", {
         description: "Network error. Please check server connection.",
         style: {
@@ -114,131 +105,157 @@ export const RegisterPage = () => {
   };
 
   return (
-    <div className="grid grid-cols-2 space-x-5 h-screen bg-sky-100 overflow-x-hidden">
-      <div className="rounded-r-4xl border-r-5 ">
+    // MAIN CONTAINER: Flex layout, full height, prevents horizontal scroll
+    <div className="min-h-screen w-full flex bg-sky-100 overflow-hidden">
+      {/* LEFT SIDE: Image Section 
+          - Hidden on mobile (hidden)
+          - Visible on tablet/desktop (md:block)
+          - Width 50% on desktop (w-1/2)
+      */}
+      <div className="hidden md:block md:w-1/2 relative">
         <div
-          className="w-full h-full object-cover bg-cover bg-no-repeat bg-center rounded-r-4xl"
+          className="absolute inset-0 h-full w-full object-cover bg-cover bg-no-repeat bg-center md:rounded-r-[3rem] border-r-4 border-white shadow-2xl z-10"
           style={{ backgroundImage: `url(${LoginPageImg})` }}
         >
-          {" "}
-          {/*<img src={LogoImg} className="w-20 h-20 ml-10 pt-5" />*/}
-          <div className="font-semibold text-slate-800 pt-20 ml-10">
-            <p className="text-3xl sm:text-5xl sm:mb-1 text-shadow-md">
-              Travel
-            </p>
-            <p className="text-lg sm:text-2xl sm:mb-1 text-shadow-md">
-              And Explore the World!!
-            </p>
-            <div className="border-b-2 border-b-teal-500 mr-113"></div>
+          {/* Text Overlay */}
+          <div className="h-full flex flex-col pt-10 px-12 lg:px-20">
+            <div className="font-semibold text-slate-800 drop-shadow-md space-y-2">
+              <p className="text-3xl lg:text-5xl text-shadow-md">Travel</p>
+              <p className="text-lg lg:text-3xl text-shadow-md">
+                And Explore the World!!
+              </p>
+              <div className="w-80 border-b-2 border-teal-500 mt-3"></div>
+            </div>
           </div>
         </div>
       </div>
-      <div className="w-full flex flex-col justify-center border-l-3 my-20">
-        <div className="pb-4">
-          <h1 className="ml-72 font-bold text-xl sm:text-2xl">Welcome To</h1>
-          <h2 className="ml-67 font-bold text-xl sm:text-2xl">
-            Padham Travels
-          </h2>
-          <p className="ml-55 mt-2 text-xs sm:text-sm text-gray-600">
-            Let's get you started on your journey with us!
-          </p>
-        </div>
-        <div className="w-full flex items-center ml-40">
-          <Card className="w-[275px] sm:w-[400px] shadow-lg shadow-gray-700">
-            <CardContent>
-              <h2 className="text-lg sm:text-xl font-semibold mb-5 text-center">
+
+      {/* RIGHT SIDE: Form Section 
+          - Full width on mobile (w-full)
+          - Half width on desktop (md:w-1/2)
+          - Uses flexbox to center content vertically and horizontally
+      */}
+      <div className="w-full md:w-1/2 flex flex-col justify-center items-center py-6 px-12 sm:p-12">
+        <div className="w-full max-w-md flex flex-col gap-5">
+          {/* Header Text */}
+          <div className="text-center">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-800">
+              Welcome To
+            </h1>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+              Padham Travels
+            </h2>
+            <p className="text-sm text-gray-600 pt-1">
+              Let's get you started on your journey with us!
+            </p>
+          </div>
+
+          {/* Registration Card */}
+          <Card className="w-full shadow-lg shadow-gray-300/50 border">
+            <CardContent className="pt-2 sm:pt-4 px-6 sm:px-8 pb-4">
+              <h2 className="text-xl font-semibold mb-6 text-center text-slate-800">
                 Register Here
               </h2>
+
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleForm)}>
-                  <div className="mb-3">
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Name</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Enter your name"
-                              className="text-sm"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email ID</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Enter your email"
-                              className="text-sm"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Password</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="password"
-                              placeholder="Create your password"
-                              autoComplete="new-password"
-                              className="text-sm"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <FormField
-                      control={form.control}
-                      name="confirm_password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Confirm Password</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="password"
-                              placeholder="Re-enter your password"
-                              className="text-sm"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="mt-5">
-                    <Button className="w-full text-sm sm:text-md">
+                <form
+                  onSubmit={form.handleSubmit(handleForm)}
+                  className="space-y-4"
+                >
+                  {/* Name Field */}
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter your name"
+                            className="h-10 text-sm"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Email Field */}
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email ID</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter your email"
+                            className="h-10 text-sm"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Password Field */}
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="password"
+                            placeholder="Create your password"
+                            autoComplete="new-password"
+                            className="h-10 text-sm"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Confirm Password Field */}
+                  <FormField
+                    control={form.control}
+                    name="confirm_password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Confirm Password</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="password"
+                            placeholder="Re-enter your password"
+                            className="h-10 text-sm"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Submit Button */}
+                  <div className="pt-2">
+                    <Button className="w-full h-10 text-md bg-slate-900 hover:bg-slate-800">
                       Register Now
                     </Button>
                   </div>
-                  <div className="flex justify-center text-xs sm:text-sm mt-4">
+
+                  {/* Login Link */}
+                  <div className="flex justify-center text-sm mt-4 text-gray-600">
                     <p>
-                      Already have an account? &nbsp;
-                      <Link to="/login" className="underline text-blue-500">
+                      Already have an account?{" "}
+                      <Link
+                        to="/login"
+                        className="font-medium text-blue-600 hover:text-blue-500 hover:underline transition-colors"
+                      >
                         Login now
                       </Link>
                     </p>

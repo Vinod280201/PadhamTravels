@@ -1,14 +1,15 @@
 import express from "express";
 import { authenticate } from "../middlewares/authenticate.js";
+import { getSingleTour, getTours } from "../controllers/tourController.js";
 
 const router = express.Router();
 
-let tours = [];
+// GET all tours
+// Currently protected by 'authenticate'.
+// If you want this to be PUBLIC (viewable without login), remove 'authenticate'.
+router.get("/", authenticate, getTours);
 
-// 👇 LOGIN REQUIRED (no admin middleware!)
-router.get("/", authenticate, (req, res) => {
-  console.log("GET /api/tours - AUTH USER OK:", req.user?.email);
-  res.json(tours);
-});
+// GET single tour (e.g. /api/tours/65a1b2c...)
+router.get("/:id", authenticate, getSingleTour);
 
 export default router;

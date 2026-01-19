@@ -9,20 +9,26 @@
 
 /* --- Custom Horizontal Scroll Animation --- */
 
-/* 1. Define the Keyframes */
-@keyframes scroll-x {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  } /* Moves by the width of the original set */
-}
+@theme {
+  /* Define the animation: 
+    - runs for 30 seconds 
+    - linear (smooth speed, no stopping)
+    - infinite loop 
+  */
+  --animate-infinite-scroll: infinite-scroll 30s linear infinite;
 
-/* 2. Define the Custom Animation Utility Class */
-@layer utilities {
-  .animate-infinite-scroll {
-    animation: scroll-x 25s linear infinite; /* Apply the keyframes */
+  /* Define the keyframes:
+    - We move from 0 to -33.33% 
+    - Why 33.33%? Because we will duplicate the images 3 times in the React code.
+    - Moving 1/3rd of the total width perfectly aligns the start of the 2nd set with the start of the 1st set.
+  */
+  @keyframes infinite-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-33.33%);
+    }
   }
 }
 

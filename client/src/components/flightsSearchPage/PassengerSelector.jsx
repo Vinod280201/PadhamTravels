@@ -23,7 +23,7 @@ function Row({ title, subtitle, value, onChange, min = 0 }) {
         <button
           type="button"
           onClick={inc}
-          className="w-6 h-6 flex items-center justify-center pb-1 rounded-full text-xl bg-gray-100 font-semibold text-yellow-600  hover:bg-gray-200"
+          className="w-6 h-6 flex items-center justify-center pb-1 rounded-full text-xl bg-gray-100 font-semibold text-yellow-600 hover:bg-gray-200"
         >
           +
         </button>
@@ -32,7 +32,7 @@ function Row({ title, subtitle, value, onChange, min = 0 }) {
   );
 }
 
-export default function PassengerSelector({ value, onChange }) {
+export default function PassengerSelector({ value, onChange, className }) {
   const [open, setOpen] = useState(false);
   const totalPax = value.adult + value.child + value.infant;
   const pluralize = (count, singular, plural) =>
@@ -56,14 +56,20 @@ export default function PassengerSelector({ value, onChange }) {
   const handleChange = (next) => onChange(next);
 
   return (
-    <div className="relative" ref={wrapperRef}>
+    <div className="relative h-full" ref={wrapperRef}>
       {/* Trigger field */}
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="w-full h-10.5 border rounded px-3 py-2 bg-white text-black border-slate-500 font-semibold text-left relative flex items-center justify-between"
+        // UPDATES:
+        // 1. h-10.5 -> h-10 (Matches standard inputs)
+        // 2. border-slate-500 -> border-gray-300 (Matches parent form style)
+        // 3. Added ${className} to allow overrides from parent
+        className={`w-full h-10 border border-gray-300 rounded px-3 py-2 bg-white text-black font-semibold text-left relative flex items-center justify-between ${
+          className || ""
+        }`}
       >
-        <span className="font-semibold text-gray-900">
+        <span className="font-semibold text-gray-900 text-xs md:text-sm">
           {totalPax} {pluralize(totalPax, "Passenger", "Passengers")}
         </span>
 
@@ -73,23 +79,23 @@ export default function PassengerSelector({ value, onChange }) {
 
       {/* Popup */}
       {open && (
-        <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-90 text-black bg-white rounded-xl shadow-xl border whitespace-nowrap p-4">
+        <div className="absolute z-50 left-1/2 -translate-x-1/2 mt-2 w-72 md:w-80 text-black bg-white rounded-xl shadow-xl border border-gray-200 p-4">
           <Row
             title={pluralize(value.adult, "Adult", "Adults")}
-            subtitle="12 Yrs & Above on the Day of Travel"
+            subtitle="12 Yrs & Above"
             value={value.adult}
             min={1}
             onChange={(v) => handleChange({ ...value, adult: v })}
           />
           <Row
             title={pluralize(value.child, "Child", "Children")}
-            subtitle="2 - 12 Yrs on the Day of Travel"
+            subtitle="2 - 12 Yrs"
             value={value.child}
             onChange={(v) => handleChange({ ...value, child: v })}
           />
           <Row
             title={pluralize(value.infant, "Infant", "Infants")}
-            subtitle="Under 2 Yrs on the Day of Travel"
+            subtitle="Under 2 Yrs"
             value={value.infant}
             onChange={(v) => handleChange({ ...value, infant: v })}
           />
@@ -97,9 +103,9 @@ export default function PassengerSelector({ value, onChange }) {
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="w-full mt-4 bg-yellow-500 text-black py-2 rounded-md font-semibold"
+            className="w-full mt-4 bg-yellow-400 hover:bg-yellow-500 text-black py-2 rounded-md font-bold text-sm transition-colors"
           >
-            Done
+            DONE
           </button>
         </div>
       )}

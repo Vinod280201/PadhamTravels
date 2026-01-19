@@ -7,7 +7,7 @@ export const HeaderHome = () => {
 
   return (
     <div
-      className="max-w-full relative min-h-[60vh] md:min-h-[80vh] bg-cover bg-no-repeat bg-center"
+      className="max-w-full relative min-h-[70vh] md:min-h-[80vh] bg-cover bg-no-repeat bg-center"
       style={{ backgroundImage: `url(${LandingPageimg1})` }}
     >
       {/* 👈 NO HeaderNav */}

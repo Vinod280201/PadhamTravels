@@ -24,9 +24,7 @@ export const LoginPage = () => {
   const location = useLocation();
   const from = location.state?.from || "/home";
 
-  {
-    /* Defining the schema for form validation using Zod */
-  }
+  /* Defining the schema for form validation using Zod */
   const formSchema = z.object({
     email: z.string().email(),
     password: z.string().min(8, {
@@ -34,9 +32,7 @@ export const LoginPage = () => {
     }),
   });
 
-  {
-    /* Initialising the Form */
-  }
+  /* Initialising the Form */
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,9 +41,7 @@ export const LoginPage = () => {
     },
   });
 
-  {
-    /* Handling form submission of Form */
-  }
+  /* Handling form submission of Form */
   const handleForm = async (values) => {
     try {
       const response = await fetch(`${baseUrl}/api/auth/login`, {
@@ -61,16 +55,15 @@ export const LoginPage = () => {
 
       if (data.status) {
         toast("Login Status!", {
-          //for successful registration
           description: data.message,
           style: {
             background: "#3ac435",
             color: "white",
           },
         });
+
         // If backend returns role, redirect based on role
         const role = data.user?.role;
-
         const user = { email: data.email, role: data.role };
         localStorage.setItem("authUser", JSON.stringify(user));
 
@@ -78,11 +71,10 @@ export const LoginPage = () => {
         if (role === "admin") {
           navigate("/admin/dashboard", { replace: true });
         } else {
-          navigate(from, { replace: true }); // <-- CHANGED
+          navigate(from, { replace: true });
         }
       } else {
         toast("Login Status!", {
-          //other non-409 backend failures (e.g., Mongoose Validation Error if 500)
           description: data.message,
           style: {
             background: "#eb5449",
@@ -91,7 +83,6 @@ export const LoginPage = () => {
         });
       }
     } catch (error) {
-      // Network/fetch error (e.g., server down)
       toast("Login Status!", {
         description: "Network error. Please check server connection.",
         style: {
@@ -103,45 +94,61 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="grid grid-cols-2 space-x-5 h-screen bg-sky-100">
-      <div className="rounded-r-4xl border-r-5 ">
+    // MAIN CONTAINER: Flex layout, full height
+    <div className="min-h-screen w-full flex bg-sky-100 overflow-hidden">
+      {/* LEFT SIDE: Image Section 
+          - Hidden on mobile (hidden)
+          - Visible on tablet/desktop (md:block)
+          - Width 50% on desktop (w-1/2)
+      */}
+      <div className="hidden md:block md:w-1/2 relative">
         <div
-          className="w-full h-full object-cover bg-cover bg-no-repeat bg-center rounded-r-4xl"
+          className="absolute inset-0 h-full w-full object-cover bg-cover bg-no-repeat bg-center md:rounded-r-[3rem] border-r-4 border-white shadow-2xl z-10"
           style={{ backgroundImage: `url(${LoginPageImg})` }}
         >
-          {" "}
-          {/*<img src={LogoImg} className="w-20 h-20 ml-10 pt-5" />*/}
-          <div className="font-semibold text-slate-800 pt-18 ml-10">
-            <p className="text-2xl sm:text-4xl sm:mb-1 text-shadow-md">
-              Unlock Your
-            </p>
-            <p className="text-2xl sm:text-4xl sm:mb-1 text-shadow-md">
-              Travel Dreams
-            </p>
-            <p className="text-2xl sm:text-4xl sm:mb-1 text-shadow-md">
-              With Us!!
-            </p>
-            <div className="border-b-2 border-b-teal-500 mr-120"></div>
+          {/* Text Overlay on Image */}
+          <div className="h-full flex flex-col pt-8 px-12 lg:px-20">
+            <div className="font-semibold text-slate-800 drop-shadow-md space-y-2">
+              <p className="text-3xl lg:text-5xl text-shadow-md">Unlock Your</p>
+              <p className="text-3xl lg:text-5xl text-shadow-md">
+                Travel Dreams
+              </p>
+              <p className="text-3xl lg:text-5xl text-shadow-md">With Us!!</p>
+              <div className="w-55 border-b-2 border-teal-500 mt-3"></div>
+            </div>
           </div>
         </div>
       </div>
-      <div className="w-full flex flex-col justify-center border-l-3 my-20">
-        <div className="pb-5">
-          <h1 className="ml-70 font-bold text-xl sm:text-2xl sm:mb-1">
-            Welcome Back
-          </h1>
-          <p className="ml-60 text-xs sm:text-sm text-gray-600">
-            Please login to your account to continue
-          </p>
-        </div>
-        <Card className="pt-5 ml-40 w-[275px] sm:w-[400px] shadow-lg shadow-gray-700">
-          <CardContent>
-            <h2 className="text-lg sm:text-xl font-semibold mb-5 text-center">
-              Login Now
-            </h2>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleForm)}>
-                <div className="mb-3">
+
+      {/* RIGHT SIDE: Form Section 
+          - Full width on mobile (w-full)
+          - Half width on desktop (md:w-1/2)
+          - Uses flexbox to center content vertically and horizontally
+      */}
+      <div className="w-full md:w-1/2 flex flex-col justify-center items-center py-6 px-12 sm:p-12">
+        <div className="w-full max-w-md flex flex-col gap-6">
+          {/* Header Text */}
+          <div className="text-center space-y-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">
+              Welcome Back
+            </h1>
+            <p className="text-sm text-gray-600">
+              Please login to your account to continue
+            </p>
+          </div>
+
+          {/* Login Card */}
+          <Card className="w-full shadow-lg shadow-gray-300/50 border">
+            <CardContent className="pt-2 sm:pt-4 px-6 sm:px-8 pb-4">
+              <h2 className="text-xl font-semibold mb-6 text-center text-slate-800">
+                Login Now
+              </h2>
+
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(handleForm)}
+                  className="space-y-4"
+                >
                   <FormField
                     control={form.control}
                     name="email"
@@ -151,7 +158,7 @@ export const LoginPage = () => {
                         <FormControl>
                           <Input
                             placeholder="Enter your email"
-                            className="text-sm"
+                            className="h-10"
                             {...field}
                           />
                         </FormControl>
@@ -159,8 +166,7 @@ export const LoginPage = () => {
                       </FormItem>
                     )}
                   />
-                </div>
-                <div className="mb-3">
+
                   <FormField
                     control={form.control}
                     name="password"
@@ -172,7 +178,7 @@ export const LoginPage = () => {
                             type="password"
                             placeholder="Enter your password"
                             autoComplete="new-password"
-                            className="text-sm"
+                            className="h-10"
                             {...field}
                           />
                         </FormControl>
@@ -180,23 +186,29 @@ export const LoginPage = () => {
                       </FormItem>
                     )}
                   />
-                </div>
 
-                <div className="mt-5">
-                  <Button className="w-full text-sm sm:text-md">Login</Button>
-                </div>
-                <div className="flex justify-center text-xs sm:text-sm mt-4">
-                  <p>
-                    Don't have an account? &nbsp;
-                    <Link to="/register" className="underline text-blue-500">
-                      Register now
-                    </Link>
-                  </p>
-                </div>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
+                  <div className="pt-2">
+                    <Button className="w-full h-10 text-md bg-slate-900 hover:bg-slate-800">
+                      Login
+                    </Button>
+                  </div>
+
+                  <div className="flex justify-center text-sm mt-4 text-gray-600">
+                    <p>
+                      Don't have an account?{" "}
+                      <Link
+                        to="/register"
+                        className="font-medium text-blue-600 hover:text-blue-500 hover:underline transition-colors"
+                      >
+                        Register now
+                      </Link>
+                    </p>
+                  </div>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

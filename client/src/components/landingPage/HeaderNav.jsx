@@ -47,11 +47,6 @@ export const HeaderNav = () => {
             <p className="text-white">HOME</p>
           </div>
         </Link>
-        <Link to="/about-us" className="ml-5 whitespace-nowrap">
-          <div className="hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1">
-            <p className="text-white">ABOUT US</p>
-          </div>
-        </Link>
         <Link to="/flights" className="ml-5 whitespace-nowrap">
           <div className="hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1">
             <p className="text-white">FLIGHTS</p>
@@ -60,6 +55,11 @@ export const HeaderNav = () => {
         <Link to="/tours-and-packages" className="ml-5 whitespace-nowrap">
           <div className="hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1">
             <p className="text-white">TOURS & PACKAGES</p>
+          </div>
+        </Link>
+        <Link to="/about-us" className="ml-5 whitespace-nowrap">
+          <div className="hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1">
+            <p className="text-white">ABOUT US</p>
           </div>
         </Link>
         <Link to="/terms-and-conditions" className="ml-5 whitespace-nowrap">
@@ -145,13 +145,6 @@ export const HeaderNav = () => {
             Home
           </Link>
           <Link
-            to="#"
-            onClick={() => setOpen(false)}
-            className="py-2 border-b border-white/40 hover:font-medium"
-          >
-            About Us
-          </Link>
-          <Link
             to="/flights"
             onClick={() => setOpen(false)}
             className="py-2 border-b border-white/40 hover:font-medium"
@@ -159,18 +152,25 @@ export const HeaderNav = () => {
             Flights
           </Link>
           <Link
-            to="#"
+            to="/tours-and-packages"
             onClick={() => setOpen(false)}
             className="py-2 border-b border-white/40 hover:font-medium"
           >
-            Booking Terms
+            Tours & Packages
+          </Link>
+          <Link
+            to="/about-us"
+            onClick={() => setOpen(false)}
+            className="py-2 border-b border-white/40 hover:font-medium"
+          >
+            About Us
           </Link>
           <Link
             to="#"
             onClick={() => setOpen(false)}
             className="py-2 border-b border-white/40 hover:font-medium"
           >
-            Get In Touch
+            Booking Terms
           </Link>
           {!user && (
             <button

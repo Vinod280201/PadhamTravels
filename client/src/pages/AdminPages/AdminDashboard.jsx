@@ -4,7 +4,7 @@ import { QuickActions } from "@/components/adminPage/QuickActions";
 
 export const AdminDashboard = () => {
   return (
-    <div className="w-full bg-slate-50 space-y-5 p-6">
+    <div className="w-full bg-slate-50 space-y-5 py-3 md:p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>

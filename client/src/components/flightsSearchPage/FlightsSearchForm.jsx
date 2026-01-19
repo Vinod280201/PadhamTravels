@@ -1,6 +1,7 @@
 import React from "react";
 import PassengerSelector from "@/components/flightsSearchPage/PassengerSelector";
 import { SpecialBenefits } from "@/components/flightsSearchPage/SpecialBenefits";
+import { ArrowRightLeft } from "lucide-react";
 
 const toISODate = (d = new Date()) => {
   const year = d.getFullYear();
@@ -40,12 +41,11 @@ export function FlightsSearchForm({
   setBenefitTypes,
   onSubmit,
 }) {
-  // swap handler
   const handleSwap = () => {
     setFrom(to);
     setTo(from);
   };
-  // wrap onSubmit so parent gets a data object, not the event
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit({
@@ -63,161 +63,232 @@ export function FlightsSearchForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="grid gap-3 md:grid-cols-4 items-end mb-3"
+      className="flex flex-col gap-4 mb-2"
       autoComplete="off"
     >
-      {/* From */}
-      <div className="md:col-span-2 flex justify-between items-end">
-        <div className="flex-1 mr-2">
-          <label className="block text-yellow-600 font-medium text-sm mb-1">
-            From (airport code)
-          </label>
-          <input
-            className="w-full px-3 py-2 rounded font-semibold text-black"
-            value={from}
-            onChange={(e) => setFrom(e.target.value.toUpperCase())}
-            placeholder="MAA"
-            required
-          />
+      {/* MAIN GRID LAYOUT 
+         - Mobile: 2 Columns 
+         - Desktop: 4 Columns (From/To=2, Trip=1, FromDate=1)
+      */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 items-end relative z-50">
+        {/* --- 1. FROM & TO (Spans 2 cols on ALL screens) --- */}
+        <div className="col-span-2 grid grid-cols-[1fr_auto_1fr] gap-2 items-end">
+          {/* From Input */}
+          <div className="w-full">
+            <label className="block text-yellow-600 font-medium text-xs md:text-sm mb-1">
+              From
+            </label>
+            <input
+              // Added focus:ring-0 to remove blue glow
+              className="w-full h-10 px-3 border border-gray-300 rounded font-semibold text-slate-900 focus:outline-none focus:ring-0 focus:border-yellow-500 uppercase text-sm md:text-base"
+              value={from}
+              onChange={(e) => setFrom(e.target.value.toUpperCase())}
+              placeholder="MAA"
+              required
+            />
+          </div>
+
+          {/* Swap Button */}
+          <div className="flex justify-center pb-1">
+            <button
+              type="button"
+              onClick={handleSwap}
+              className="p-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-slate-100 hover:text-yellow-600 transition shadow-sm"
+              title="Swap locations"
+            >
+              <ArrowRightLeft size={16} />
+            </button>
+          </div>
+
+          {/* To Input */}
+          <div className="w-full">
+            <label className="block text-yellow-600 font-medium text-xs md:text-sm mb-1">
+              To
+            </label>
+            <input
+              // Added focus:ring-0 to remove blue glow
+              className="w-full h-10 px-3 border border-gray-300 rounded font-semibold text-slate-900 focus:outline-none focus:ring-0 focus:border-yellow-500 uppercase text-sm md:text-base"
+              value={to}
+              onChange={(e) => setTo(e.target.value.toUpperCase())}
+              placeholder="JAI"
+              required
+            />
+          </div>
         </div>
-        {/* Swap button */}
-        <div className="mb-1.5">
-          <button
-            type="button"
-            onClick={handleSwap}
-            className="px-3 py-1 rounded-full border border-slate-700 text-md bg-white text-slate-800 hover:bg-slate-200 hover:font-semibold"
+
+        {/* --- 2. TRIP TYPE --- */}
+        {/* Mobile: Full Width | Desktop: 1 Col */}
+        <div className="col-span-2 lg:col-span-1 flex flex-col justify-end h-full">
+          <label className="block text-yellow-600 font-medium text-xs md:text-sm mb-1 lg:mb-2">
+            Trip Type
+          </label>
+
+          {/* MOBILE: Radio Buttons */}
+          <div className="flex lg:hidden items-center gap-3 bg-slate-50 p-2 rounded border border-gray-300 h-10 justify-around">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="tripType"
+                value="oneway"
+                checked={tripType === "oneway"}
+                onChange={(e) => setTripType(e.target.value)}
+                className="accent-yellow-500 w-4 h-4 cursor-pointer"
+              />
+              <span className="text-xs font-semibold text-slate-700">
+                One Way
+              </span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="tripType"
+                value="roundtrip"
+                checked={tripType === "roundtrip"}
+                onChange={(e) => setTripType(e.target.value)}
+                className="accent-yellow-500 w-4 h-4 cursor-pointer"
+              />
+              <span className="text-xs font-semibold text-slate-700">
+                Round Trip
+              </span>
+            </label>
+          </div>
+
+          {/* DESKTOP: Select Dropdown */}
+          <div className="hidden lg:block h-10">
+            <select
+              // Added focus:ring-0 to remove blue glow
+              className="w-full h-full px-3 border border-gray-300 rounded font-semibold text-slate-900 text-sm focus:outline-none focus:ring-0 focus:border-yellow-500 bg-white"
+              value={tripType}
+              onChange={(e) => setTripType(e.target.value)}
+            >
+              <option value="oneway">One Way</option>
+              <option value="roundtrip">Round Trip</option>
+            </select>
+          </div>
+        </div>
+
+        {/* --- 3. FROM DATE --- */}
+        {/* Mobile: 1 Col | Desktop: 1 Col */}
+        <div className="col-span-1 lg:col-span-1">
+          <label className="block text-yellow-600 font-medium text-xs md:text-sm mb-1">
+            From Date
+          </label>
+          <div
+            // Added focus:ring-0 (though mainly handled by border-yellow on hover/active state here)
+            className="w-full h-10 px-3 flex items-center border border-gray-300 rounded cursor-pointer bg-white hover:border-yellow-500 transition relative"
+            onClick={() =>
+              document.getElementById("depart-date-hidden")?.showPicker?.()
+            }
           >
-            ⇄
+            <span className="font-semibold text-slate-900 text-xs md:text-sm whitespace-nowrap overflow-hidden">
+              {formatPrettyDate(departDate || toISODate())}
+            </span>
+            <input
+              id="depart-date-hidden"
+              type="date"
+              className="absolute inset-0 opacity-0 cursor-pointer"
+              value={departDate}
+              onChange={(e) => setDepartDate(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* --- 4. RETURN DATE --- */}
+        {/* Mobile: 1 Col | Desktop: 1 Col (Starts Row 2 on Desktop) */}
+        <div className="col-span-1 lg:col-span-1">
+          <label
+            className={`block font-medium text-xs md:text-sm mb-1 ${
+              tripType === "oneway" ? "text-slate-400" : "text-yellow-600"
+            }`}
+          >
+            Return Date
+          </label>
+          <div
+            className={`w-full h-10 px-3 flex items-center border rounded transition relative ${
+              tripType === "oneway"
+                ? "bg-slate-100 border-gray-300 cursor-not-allowed"
+                : "bg-white border-gray-300 cursor-pointer hover:border-yellow-500"
+            }`}
+            onClick={() => {
+              if (tripType === "roundtrip") {
+                document.getElementById("return-date-hidden")?.showPicker?.();
+              }
+            }}
+          >
+            <span
+              className={`font-semibold text-xs md:text-sm whitespace-nowrap overflow-hidden ${
+                tripType === "oneway" ? "text-slate-400" : "text-slate-900"
+              }`}
+            >
+              {tripType === "oneway"
+                ? "Select Round Trip to add"
+                : formatPrettyDate(returnDate || toISODate())}
+            </span>
+            <input
+              id="return-date-hidden"
+              type="date"
+              className="absolute inset-0 opacity-0 cursor-pointer disabled:cursor-not-allowed"
+              value={returnDate}
+              onChange={(e) => setReturnDate(e.target.value)}
+              disabled={tripType === "oneway"}
+            />
+          </div>
+        </div>
+
+        {/* --- 5. PASSENGERS --- */}
+        <div className="col-span-2 lg:col-span-1 relative z-50">
+          <label className="block text-yellow-600 font-medium text-xs md:text-sm mb-1 truncate">
+            Passengers
+          </label>
+          <div className="h-10">
+            {/* UPDATED: Added focus:ring-0 to remove blue ring */}
+            <PassengerSelector
+              value={paxData}
+              onChange={setPaxData}
+              className="w-full focus:outline-none focus:ring-0 focus:border-yellow-500"
+            />
+          </div>
+        </div>
+
+        {/* --- 6. CLASS --- */}
+        <div className="col-span-2 lg:col-span-1">
+          <label className="block text-yellow-600 font-medium text-xs md:text-sm mb-1 truncate">
+            Class
+          </label>
+          <select
+            // Added focus:ring-0 to remove blue glow
+            className="w-full h-10 px-2 border border-gray-300 font-semibold rounded text-slate-900 text-sm focus:outline-none focus:ring-0 focus:border-yellow-500 bg-white"
+            value={travelClass}
+            onChange={(e) => setTravelClass(e.target.value)}
+          >
+            <option value="economy">Economy</option>
+            <option value="premium">Prem. Eco</option>
+            <option value="business">Business</option>
+            <option value="firstclass">First</option>
+          </select>
+        </div>
+
+        {/* --- 7. SEARCH BUTTON --- */}
+        <div className="col-span-2 lg:col-span-1">
+          <label className="hidden lg:block text-transparent text-xs md:text-sm mb-1 select-none">
+            Action
+          </label>
+          <button
+            type="submit"
+            className="w-full h-10 bg-yellow-400 text-black font-bold text-sm rounded hover:bg-yellow-500 hover:shadow-md transition-all flex items-center justify-center uppercase tracking-wide"
+            disabled={loading}
+          >
+            {loading
+              ? "Searching..."
+              : hasSearched
+              ? "Modify Search"
+              : "Search Flights"}
           </button>
         </div>
-
-        {/* To */}
-        <div className="flex-1 ml-2">
-          <label className="block text-yellow-600 font-medium text-sm mb-1">
-            To (airport code)
-          </label>
-          <input
-            className="w-full px-3 py-2 rounded font-semibold text-black"
-            value={to}
-            onChange={(e) => setTo(e.target.value.toUpperCase())}
-            placeholder="JAI"
-            required
-          />
-        </div>
       </div>
 
-      {/* From Date */}
-      <div>
-        <label className="block text-yellow-600 font-medium text-sm mb-1">
-          From Date
-        </label>
-        <div
-          className="w-full px-3 py-2 rounded border font-semibold border-slate-500 text-black cursor-pointer"
-          onClick={() =>
-            document.getElementById("depart-date-hidden")?.showPicker?.()
-          }
-        >
-          <span className="font-semibold">
-            {formatPrettyDate(departDate || toISODate())}
-          </span>
-        </div>
-        <input
-          id="depart-date-hidden"
-          type="date"
-          className="w-0 h-0 opacity-0 absolute -z-10"
-          value={departDate}
-          onChange={(e) => setDepartDate(e.target.value)}
-        />
-      </div>
-
-      {/* Trip type */}
-      <div>
-        <label className="block text-yellow-600 font-medium text-sm mb-1">
-          Select Trip type
-        </label>
-        <select
-          className="w-full px-3 py-2 rounded font-semibold text-black"
-          value={tripType}
-          onChange={(e) => setTripType(e.target.value)}
-        >
-          <option value="oneway">One way</option>
-          <option value="roundtrip">Round trip</option>
-        </select>
-      </div>
-
-      {/* Return Date */}
-      <div>
-        <label className="block text-yellow-600 font-medium text-sm mb-1">
-          Return Date
-        </label>
-        <div
-          className={`w-full px-3 py-2 border border-slate-500 rounded text-black ${
-            tripType === "oneway"
-              ? "bg-gray-200 cursor-not-allowed"
-              : "cursor-pointer"
-          }`}
-          onClick={() => {
-            if (tripType === "roundtrip") {
-              document.getElementById("return-date-hidden")?.showPicker?.();
-            }
-          }}
-        >
-          <span
-            className={
-              tripType === "oneway"
-                ? "font-semibold text-gray-500"
-                : "font-semibold"
-            }
-          >
-            {formatPrettyDate(returnDate || toISODate())}
-          </span>
-        </div>
-        <input
-          id="return-date-hidden"
-          type="date"
-          className="w-0 h-0 opacity-0 absolute -z-10"
-          value={returnDate}
-          onChange={(e) => setReturnDate(e.target.value)}
-          disabled={tripType === "oneway"}
-        />
-      </div>
-
-      {/* Passengers */}
-      <div>
-        <label className="block text-yellow-600 font-medium text-sm mb-1">
-          No. of Passegers
-        </label>
-        <PassengerSelector value={paxData} onChange={setPaxData} />
-      </div>
-
-      {/* Class selection */}
-      <div>
-        <label className="block text-yellow-600 font-medium text-sm mb-1">
-          Select Class
-        </label>
-        <select
-          className="w-full px-3 py-2 font-semibold rounded text-black"
-          value={travelClass}
-          onChange={(e) => setTravelClass(e.target.value)}
-        >
-          <option value="economy">Economy</option>
-          <option value="premium">Premium Economy</option>
-          <option value="business">Business Class</option>
-          <option value="firstclass">First Class</option>
-        </select>
-      </div>
-
-      {/* Search button */}
-      <button
-        type="submit"
-        className="md:col-span-1 px-4 py-2 bg-yellow-400 text-black font-semibold rounded hover:bg-yellow-300 hover:border-2 hover:border-yellow-500 transition-all"
-        disabled={loading}
-      >
-        {loading ? "Searching..." : hasSearched ? "Modify search" : "Search"}
-      </button>
-
-      {/* Special benefits */}
-      <div>
+      {/* --- ROW 3: Special Benefits --- */}
+      <div className="mt-2 pt-2 border-t border-slate-100 relative z-0">
         <SpecialBenefits
           selected={benefitTypes}
           setSelected={setBenefitTypes}
