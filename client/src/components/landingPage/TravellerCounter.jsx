@@ -32,7 +32,7 @@ const TravellerCounter = ({
   };
 
   return (
-    <div className=" px-4 border border-gray-400 rounded-md mt-3 max-w-xs">
+    <div className=" px-4 border border-gray-400 rounded-md mt-3">
       {/* 1. Text Box Display (New addition) */}
       <div className="pt1 mt-1.5">
         <div className="flex justify-between">

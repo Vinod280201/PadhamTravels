@@ -67,11 +67,11 @@ export function FlightsSearchForm({
       autoComplete="off"
     >
       {/* MAIN GRID LAYOUT 
-         - Mobile: 2 Columns 
-         - Desktop: 4 Columns (From/To=2, Trip=1, FromDate=1)
+         - REMOVED 'z-50' from here. It was causing the form to overlay the sidebar.
+         - Added 'relative' to maintain stacking context for children.
       */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 items-end relative z-50">
-        {/* --- 1. FROM & TO (Spans 2 cols on ALL screens) --- */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 items-end relative">
+        {/* --- 1. FROM & TO --- */}
         <div className="col-span-2 grid grid-cols-[1fr_auto_1fr] gap-2 items-end">
           {/* From Input */}
           <div className="w-full">
@@ -79,7 +79,6 @@ export function FlightsSearchForm({
               From
             </label>
             <input
-              // Added focus:ring-0 to remove blue glow
               className="w-full h-10 px-3 border border-gray-300 rounded font-semibold text-slate-900 focus:outline-none focus:ring-0 focus:border-yellow-500 uppercase text-sm md:text-base"
               value={from}
               onChange={(e) => setFrom(e.target.value.toUpperCase())}
@@ -106,7 +105,6 @@ export function FlightsSearchForm({
               To
             </label>
             <input
-              // Added focus:ring-0 to remove blue glow
               className="w-full h-10 px-3 border border-gray-300 rounded font-semibold text-slate-900 focus:outline-none focus:ring-0 focus:border-yellow-500 uppercase text-sm md:text-base"
               value={to}
               onChange={(e) => setTo(e.target.value.toUpperCase())}
@@ -117,8 +115,8 @@ export function FlightsSearchForm({
         </div>
 
         {/* --- 2. TRIP TYPE --- */}
-        {/* Mobile: Full Width | Desktop: 1 Col */}
-        <div className="col-span-2 lg:col-span-1 flex flex-col justify-end h-full">
+        {/* Added z-20 here only (for Desktop dropdown) */}
+        <div className="col-span-2 lg:col-span-1 flex flex-col justify-end h-full relative z-20">
           <label className="block text-yellow-600 font-medium text-xs md:text-sm mb-1 lg:mb-2">
             Trip Type
           </label>
@@ -132,7 +130,7 @@ export function FlightsSearchForm({
                 value="oneway"
                 checked={tripType === "oneway"}
                 onChange={(e) => setTripType(e.target.value)}
-                className="accent-yellow-500 w-4 h-4 cursor-pointer"
+                className="accent-yellow-500 w-4 h-4 cursor-pointer focus:ring-0"
               />
               <span className="text-xs font-semibold text-slate-700">
                 One Way
@@ -145,7 +143,7 @@ export function FlightsSearchForm({
                 value="roundtrip"
                 checked={tripType === "roundtrip"}
                 onChange={(e) => setTripType(e.target.value)}
-                className="accent-yellow-500 w-4 h-4 cursor-pointer"
+                className="accent-yellow-500 w-4 h-4 cursor-pointer focus:ring-0"
               />
               <span className="text-xs font-semibold text-slate-700">
                 Round Trip
@@ -156,7 +154,6 @@ export function FlightsSearchForm({
           {/* DESKTOP: Select Dropdown */}
           <div className="hidden lg:block h-10">
             <select
-              // Added focus:ring-0 to remove blue glow
               className="w-full h-full px-3 border border-gray-300 rounded font-semibold text-slate-900 text-sm focus:outline-none focus:ring-0 focus:border-yellow-500 bg-white"
               value={tripType}
               onChange={(e) => setTripType(e.target.value)}
@@ -168,13 +165,11 @@ export function FlightsSearchForm({
         </div>
 
         {/* --- 3. FROM DATE --- */}
-        {/* Mobile: 1 Col | Desktop: 1 Col */}
         <div className="col-span-1 lg:col-span-1">
           <label className="block text-yellow-600 font-medium text-xs md:text-sm mb-1">
             From Date
           </label>
           <div
-            // Added focus:ring-0 (though mainly handled by border-yellow on hover/active state here)
             className="w-full h-10 px-3 flex items-center border border-gray-300 rounded cursor-pointer bg-white hover:border-yellow-500 transition relative"
             onClick={() =>
               document.getElementById("depart-date-hidden")?.showPicker?.()
@@ -186,7 +181,7 @@ export function FlightsSearchForm({
             <input
               id="depart-date-hidden"
               type="date"
-              className="absolute inset-0 opacity-0 cursor-pointer"
+              className="absolute inset-0 opacity-0 cursor-pointer focus:ring-0"
               value={departDate}
               onChange={(e) => setDepartDate(e.target.value)}
             />
@@ -194,7 +189,6 @@ export function FlightsSearchForm({
         </div>
 
         {/* --- 4. RETURN DATE --- */}
-        {/* Mobile: 1 Col | Desktop: 1 Col (Starts Row 2 on Desktop) */}
         <div className="col-span-1 lg:col-span-1">
           <label
             className={`block font-medium text-xs md:text-sm mb-1 ${
@@ -227,7 +221,7 @@ export function FlightsSearchForm({
             <input
               id="return-date-hidden"
               type="date"
-              className="absolute inset-0 opacity-0 cursor-pointer disabled:cursor-not-allowed"
+              className="absolute inset-0 opacity-0 cursor-pointer disabled:cursor-not-allowed focus:ring-0"
               value={returnDate}
               onChange={(e) => setReturnDate(e.target.value)}
               disabled={tripType === "oneway"}
@@ -236,12 +230,13 @@ export function FlightsSearchForm({
         </div>
 
         {/* --- 5. PASSENGERS --- */}
-        <div className="col-span-2 lg:col-span-1 relative z-50">
+        {/* Changed z-50 to z-20. This is high enough to show popup over the section below, 
+            but low enough to stay UNDER your sidebar (usually z-40 or z-50). */}
+        <div className="col-span-2 lg:col-span-1 relative z-20">
           <label className="block text-yellow-600 font-medium text-xs md:text-sm mb-1 truncate">
             Passengers
           </label>
           <div className="h-10">
-            {/* UPDATED: Added focus:ring-0 to remove blue ring */}
             <PassengerSelector
               value={paxData}
               onChange={setPaxData}
@@ -256,7 +251,6 @@ export function FlightsSearchForm({
             Class
           </label>
           <select
-            // Added focus:ring-0 to remove blue glow
             className="w-full h-10 px-2 border border-gray-300 font-semibold rounded text-slate-900 text-sm focus:outline-none focus:ring-0 focus:border-yellow-500 bg-white"
             value={travelClass}
             onChange={(e) => setTravelClass(e.target.value)}
@@ -275,14 +269,14 @@ export function FlightsSearchForm({
           </label>
           <button
             type="submit"
-            className="w-full h-10 bg-yellow-400 text-black font-bold text-sm rounded hover:bg-yellow-500 hover:shadow-md transition-all flex items-center justify-center uppercase tracking-wide"
+            className="w-full h-10 bg-yellow-400 text-black font-bold text-sm rounded hover:bg-yellow-500 hover:shadow-md transition-all flex items-center justify-center uppercase tracking-wide focus:outline-none focus:ring-0"
             disabled={loading}
           >
             {loading
               ? "Searching..."
               : hasSearched
-              ? "Modify Search"
-              : "Search Flights"}
+                ? "Modify Search"
+                : "Search Flights"}
           </button>
         </div>
       </div>

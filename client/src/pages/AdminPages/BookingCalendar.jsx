@@ -44,7 +44,7 @@ export const BookingCalendar = () => {
     "November",
     "December",
   ];
-  // Shorten day names for mobile (Mon vs Monday) - already short, but good to keep clean
+
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const getDaysInMonth = (date) => {
@@ -68,7 +68,7 @@ export const BookingCalendar = () => {
   const getBookingsForDate = (day) => {
     if (!day) return [];
     const dateKey = `${currentDate.getFullYear()}-${String(
-      currentDate.getMonth() + 1
+      currentDate.getMonth() + 1,
     ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     return bookingsData[dateKey] || [];
   };
@@ -101,22 +101,40 @@ export const BookingCalendar = () => {
         data-testid="booking-calendar-card"
       >
         <CardHeader className="p-4 md:p-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            <CardTitle className="text-lg md:text-2xl flex items-center gap-2">
-              <CalendarIcon className="w-5 h-5 md:w-6 md:h-6 text-slate-700" />
-              {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
-            </CardTitle>
-
-            {/* Navigation Buttons */}
-            <div className="flex gap-2 w-full sm:w-auto justify-center">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            {/* Centered Navigation Group: < Month Year > */}
+            <div className="flex items-center gap-3 md:gap-4 order-2 md:order-1">
               <Button
                 variant="outline"
-                size="sm"
+                size="icon"
                 onClick={() => navigateMonth(-1)}
-                className="h-8 md:h-9"
+                className="h-8 w-8 md:h-10 md:w-10 rounded-full"
+                title="Previous Month"
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
               </Button>
+
+              <CardTitle className="text-lg md:text-2xl flex items-center gap-2 min-w-[180px] justify-center">
+                <CalendarIcon className="w-5 h-5 md:w-6 md:h-6 text-slate-700 hidden sm:block" />
+                <span className="whitespace-nowrap">
+                  {monthNames[currentDate.getMonth()]}{" "}
+                  {currentDate.getFullYear()}
+                </span>
+              </CardTitle>
+
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => navigateMonth(1)}
+                className="h-8 w-8 md:h-10 md:w-10 rounded-full"
+                title="Next Month"
+              >
+                <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
+              </Button>
+            </div>
+
+            {/* Today Button - Moved to the right (or bottom on mobile) */}
+            <div className="order-1 md:order-2 self-end md:self-auto w-full md:w-auto flex justify-end">
               <Button
                 variant="outline"
                 size="sm"
@@ -124,14 +142,6 @@ export const BookingCalendar = () => {
                 className="h-8 md:h-9"
               >
                 Today
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigateMonth(1)}
-                className="h-8 md:h-9"
-              >
-                <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
           </div>
@@ -175,8 +185,8 @@ export const BookingCalendar = () => {
                       !day
                         ? "bg-slate-50 border-slate-100" // Empty slot
                         : isToday
-                        ? "bg-orange-50 border-orange-300"
-                        : "bg-white border-slate-200 hover:border-orange-300 hover:shadow-sm"
+                          ? "bg-orange-50 border-orange-300"
+                          : "bg-white border-slate-200 hover:border-orange-300 hover:shadow-sm"
                     }
                   `}
                 >
@@ -207,7 +217,7 @@ export const BookingCalendar = () => {
                             {bookings.slice(0, 2).map((booking) => (
                               <div
                                 key={booking.id}
-                                className="bg-sky-50 border border-sky-200 rounded px-1.5 py-1 text-[10px] lg:text-xs"
+                                className="bg-sky-5 border border-sky-200 rounded px-1.5 py-1 text-[10px] lg:text-xs"
                               >
                                 <div className="flex items-center gap-1 mb-0.5">
                                   <Plane className="w-3 h-3 text-sky-600 shrink-0" />

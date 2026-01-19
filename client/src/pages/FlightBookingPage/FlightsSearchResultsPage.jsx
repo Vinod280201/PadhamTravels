@@ -7,6 +7,7 @@ import BestDeals from "@/assets/FlightsSearchPage/BestDeals.png";
 import { FlightsResultsSkeleton } from "@/components/flightsSearchPage/FlightsResultsSkeleton";
 import { apiGet } from "@/apiClient";
 import MainNavbar from "@/components/layout/MainNavbar";
+import { Filter } from "lucide-react"; // Added icon for better UX
 
 const toISODate = (d = new Date()) => {
   const year = d.getFullYear();
@@ -27,7 +28,9 @@ export const FlightsSearchResultsPage = () => {
   const [nonstopOnly, setNonstopOnly] = useState(false);
   const [oneStopOrLess, setOneStopOrLess] = useState(false);
   const [airlines, setAirlines] = useState([]);
-  const [showFilters, setShowFilters] = useState(true);
+
+  // UPDATED: Filters hidden by default as requested
+  const [showFilters, setShowFilters] = useState(false);
 
   const handleModifyClick = () => {
     setShowSearchForm((prev) => !prev);
@@ -47,13 +50,13 @@ export const FlightsSearchResultsPage = () => {
   const [from, setFrom] = useState(searchParams.get("from") || "");
   const [to, setTo] = useState(searchParams.get("to") || "");
   const [departDate, setDepartDate] = useState(
-    searchParams.get("departDate") || toISODate()
+    searchParams.get("departDate") || toISODate(),
   );
   const [returnDate, setReturnDate] = useState(
-    searchParams.get("returnDate") || ""
+    searchParams.get("returnDate") || "",
   );
   const [tripType, setTripType] = useState(
-    searchParams.get("tripType") || "oneway"
+    searchParams.get("tripType") || "oneway",
   );
   const [paxData, setPaxData] = useState({
     adult: parseInt(searchParams.get("adults")) || 1,
@@ -61,7 +64,7 @@ export const FlightsSearchResultsPage = () => {
     infant: parseInt(searchParams.get("infants")) || 0,
   });
   const [travelClass, setTravelClass] = useState(
-    searchParams.get("travelClass") || "economy"
+    searchParams.get("travelClass") || "economy",
   );
   const [benefitTypes, setBenefitTypes] = useState([]);
 
@@ -202,7 +205,6 @@ export const FlightsSearchResultsPage = () => {
 
           {/* --- Collapsible Search Form --- */}
           {showSearchForm && (
-            // FIX: Removed mx-30, added responsive width & padding
             <div className="bg-white rounded-md w-full max-w-6xl mx-auto mt-4 pb-5 p-4 md:p-10 text-slate-900">
               <FlightsSearchForm
                 from={from}
@@ -230,44 +232,43 @@ export const FlightsSearchResultsPage = () => {
         </div>
 
         {/* --- Results Section --- */}
-        <div className="mt-3">
-          {/* Summary Header */}
-          <div className="flex flex-col md:flex-row items-center justify-between text-slate-800 mb-4 gap-4">
-            {/* Toggle Filters Button */}
+        <div className="mt-6">
+          {/* 1. Centered Title Block (Placed above controls) */}
+          <div className="text-center mb-6">
+            <h1 className="font-bold text-xl md:text-3xl mb-1 md:mb-2 text-slate-800">
+              Your Flight Results: {from} → {to}
+            </h1>
+            <p className="text-sm md:text-lg font-medium text-slate-600">
+              {departDate} {tripType === "roundtrip" && `→ ${returnDate}`} •{" "}
+              {adult} {pluralize(adult, "Adult", "Adults")}
+              {child > 0 &&
+                `, ${child} ${pluralize(child, "Child", "Children")}`}
+              {infant > 0 &&
+                `, ${infant} ${pluralize(infant, "Infant", "Infants")}`}
+            </p>
+          </div>
+
+          {/* 2. Control Bar (Filters Left, Count Right) */}
+          <div className="flex flex-row items-center justify-between mb-4">
+            {/* Toggle Filters Button (Left) */}
             <button
               type="button"
               onClick={() => setShowFilters((prev) => !prev)}
-              className="w-full md:w-auto px-4 py-2 rounded-md border border-slate-400 text-sm font-semibold bg-white text-slate-800 hover:bg-slate-100 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-md border border-slate-400 text-sm font-semibold bg-white text-slate-800 hover:bg-slate-100 transition-colors shadow-sm"
               disabled={!loading && flights.length === 0}
             >
+              <Filter className="w-4 h-4" />
               {showFilters ? "Hide filters" : "Show filters"}
             </button>
 
-            {/* Route & Passenger Info */}
-            <div className="text-center">
-              <h1 className="font-bold text-xl md:text-3xl mb-1 md:mb-2">
-                Your Flight Results: {from} → {to}
-              </h1>
-              <p className="text-sm md:text-lg font-medium text-slate-600">
-                {departDate} {tripType === "roundtrip" && `→ ${returnDate}`} •{" "}
-                {adult} {pluralize(adult, "Adult", "Adults")}
-                {child > 0 &&
-                  `, ${child} ${pluralize(child, "Child", "Children")}`}
-                {infant > 0 &&
-                  `, ${infant} ${pluralize(infant, "Infant", "Infants")}`}
-              </p>
-            </div>
-
-            {/* Flight Count */}
-            <div>
-              <span className="text-sm font-medium text-slate-700 bg-white px-3 py-1 rounded-full shadow-sm">
-                {!loading && flights.length > 0
-                  ? `${flights.length} Flights found`
-                  : !loading
+            {/* Flight Count (Right) */}
+            <span className="text-sm font-medium text-slate-700 bg-white px-3 py-1 rounded-full shadow-sm">
+              {!loading && flights.length > 0
+                ? `${flights.length} Flights found`
+                : !loading
                   ? "No flights found"
                   : "Searching..."}
-              </span>
-            </div>
+            </span>
           </div>
 
           {/* --- Main Content Grid --- */}

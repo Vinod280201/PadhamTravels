@@ -17,7 +17,7 @@ export const Header = () => {
         <HeaderNav />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 h-[86.3%]">
-        <div className="hidden md:flex lg:pt-35 lg:ml-20 items-center flex-nowrap">
+        <div className="hidden md:flex md:pt-60 md:ml-12 lg:pt-35 lg:ml-20 items-center flex-nowrap">
           <div>
             <p className="md:text-md xl:text-xl text-white whitespace-nowrap">
               PADHAM TRAVELS
