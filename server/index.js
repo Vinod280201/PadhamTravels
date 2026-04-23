@@ -11,6 +11,10 @@ import AuthRoute from "./routes/auth.route.js";
 import flightsRoutes from "./routes/flights.route.js";
 import toursRouter from "./routes/tours.route.js";
 import adminToursRouter from "./routes/admin-tours.route.js";
+import flightDealRoutes from "./routes/flightDealRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import bookingsRoutes from "./routes/bookings.route.js";
+import walletRoutes from "./routes/wallet.route.js";
 
 // Load environment variables
 dotenv.config();
@@ -29,7 +33,6 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (like Postman, Mobile Apps, or Server-to-Server)
     if (!origin) return callback(null, true);
 
     if (allowedOrigins.indexOf(origin) !== -1) {
@@ -55,7 +58,6 @@ app.use(cors(corsOptions));
 // === 2. MIDDLEWARE ===
 app.use(express.json());
 app.use(cookieParser());
-// to serve images from the 'uploads' folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // === 3. HEALTH CHECK ===
@@ -67,7 +69,11 @@ app.get("/", (req, res) => {
 app.use("/api/auth", AuthRoute);
 app.use("/api/flights", flightsRoutes);
 app.use("/api/tours", toursRouter);
-app.use("/api/admin", adminToursRouter);
+app.use("/api/admin/tours", adminToursRouter); 
+app.use("/api/admin", adminRoutes); 
+app.use("/api/deals", flightDealRoutes);
+app.use("/api/bookings", bookingsRoutes);
+app.use("/api/wallet", walletRoutes);
 
 // === 5. DATABASE CONNECTION ===
 const connectDB = async () => {
@@ -83,7 +89,6 @@ const connectDB = async () => {
 };
 
 // === 6. START SERVER ===
-// This will use port 3000 locally, or whatever port the server (Render/Heroku) assigns
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {

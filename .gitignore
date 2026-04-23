@@ -1,0 +1,10 @@
+# 1. Ignore EVERYTHING in the root folder
+/*
+
+# 2. Un-ignore (Allow) the folders/files you want to keep
+!client/
+!server/
+!.gitignore
+
+# 3. Optional: Un-ignore .vscode if you want to keep your editor settings
+# !.vscode/

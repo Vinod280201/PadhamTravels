@@ -5,11 +5,11 @@ import { getSingleTour, getTours } from "../controllers/tourController.js";
 const router = express.Router();
 
 // GET all tours
-// Currently protected by 'authenticate'.
-// If you want this to be PUBLIC (viewable without login), remove 'authenticate'.
-router.get("/", authenticate, getTours);
+// Currently its PUBLIC.
+// If you want this to be PROTECTED (viewable without login), add 'authenticate'.
+router.get("/", getTours);
 
 // GET single tour (e.g. /api/tours/65a1b2c...)
-router.get("/:id", authenticate, getSingleTour);
+router.get("/:id", getSingleTour);
 
 export default router;

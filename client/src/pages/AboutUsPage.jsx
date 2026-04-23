@@ -3,6 +3,8 @@ import { useLocation } from "react-router-dom";
 import { Award, Heart, MapPin, Phone, Mail, Clock, Users } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import MainNavbar from "@/components/layout/MainNavbar";
+import { HeaderNav } from "@/components/landingPage/HeaderNav";
+import { useAuthUser } from "@/hooks/useAuthUser";
 
 const stats = [
   { label: "Happy Travelers", value: "10,000+", icon: Users },
@@ -13,6 +15,8 @@ const stats = [
 
 const AboutUs = () => {
   const { hash } = useLocation();
+  // 2. Get user status
+  const { user } = useAuthUser();
 
   useEffect(() => {
     if (hash === "#contact") {
@@ -28,7 +32,16 @@ const AboutUs = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <MainNavbar />
+      {/* 3. Conditional Navigation Rendering */}
+      {user ? (
+        <MainNavbar />
+      ) : (
+        <div className="bg-slate-600">
+          {" "}
+          <HeaderNav />
+        </div>
+      )}
+
       {/* Hero Section */}
       <section className="relative py-10 md:py-16 bg-primary/10 mt-2">
         <div className="container mx-auto px-4 text-center">
@@ -166,10 +179,10 @@ const AboutUs = () => {
                   Email
                 </h3>
                 <a
-                  href="mailto:padhamtravel@gmail.com"
+                  href="mailto:info@padhamtravel.com"
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
-                  padhamtravel@gmail.com
+                  info@padhamtravel.com
                 </a>
               </CardContent>
             </Card>

@@ -89,7 +89,7 @@ export const FlightPageFooter = () => {
             <div className="flex items-start gap-3">
               <MdEmail size={20} className="mt-0.5 text-yellow-600" />
               <div>
-                <p className="text-sm">padhamtravel@gmail.com</p>
+                <p className="text-sm">info@padhamtravel.com</p>
                 <p className="text-xs text-gray-600">
                   We usually reply within 24 hours
                 </p>

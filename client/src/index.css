@@ -225,3 +225,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Fix for React-Select styling clash with Tailwind Forms */
+.react-select-container input:focus, .react-select-container input {
+  box-shadow: none !important;
+  --tw-ring-color: transparent !important;
+  --tw-ring-shadow: none !important;
+}

@@ -18,7 +18,7 @@ const MainNavbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State for mobile menu
-  const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
   // Data for Navigation Links to reduce repetition
   const navLinks = [
@@ -39,7 +39,7 @@ const MainNavbar = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch(`${baseUrl}/api/auth/logout`, {
+      await fetch(`${baseUrl}/auth/logout`, {
         method: "POST",
         credentials: "include",
       });
@@ -47,6 +47,9 @@ const MainNavbar = () => {
       // ignore
     } finally {
       localStorage.removeItem("authUser");
+      sessionStorage.clear(); // Clear flight search state
+      //to clear the search form data
+      localStorage.removeItem("user_flight_search_pref");
       setUser(null);
       navigate("/", { replace: true });
       setIsMenuOpen(false);
@@ -102,20 +105,25 @@ const MainNavbar = () => {
 
         {/* --- RIGHT: USER & MOBILE TOGGLE --- */}
         <div className="flex items-center gap-3">
-          {/* User Avatar - Visible on all screens */}
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 lg:h-9 lg:w-9 rounded-full bg-yellow-400 flex items-center justify-center text-slate-800 font-bold overflow-hidden shadow-sm">
-              {user?.name ? (
-                user.name[0]?.toUpperCase()
-              ) : (
-                <IoPersonCircle size={26} />
-              )}
-            </div>
-            {/* User Name - Hidden on very small screens, visible on md+ */}
-            <span className="font-medium text-sm text-slate-800 hidden md:block max-w-[100px] truncate">
-              {user?.name || "Guest"}
-            </span>
-          </div>
+          {/* UPDATED LOGIC:
+              Only render the User Avatar and Name block if 'user' exists.
+              If user is null/undefined, this block is skipped entirely.
+          */}
+          {user && (
+            <Link to="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer group" title="View Profile">
+              <div className="h-8 w-8 lg:h-9 lg:w-9 rounded-full bg-yellow-400 flex items-center justify-center text-slate-800 font-bold overflow-hidden shadow-sm group-hover:scale-105 transition-transform">
+                {user?.name ? (
+                  user.name[0]?.toUpperCase()
+                ) : (
+                  <IoPersonCircle size={26} />
+                )}
+              </div>
+              {/* User Name - Hidden on very small screens, visible on md+ */}
+              <span className="font-medium text-sm text-slate-800 hidden md:block max-w-[100px] truncate group-hover:text-blue-700">
+                {user?.name}
+              </span>
+            </Link>
+          )}
 
           {/* Desktop Logout Button (Hidden on Mobile) */}
           {user && (
@@ -169,13 +177,23 @@ const MainNavbar = () => {
           {/* Mobile Logout Button */}
           {user && (
             <div className="pt-2 border-t border-gray-300">
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-sm text-gray-500">Logged in as:</span>
-                <span className="font-bold text-slate-800">{user?.name}</span>
-              </div>
+              <Link to="/profile" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-between mb-4 group px-2 cursor-pointer">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 bg-yellow-400 rounded-full flex items-center justify-center font-bold text-slate-800 text-lg shadow-sm group-hover:scale-105 transition-transform">
+                    {user?.name ? user.name[0]?.toUpperCase() : <IoPersonCircle size={26} />}
+                  </div>
+                  <div className="flex flex-col">
+                     <span className="text-xs text-gray-500 font-medium">Logged in as</span>
+                     <span className="font-bold text-slate-800 group-hover:text-blue-700 transition-colors">{user?.name}</span>
+                  </div>
+                </div>
+                <div className="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full group-hover:bg-blue-100 transition-colors border border-blue-200">
+                   View Profile
+                </div>
+              </Link>
               <button
                 onClick={handleLogout}
-                className="flex w-full items-center justify-center text-base font-bold h-10 px-4 rounded text-slate-800 bg-yellow-400 hover:bg-yellow-500 transition shadow-sm"
+                className="flex w-full items-center justify-center text-base font-bold h-10 px-4 rounded text-slate-800 bg-gray-100 hover:bg-gray-200 transition border border-gray-300"
               >
                 Logout
                 <FiLogOut size={20} className="ml-2" />

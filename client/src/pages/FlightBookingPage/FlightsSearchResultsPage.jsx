@@ -8,6 +8,8 @@ import { FlightsResultsSkeleton } from "@/components/flightsSearchPage/FlightsRe
 import { apiGet } from "@/apiClient";
 import MainNavbar from "@/components/layout/MainNavbar";
 import { Filter } from "lucide-react"; // Added icon for better UX
+import { HeaderNav } from "@/components/landingPage/HeaderNav";
+import { useAuthUser } from "@/hooks/useAuthUser";
 
 const toISODate = (d = new Date()) => {
   const year = d.getFullYear();
@@ -19,9 +21,12 @@ const toISODate = (d = new Date()) => {
 export const FlightsSearchResultsPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  // Get user status
+  const { user } = useAuthUser();
 
   const [loading, setLoading] = useState(true);
   const [flights, setFlights] = useState([]);
+  const [pollingId, setPollingId] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
   const pluralize = (n, s, p) => (n === 1 ? s : p);
   const [showSearchForm, setShowSearchForm] = useState(false);
@@ -43,7 +48,7 @@ export const FlightsSearchResultsPage = () => {
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "start" });
       }
-    }, 200);
+    }, 300);
   };
 
   // Form state
@@ -69,22 +74,31 @@ export const FlightsSearchResultsPage = () => {
   const [benefitTypes, setBenefitTypes] = useState([]);
 
   // Fetch Flights Logic
-  const fetchFlights = async () => {
+  const fetchFlights = async (overrides = {}) => {
     setLoading(true);
 
+    const currentFrom = overrides.from ?? from;
+    const currentTo = overrides.to ?? to;
+    const currentDepartDate = overrides.departDate ?? departDate;
+    const currentTripType = overrides.tripType ?? tripType;
+    const currentPaxData = overrides.paxData ?? paxData;
+    const currentTravelClass = overrides.travelClass ?? travelClass;
+    const currentReturnDate = overrides.returnDate ?? returnDate;
+    const currentBenefitTypes = overrides.benefitTypes ?? benefitTypes;
+
     const params = new URLSearchParams({
-      from,
-      to,
-      departDate,
-      tripType,
-      adults: String(paxData.adult),
-      children: String(paxData.child),
-      infants: String(paxData.infant),
-      travelClass,
+      from: currentFrom,
+      to: currentTo,
+      departDate: currentDepartDate,
+      tripType: currentTripType,
+      adults: String(currentPaxData.adult),
+      children: String(currentPaxData.child),
+      infants: String(currentPaxData.infant),
+      travelClass: currentTravelClass ? currentTravelClass.charAt(0).toUpperCase() + currentTravelClass.slice(1).toLowerCase() : "Economy",
     });
 
-    if (returnDate) {
-      params.append("returnDate", returnDate);
+    if (currentTripType === "roundtrip" && currentReturnDate) {
+      params.append("returnDate", currentReturnDate);
     }
 
     let stops = "0";
@@ -100,17 +114,18 @@ export const FlightsSearchResultsPage = () => {
     if (airlines.length > 0) {
       params.append("airline", airlines.join(","));
     }
-    benefitTypes.forEach((b) => params.append("benefits", b));
+    currentBenefitTypes.forEach((b) => params.append("benefits", b));
 
     try {
       const res = await apiGet(`/flights/search?${params.toString()}`);
       const data = await res.json();
 
       if (data.status) {
-        const all = [...(data.bestFlights || []), ...(data.otherFlights || [])];
-        setFlights(all);
+        setFlights(data.flights || []);
+        setPollingId(data.pollingId || null);
       } else {
         setFlights([]);
+        setPollingId(null);
       }
     } catch (err) {
       console.error("FLIGHTS SEARCH ERROR:", err);
@@ -148,7 +163,16 @@ export const FlightsSearchResultsPage = () => {
     setTravelClass(formData.travelClass ?? travelClass);
     setBenefitTypes(formData.benefitTypes ?? benefitTypes);
 
-    fetchFlights();
+    fetchFlights({
+      from: formData.from ?? from,
+      to: formData.to ?? to,
+      departDate: formData.departDate ?? departDate,
+      returnDate: formData.returnDate ?? returnDate,
+      tripType: formData.tripType ?? tripType,
+      paxData: nextPax,
+      travelClass: formData.travelClass ?? travelClass,
+      benefitTypes: formData.benefitTypes ?? benefitTypes
+    });
     setShowSearchForm(false);
   };
 
@@ -168,7 +192,15 @@ export const FlightsSearchResultsPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-200 text-white">
-      <MainNavbar />
+      {/* Conditional Navigation Rendering */}
+      {user ? (
+        <MainNavbar />
+      ) : (
+        <div className="bg-slate-600">
+          {" "}
+          <HeaderNav />
+        </div>
+      )}
 
       <div className="p-2 md:p-4">
         {/* --- Top Gray Header Box --- */}
@@ -353,6 +385,8 @@ export const FlightsSearchResultsPage = () => {
               ) : (
                 <FlightsSearchResults
                   flights={flights}
+                  pollingId={pollingId}
+                  paxData={paxData}
                   hasSearched={hasSearched}
                   loading={loading}
                 />

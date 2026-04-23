@@ -5,15 +5,21 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import MainNavbar from "@/components/layout/MainNavbar";
 import { apiGet } from "@/apiClient";
+import { HeaderNav } from "@/components/landingPage/HeaderNav";
+import { useAuthUser } from "@/hooks/useAuthUser";
+import { useNavigate } from "react-router-dom";
 
 // 1. Define Backend Base URL
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 export const ToursDisplay = () => {
+  const navigate = useNavigate();
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  // Get user status
+  const { user } = useAuthUser();
 
   // Modified fetch function to handle "Silent" updates
   const fetchTours = useCallback(async (isBackground = false) => {
@@ -65,7 +71,7 @@ export const ToursDisplay = () => {
       const name = (tour.name || "").toLowerCase();
       const destination = (tour.destination || "").toLowerCase();
       const highlights = (tour.highlights || []).map((h) =>
-        (h || "").toLowerCase()
+        (h || "").toLowerCase(),
       );
       return (
         name.includes(term) ||
@@ -77,7 +83,15 @@ export const ToursDisplay = () => {
 
   return (
     <div className="min-h-screen bg-slate-100">
-      <MainNavbar />
+      {/* Conditional Navigation Rendering */}
+      {user ? (
+        <MainNavbar />
+      ) : (
+        <div className="bg-slate-600">
+          {" "}
+          <HeaderNav />
+        </div>
+      )}
 
       {/* Hero Section */}
       <div className="bg-linear-to-r from-slate-800 to-slate-700 text-white py-8 px-4 mt-3">
@@ -234,7 +248,7 @@ export const ToursDisplay = () => {
                               // ✅ FIX: Prepend API_BASE to PDF path too
                               window.open(
                                 `${API_BASE}${tour.itinerary}`,
-                                "_blank"
+                                "_blank",
                               )
                             }
                           >
@@ -247,7 +261,11 @@ export const ToursDisplay = () => {
 
                         <Button
                           className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold mt-2"
-                          data-testid={`book-tour-${tour.id || tour._id}-btn`}
+                          onClick={() =>
+                            navigate(`/book-tour/${tour.id || tour._id}`, {
+                              state: { tour },
+                            })
+                          }
                         >
                           Book Now
                         </Button>

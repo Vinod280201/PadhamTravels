@@ -164,4 +164,53 @@ const CONSTANTS = {
   BOOKINGS,
 };
 
+export const AIRLINE_MAP = {
+  "AI": "Air India",
+  "6E": "IndiGo",
+  "SG": "SpiceJet",
+  "UK": "Vistara",
+  "I5": "AIX Connect",
+  "IX": "Air India Express",
+  "QP": "Akasa Air",
+  "G8": "Go First",
+  "2T": "TruJet",
+  "9I": "Alliance Air",
+  // Add common international airlines if needed
+  "EK": "Emirates",
+  "QR": "Qatar Airways",
+  "EY": "Etihad Airways",
+  "SQ": "Singapore Airlines",
+  "CX": "Cathay Pacific",
+  "BA": "British Airways",
+  "LH": "Lufthansa",
+  "AF": "Air France",
+  "MH": "Malaysia Airlines",
+  "TG": "Thai Airways"
+};
+
+export const AIRPORT_MAP = {
+  "DEL": "Indira Gandhi Int'l, New Delhi",
+  "BOM": "Chhatrapati Shivaji Maharaj Int'l, Mumbai",
+  "BLR": "Kempegowda Int'l, Bengaluru",
+  "HYD": "Rajiv Gandhi Int'l, Hyderabad",
+  "MAA": "Chennai Int'l, Chennai",
+  "CCU": "Netaji Subhash Chandra Bose Int'l, Kolkata",
+  "AMD": "Sardar Vallabhbhai Patel Int'l, Ahmedabad",
+  "COK": "Cochin Int'l, Kochi",
+  "PNQ": "Pune Airport, Pune",
+  "GOI": "Dabolim Airport, Goa",
+  "GOX": "Manohar Int'l, Goa",
+  "NMI": "Navi Mumbai Int'l, Navi Mumbai",
+  "DXB": "Dubai Int'l, Dubai",
+  "BHO": "Raja Bhoj Airport, Bhopal",
+  "LKO": "Chaudhary Charan Singh Int'l, Lucknow",
+  "JAI": "Jaipur Int'l, Jaipur",
+  "PAT": "Jay Prakash Narayan Airport, Patna",
+  "TRV": "Trivandrum Int'l, Thiruvananthapuram",
+  "VNS": "Lal Bahadur Shastri Int'l, Varanasi",
+  "GAU": "Lokpriya Gopinath Bordoloi Int'l, Guwahati",
+  "IXB": "Bagdogra Int'l, Siliguri",
+  "IXC": "Shaheed Bhagat Singh Int'l, Chandigarh"
+};
+
 export default CONSTANTS;

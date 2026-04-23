@@ -1,7 +1,21 @@
-import React from "react";
+import React, { useMemo } from "react";
 import PassengerSelector from "@/components/flightsSearchPage/PassengerSelector";
 import { SpecialBenefits } from "@/components/flightsSearchPage/SpecialBenefits";
 import { ArrowRightLeft } from "lucide-react";
+import { GiAirplaneArrival, GiAirplaneDeparture } from "react-icons/gi";
+import Select from "react-select";
+import airportsData from "@/data/airports.json";
+
+const airportOptions = (airportsData || []).map(a => {
+  const cityStr = (a.city && a.city !== "null") ? `${a.city}, ` : "";
+  const nameStr = (a.name && a.name !== "null") ? a.name : "Airport";
+  const codeStr = a.iata ? ` -(${a.iata})` : "";
+  
+  return {
+    value: a.iata,
+    label: `${cityStr}${nameStr}${codeStr}`
+  };
+});
 
 const toISODate = (d = new Date()) => {
   const year = d.getFullYear();
@@ -41,6 +55,44 @@ export function FlightsSearchForm({
   setBenefitTypes,
   onSubmit,
 }) {
+  const [fromSearch, setFromSearch] = React.useState("");
+  const [toSearch, setToSearch] = React.useState("");
+
+  const getFilteredOptions = React.useCallback((inputValue) => {
+    if (!inputValue) return airportOptions.slice(0, 100);
+    const lowerInput = inputValue.toLowerCase();
+    
+    const filtered = airportOptions.filter(opt => 
+        opt.value.toLowerCase().includes(lowerInput) || 
+        opt.label.toLowerCase().includes(lowerInput)
+    );
+    
+    filtered.sort((a, b) => {
+        const aVal = a.value.toLowerCase();
+        const bVal = b.value.toLowerCase();
+        const exactA = aVal === lowerInput;
+        const exactB = bVal === lowerInput;
+        
+        // 1. Exact IATA match
+        if (exactA && !exactB) return -1;
+        if (!exactA && exactB) return 1;
+        
+        // 2. Starts with IATA match
+        const startsA = aVal.startsWith(lowerInput);
+        const startsB = bVal.startsWith(lowerInput);
+        
+        if (startsA && !startsB) return -1;
+        if (!startsA && startsB) return 1;
+        
+        return 0; // retain default order for others
+    });
+    
+    return filtered.slice(0, 100); // return top 100
+  }, []);
+
+  const fromOptions = React.useMemo(() => getFilteredOptions(fromSearch), [fromSearch, getFilteredOptions]);
+  const toOptions = React.useMemo(() => getFilteredOptions(toSearch), [toSearch, getFilteredOptions]);
+
   const handleSwap = () => {
     setFrom(to);
     setTo(from);
@@ -63,27 +115,72 @@ export function FlightsSearchForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-4 mb-2"
+      className="flex flex-col gap-4"
       autoComplete="off"
     >
       {/* MAIN GRID LAYOUT 
          - REMOVED 'z-50' from here. It was causing the form to overlay the sidebar.
          - Added 'relative' to maintain stacking context for children.
       */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 items-end relative">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 items-end relative z-20">
         {/* --- 1. FROM & TO --- */}
-        <div className="col-span-2 grid grid-cols-[1fr_auto_1fr] gap-2 items-end">
+        <div className="col-span-2 grid grid-cols-[1fr_auto_1fr] gap-2 items-end relative z-30">
           {/* From Input */}
           <div className="w-full">
             <label className="block text-yellow-600 font-medium text-xs md:text-sm mb-1">
               From
             </label>
-            <input
-              className="w-full h-10 px-3 border border-gray-300 rounded font-semibold text-slate-900 focus:outline-none focus:ring-0 focus:border-yellow-500 uppercase text-sm md:text-base"
-              value={from}
-              onChange={(e) => setFrom(e.target.value.toUpperCase())}
-              placeholder="MAA"
-              required
+            <Select
+              options={fromOptions}
+              classNamePrefix="react-select"
+              filterOption={null}
+              onInputChange={(val, { action }) => {
+                if (action === "input-change") setFromSearch(val);
+                if (action === "menu-close") setFromSearch("");
+              }}
+              value={airportOptions.find(opt => opt.value === from) || (from ? { value: from, label: from } : null)}
+              onChange={(selected) => setFrom(selected ? selected.value : "")}
+              placeholder="Origin (e.g. DEL)"
+              isClearable
+              components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+              noOptionsMessage={() => "Fetching user location and show nearby airports first"}
+              styles={{
+                  control: (base, state) => ({ 
+                      ...base, 
+                      minHeight: '40px', 
+                      height: '40px', 
+                      borderColor: state.isFocused ? '#eab308' : '#d1d5db', 
+                      '&:hover': { borderColor: '#eab308' }, 
+                      boxShadow: 'none', 
+                      borderRadius: '0.25rem',
+                      cursor: 'text',
+                  }),
+                  valueContainer: (base) => ({ 
+                      ...base, 
+                      padding: '0 8px',
+                      flexWrap: 'nowrap'
+                  }),
+                  placeholder: (base) => ({
+                      ...base,
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis'
+                  }),
+                  input: (base) => ({ 
+                    ...base, 
+                    margin: 0, 
+                    padding: 0,
+                    '[type="text"]': {
+                        boxShadow: 'none !important',
+                        '--tw-ring-color': 'transparent !important',
+                        '--tw-ring-shadow': 'none !important'
+                    }
+                  }),
+                  menu: (base) => ({ ...base, zIndex: 9999 }),
+                  option: (base) => ({ ...base, cursor: 'pointer' }),
+                  clearIndicator: (base) => ({ ...base, cursor: "pointer" }),
+                  dropdownIndicator: (base) => ({ ...base, cursor: "pointer" }),
+              }}
             />
           </div>
 
@@ -104,12 +201,57 @@ export function FlightsSearchForm({
             <label className="block text-yellow-600 font-medium text-xs md:text-sm mb-1">
               To
             </label>
-            <input
-              className="w-full h-10 px-3 border border-gray-300 rounded font-semibold text-slate-900 focus:outline-none focus:ring-0 focus:border-yellow-500 uppercase text-sm md:text-base"
-              value={to}
-              onChange={(e) => setTo(e.target.value.toUpperCase())}
-              placeholder="JAI"
-              required
+            <Select
+              options={toOptions}
+              classNamePrefix="react-select"
+              filterOption={null}
+              onInputChange={(val, { action }) => {
+                if (action === "input-change") setToSearch(val);
+                if (action === "menu-close") setToSearch("");
+              }}
+              value={airportOptions.find(opt => opt.value === to) || (to ? { value: to, label: to } : null)}
+              onChange={(selected) => setTo(selected ? selected.value : "")}
+              placeholder="Destination (e.g. BOM)"
+              isClearable
+              components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+              noOptionsMessage={() => "Fetching user location and show nearby airports first"}
+              styles={{
+                  control: (base, state) => ({ 
+                      ...base, 
+                      minHeight: '40px', 
+                      height: '40px', 
+                      borderColor: state.isFocused ? '#eab308' : '#d1d5db', 
+                      '&:hover': { borderColor: '#eab308' }, 
+                      boxShadow: 'none', 
+                      borderRadius: '0.25rem',
+                      cursor: 'text'
+                  }),
+                  valueContainer: (base) => ({ 
+                      ...base, 
+                      padding: '0 8px',
+                      flexWrap: 'nowrap' 
+                  }),
+                  placeholder: (base) => ({
+                      ...base,
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis'
+                  }),
+                  input: (base) => ({ 
+                    ...base, 
+                    margin: 0, 
+                    padding: 0,
+                    '[type="text"]': {
+                        boxShadow: 'none !important',
+                        '--tw-ring-color': 'transparent !important',
+                        '--tw-ring-shadow': 'none !important'
+                    }
+                  }),
+                  menu: (base) => ({ ...base, zIndex: 9999 }),
+                  option: (base) => ({ ...base, cursor: 'pointer' }),
+                  clearIndicator: (base) => ({ ...base, cursor: "pointer" }),
+                  dropdownIndicator: (base) => ({ ...base, cursor: "pointer" }),
+              }}
             />
           </div>
         </div>
@@ -282,7 +424,7 @@ export function FlightsSearchForm({
       </div>
 
       {/* --- ROW 3: Special Benefits --- */}
-      <div className="mt-2 pt-2 border-t border-slate-100 relative z-0">
+      <div className=" border-t border-slate-200 relative z-0">
         <SpecialBenefits
           selected={benefitTypes}
           setSelected={setBenefitTypes}

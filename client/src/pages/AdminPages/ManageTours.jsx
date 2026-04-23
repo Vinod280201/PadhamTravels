@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 
 // 1. Get Backend URL for images
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 const initialForm = {
   name: "",
@@ -142,8 +142,8 @@ const ManageTours = () => {
       } else {
         setTours((prev) =>
           prev.map((t) =>
-            t.id === editingId || t._id === editingId ? savedData : t
-          )
+            t.id === editingId || t._id === editingId ? savedData : t,
+          ),
         );
       }
 

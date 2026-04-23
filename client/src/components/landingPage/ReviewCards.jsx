@@ -47,6 +47,7 @@ const ReviewCard = ({ review }) => {
             <img
               src={review.avatar}
               alt={review.name}
+              referrerPolicy="no-referrer"
               className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/10"
             />
             <div>

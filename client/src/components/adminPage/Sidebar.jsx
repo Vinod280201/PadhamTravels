@@ -10,8 +10,11 @@ import {
   Plane,
   SquareChartGantt,
   Calendar,
-  Menu, // Added for mobile toggle
-  X, // Added for mobile close
+  Menu,
+  X,
+  Tag, 
+  Wallet,
+  UserX,
 } from "lucide-react";
 import { MdCardTravel } from "react-icons/md";
 
@@ -19,8 +22,9 @@ const SidebarContext = createContext();
 
 export const Sidebar = () => {
   const [user, setUser] = useState(null);
-  const [expanded, setExpanded] = useState(true);
-  const [mobileOpen, setMobileOpen] = useState(false); // State for mobile drawer
+  const [expanded, setExpanded] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -41,6 +45,11 @@ export const Sidebar = () => {
       path: "/admin/manage-bookings",
     },
     {
+      icon: <Tag size={20} />,
+      text: "Manage Deals",
+      path: "/admin/manage-deals",
+    },
+    {
       icon: <Calendar size={20} />,
       text: "Booking Calendar",
       alert: true,
@@ -51,14 +60,24 @@ export const Sidebar = () => {
       text: "Manage Tours",
       path: "/admin/manage-tours",
     },
+    {
+      icon: <Wallet size={20} />,
+      text: "Manage Wallet",
+      path: "/admin/manage-wallet",
+    },
+    {
+      icon: <UserX size={20} />,
+      text: "Manage Requests",
+      path: "/admin/manage-requests",
+      alert: notificationCount > 0,
+    },
   ];
 
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const baseUrl =
-          import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
-        const res = await fetch(`${baseUrl}/api/auth/me`, {
+        const baseUrl = import.meta.env.VITE_API_BASE_URL;
+        const res = await fetch(`${baseUrl}/auth/me`, {
           credentials: "include",
         });
 
@@ -76,13 +95,28 @@ export const Sidebar = () => {
       }
     };
 
+    const fetchNotifications = async () => {
+      try {
+        const baseUrl = import.meta.env.VITE_API_BASE_URL;
+        const res = await fetch(`${baseUrl}/bookings/dashboard-stats`, {
+           credentials: "include",
+        });
+        const data = await res.json();
+        if (data.status && data.stats) {
+          setNotificationCount(data.stats.activeCancellationsCount || 0);
+        }
+      } catch (err) {
+        console.error("SIDEBAR NOTIFICATION FETCH ERROR:", err);
+      }
+    };
+
     fetchMe();
+    fetchNotifications();
   }, []);
 
   return (
     <>
       {/* --- MOBILE TOGGLE BUTTON --- */}
-      {/* Visible only on small screens, fixed to top-left */}
       <button
         onClick={() => setMobileOpen(true)}
         className="fixed top-3 left-4 z-40 p-2 bg-slate-700 text-white rounded-md shadow-lg md:hidden hover:bg-slate-800"
@@ -91,7 +125,6 @@ export const Sidebar = () => {
       </button>
 
       {/* --- MOBILE OVERLAY --- */}
-      {/* Darkens background when sidebar is open on mobile */}
       {mobileOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 md:hidden"
@@ -148,7 +181,7 @@ export const Sidebar = () => {
                   alert={item.alert}
                   onClick={() => {
                     if (item.path) navigate(item.path);
-                    setMobileOpen(false); // Close sidebar on mobile after click
+                    setMobileOpen(false);
                   }}
                 />
               ))}

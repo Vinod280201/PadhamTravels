@@ -24,7 +24,7 @@ export const Footer = () => {
             </p>
 
             <div>
-              <p className="flex justify-center sm:block font-medium text-yellow-500 mb-2">
+              <p className="flex justify-center sm:block font-medium text-yellow-500 mb-3">
                 Follow Us
               </p>
               <div className="flex gap-4 items-center justify-center md:justify-start text-xl text-gray-200">
@@ -32,7 +32,7 @@ export const Footer = () => {
                   href="https://whatsapp.com/channel/0029VbBqia1Fi8xiWsa9pv1r"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-yellow-500"
+                  className="hover:text-yellow-500 hover:-translate-y-1 transition-all duration-300"
                 >
                   <FaWhatsapp />
                 </a>
@@ -40,7 +40,7 @@ export const Footer = () => {
                   href="https://www.instagram.com/padham_travels?igsh=dHkxbnB0aHdiZHIz"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-yellow-500"
+                  className="hover:text-yellow-500 hover:-translate-y-1 transition-all duration-300"
                 >
                   <FaInstagram />
                 </a>
@@ -48,7 +48,7 @@ export const Footer = () => {
                   href="#"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-yellow-500"
+                  className="hover:text-yellow-500 hover:-translate-y-1 transition-all duration-300"
                 >
                   <BsFacebook />
                 </a>
@@ -56,7 +56,7 @@ export const Footer = () => {
                   href="#"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-yellow-500"
+                  className="hover:text-yellow-500 hover:-translate-y-1 transition-all duration-300"
                 >
                   <FaThreads />
                 </a>
@@ -64,7 +64,7 @@ export const Footer = () => {
                   href="#"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-yellow-500"
+                  className="hover:text-yellow-500 hover:-translate-y-1 transition-all duration-300"
                 >
                   <BsLinkedin />
                 </a>
@@ -76,18 +76,28 @@ export const Footer = () => {
           <div className="flex flex-col gap-4 md:ml-12 md:mt-10">
             <h2 className="font-bold text-xl text-yellow-500">Get In Touch</h2>
             <div className="flex items-start gap-3">
-              <BiPhoneCall size={20} className="mt-0.5 text-yellow-400" />
+              <BiPhoneCall size={20} className="mt-1.5 text-yellow-400" />
               <div>
-                <p className="text-sm">+91 99442 29209</p>
+                <a
+                  href="tel:+91 99442 29209"
+                  className="text-sm hover:text-yellow-400 transition-colors"
+                >
+                  +91 99442 29209
+                </a>
                 <p className="text-xs text-gray-300">
                   Call us for bookings & support
                 </p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <MdEmail size={20} className="mt-0.5 text-yellow-400" />
+              <MdEmail size={20} className="mt-1.5 text-yellow-400" />
               <div>
-                <p className="text-sm">padhamtravel@gmail.com</p>
+                <a
+                  href="mailto:info@padhamtravel.com"
+                  className="text-sm hover:text-yellow-400 transition-colors"
+                >
+                  info@padhamtravel.com
+                </a>
                 <p className="text-xs text-gray-300">
                   We usually reply within 24 hours
                 </p>
@@ -99,13 +109,22 @@ export const Footer = () => {
           <div className="flex flex-col gap-3 md:ml-12 md:pl-6 md:mt-10">
             <h2 className="font-bold text-xl text-yellow-500">Policies</h2>
             <nav className="flex flex-col gap-2 text-sm text-gray-200">
-              <a href="#" className="hover:text-yellow-400 transition-colors">
+              <a
+                href="/terms-and-conditions"
+                className="hover:text-yellow-400 transition-colors"
+              >
                 Terms of Service
               </a>
-              <a href="#" className="hover:text-yellow-400 transition-colors">
+              <a
+                href="/terms-and-conditions"
+                className="hover:text-yellow-400 transition-colors"
+              >
                 Privacy Policy
               </a>
-              <a href="#" className="hover:text-yellow-400 transition-colors">
+              <a
+                href="/terms-and-conditions"
+                className="hover:text-yellow-400 transition-colors"
+              >
                 Refund Policy
               </a>
             </nav>
@@ -115,16 +134,28 @@ export const Footer = () => {
           <div className="flex flex-col gap-3 md:pl-6 md:mt-10">
             <h2 className="font-bold text-xl text-yellow-500">Quick Links</h2>
             <nav className="flex flex-col gap-2 text-sm text-gray-200">
-              <a href="#" className="hover:text-yellow-400 transition-colors">
+              <a
+                href="/about-us"
+                className="hover:text-yellow-400 transition-colors"
+              >
                 About Us
               </a>
-              <a href="#" className="hover:text-yellow-400 transition-colors">
+              <a
+                href="/about-us#contact"
+                className="hover:text-yellow-400 transition-colors"
+              >
                 Contact Us
               </a>
-              <a href="#" className="hover:text-yellow-400 transition-colors">
+              <a
+                href="/flights"
+                className="hover:text-yellow-400 transition-colors"
+              >
                 Flights
               </a>
-              <a href="#" className="hover:text-yellow-400 transition-colors">
+              <a
+                href="/tours-and-packages"
+                className="hover:text-yellow-400 transition-colors"
+              >
                 Tours & Trips
               </a>
             </nav>

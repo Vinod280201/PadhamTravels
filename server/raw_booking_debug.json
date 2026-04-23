@@ -1,0 +1,11 @@
+{
+  "invoiceAmount": "0",
+  "grossAmount": "0",
+  "status": "PENDING",
+  "bookRef": "EMT3103M43Q9O",
+  "resCode": "200",
+  "commissionAmount": 0,
+  "resMessage": "success",
+  "totalFareArg": "2121.80",
+  "commissionAmountArg": 0
+}

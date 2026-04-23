@@ -1,4 +1,4 @@
-import LandingPageimg1 from "@/assets/LandingPageimg3.jpeg";
+import LandingPageimg1 from "@/assets/LandingPageimg_1.png";
 import { HeaderNav } from "./HeaderNav";
 import { FlightBookingForm } from "./FlightBookingForm";
 import { useNavigate } from "react-router-dom";

@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FlightsSearchForm } from "@/components/flightsSearchPage/FlightsSearchForm";
 import { FlightsDealsOffers } from "@/components/flightsSearchPage/FlightsDealsOffers";
 import { FlightPageFooter } from "@/components/flightsSearchPage/FlightPageFooter";
 import FlightTicket from "@/assets/FlightsSearchPage/FlightTicket.png";
 import MainNavbar from "@/components/layout/MainNavbar";
+import { HeaderNav } from "@/components/landingPage/HeaderNav";
+import { useAuthUser } from "@/hooks/useAuthUser";
+
+// CONSTANTS
+const STORAGE_KEY = "user_flight_search_pref"; // Key to save data in browser
 
 const toISODate = (d = new Date()) => {
   const year = d.getFullYear();
@@ -16,18 +21,71 @@ const toISODate = (d = new Date()) => {
 export const FlightsSearchPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  // Get user status
+  const { user } = useAuthUser();
 
-  // Form state
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
-  const [departDate, setDepartDate] = useState(toISODate());
-  const [returnDate, setReturnDate] = useState(toISODate());
-  const [tripType, setTripType] = useState("oneway");
-  const [paxData, setPaxData] = useState({ adult: 1, child: 0, infant: 0 });
-  const [travelClass, setTravelClass] = useState("economy");
-  const [benefitTypes, setBenefitTypes] = useState([]);
+  // --- HELPER: Load state from LocalStorage ---
+  const getSavedState = (key, fallbackValue) => {
+    try {
+      const savedData = localStorage.getItem(STORAGE_KEY);
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        // Return the specific key if it exists, otherwise fallback
+        return parsedData[key] !== undefined ? parsedData[key] : fallbackValue;
+      }
+    } catch (error) {
+      console.error("Error loading search preferences:", error);
+    }
+    return fallbackValue;
+  };
 
-  // receives formData
+  // --- FORM STATE (Initialized with saved data or defaults) ---
+  const [from, setFrom] = useState(() => getSavedState("from", ""));
+  const [to, setTo] = useState(() => getSavedState("to", ""));
+  const [departDate, setDepartDate] = useState(() =>
+    getSavedState("departDate", toISODate()),
+  );
+  const [returnDate, setReturnDate] = useState(() =>
+    getSavedState("returnDate", toISODate()),
+  );
+  const [tripType, setTripType] = useState(() =>
+    getSavedState("tripType", "oneway"),
+  );
+  const [paxData, setPaxData] = useState(() =>
+    getSavedState("paxData", { adult: 1, child: 0, infant: 0 }),
+  );
+  const [travelClass, setTravelClass] = useState(() =>
+    getSavedState("travelClass", "economy"),
+  );
+  const [benefitTypes, setBenefitTypes] = useState(() =>
+    getSavedState("benefitTypes", []),
+  );
+
+  // --- EFFECT: Save to LocalStorage whenever form changes ---
+  useEffect(() => {
+    const currentState = {
+      from,
+      to,
+      departDate,
+      returnDate,
+      tripType,
+      paxData,
+      travelClass,
+      benefitTypes,
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(currentState));
+  }, [
+    from,
+    to,
+    departDate,
+    returnDate,
+    tripType,
+    paxData,
+    travelClass,
+    benefitTypes,
+  ]);
+
+  // --- HANDLER: Search Submission ---
   const handleSearch = async (formData) => {
     setLoading(true);
 
@@ -59,7 +117,15 @@ export const FlightsSearchPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-100 text-white">
-      <MainNavbar />
+      {/* Conditional Navigation Rendering */}
+      {user ? (
+        <MainNavbar />
+      ) : (
+        <div className="bg-slate-600">
+          {" "}
+          <HeaderNav />
+        </div>
+      )}
 
       <div className="p-2 md:p-4">
         {/* Main gray container */}
@@ -77,7 +143,6 @@ export const FlightsSearchPage = () => {
           </div>
 
           {/* White Form Container - Made Responsive */}
-          {/* Changed mx-30 to mx-auto with max-width for better control */}
           <div className="bg-white rounded-md w-full max-w-7xl mx-auto pb-5 p-4 md:p-8 lg:p-10 text-slate-800">
             <FlightsSearchForm
               from={from}

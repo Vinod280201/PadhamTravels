@@ -5,6 +5,7 @@ import {
   Register,
   requireAuth,
   Me,
+  UpdateProfile,
 } from "../controllers/AuthController.js";
 import { authenticate } from "../middlewares/authenticate.js";
 import { authorizeAdmin } from "../middlewares/adminAuthenticate.js";
@@ -16,10 +17,13 @@ router.post("/register", Register);
 router.post("/login", Login);
 
 // Get current user (used by frontend after login)
-router.get("/get-user", requireAuth, Me);
+router.get("/get-user", Me);
 
-// Optional: same info at /me
-router.get("/me", requireAuth, Me);
+// Optional: Do the same for /me if you use it
+router.get("/me", Me);
+
+// Update user details
+router.put("/update-profile", requireAuth, UpdateProfile);
 
 // Admin-only route example
 router.get("/admin/dashboard", authenticate, authorizeAdmin, (req, res) => {

@@ -13,14 +13,17 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import LoginPageImg from "@/assets/loginpageimg1.jpg";
 
 export const RegisterPage = () => {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || "/home";
+  const originalState = location.state?.originalState || null;
 
   /* Defining the schema for form validation using Zod */
   const formSchema = z
@@ -55,7 +58,7 @@ export const RegisterPage = () => {
   /* Handling form submission of Form */
   const handleForm = async (values) => {
     try {
-      const response = await fetch(`${baseUrl}/api/auth/register`, {
+      const response = await fetch(`${baseUrl}/auth/register`, {
         method: "Post",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
@@ -83,7 +86,7 @@ export const RegisterPage = () => {
             color: "white",
           },
         });
-        navigate("/login");
+        navigate("/login", { state: { from, originalState } });
       } else {
         toast("Registration Status!", {
           description: data.message,
@@ -254,6 +257,7 @@ export const RegisterPage = () => {
                       Already have an account?{" "}
                       <Link
                         to="/login"
+                        state={{ from, originalState }}
                         className="font-medium text-blue-600 hover:text-blue-500 hover:underline transition-colors"
                       >
                         Login now

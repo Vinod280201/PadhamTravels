@@ -21,6 +21,20 @@ const userSchema = new mongoose.Schema(
       default: "user",
       required: true,
     },
+    phone: {
+      type: String,
+    },
+    dateOfBirth: {
+      type: Date,
+    },
+    gender: {
+      type: String,
+      enum: ["Male", "Female", "Other", ""],
+      default: "",
+    },
+    address: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

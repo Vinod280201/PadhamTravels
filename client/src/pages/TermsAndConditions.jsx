@@ -11,8 +11,13 @@ import {
   Shield,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { HeaderNav } from "@/components/landingPage/HeaderNav";
+import { useAuthUser } from "@/hooks/useAuthUser";
 
 const TermsAndConditions = () => {
+  // 2. Get user status
+  const { user } = useAuthUser();
+
   const sections = [
     {
       icon: MapPin,
@@ -90,7 +95,16 @@ const TermsAndConditions = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <MainNavbar />
+      {/* 3. Conditional Navigation Rendering */}
+      {user ? (
+        <MainNavbar />
+      ) : (
+        <div className="bg-slate-600">
+          {" "}
+          <HeaderNav />
+        </div>
+      )}
+
       {/* Hero Section */}
       <section className="relative py-10 bg-primary/10 mt-2">
         <div className="container mx-auto px-4 text-center">

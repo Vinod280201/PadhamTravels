@@ -7,87 +7,69 @@ import ReviewCard from "./ReviewCards";
 const reviews = [
   {
     id: 1,
-    name: "Sarah Mitchell",
-    location: "New York, USA",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+    name: "Hemangi Joshi",
+    location: "Google Reviewer",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Hemangi",
     rating: 5,
     review:
-      "Absolutely incredible experience! The tour was perfectly organized, and our guide knew every hidden gem in Bali. The sunset dinner was unforgettable. Will definitely book again!",
+      "Our Andaman trip with Padham Travels was exceptional. The coordination was seamless, from airport pickup to inter-island transfers. The hotels selected were top-notch and the local guides were very knowledgeable. Highly recommended!",
     serviceType: "tour",
-    date: "2024-01-15",
+    date: "2024-02-01",
   },
   {
     id: 2,
-    name: "James Chen",
-    location: "Toronto, Canada",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+    name: "Rajesh Kumar",
+    location: "Google Reviewer",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rajesh",
     rating: 5,
     review:
-      "The complete travel package exceeded all expectations. From airport pickup to the luxury resort, everything was seamless. The team handled every detail perfectly.",
+      "Booked a family package for Kerala. The itinerary was well-paced and the houseboat experience was the highlight. Padham Travels staff was available 24/7 for any queries we had during the trip.",
     serviceType: "package",
-    date: "2024-01-10",
+    date: "2024-01-20",
   },
   {
     id: 3,
-    name: "Emma Rodriguez",
-    location: "London, UK",
-    avatar:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-    rating: 4,
+    name: "Sneha Patil",
+    location: "Google Reviewer",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sneha",
+    rating: 5,
     review:
-      "Best flight booking experience ever! Found amazing deals to Tokyo with excellent seats. The customer service team was incredibly helpful when I needed to reschedule.",
+      "The best travel agency for international flights. They managed to get me a great deal on a last-minute flight to London. The visa assistance provided was also very professional and quick.",
     serviceType: "flight",
-    date: "2024-01-08",
+    date: "2024-01-15",
   },
   {
     id: 4,
-    name: "Marcus Johnson",
-    location: "Sydney, Australia",
-    avatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+    name: "Amit Sharma",
+    location: "Google Reviewer",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Amit",
     rating: 5,
     review:
-      "The hiking tour through the Swiss Alps was breathtaking. Small group, knowledgeable guide, and stunning views at every turn. Already planning my next adventure!",
+      "We took the Himachal tour package. The driver was very polite and the car provided was in excellent condition. Padham Travels ensures safety and comfort for their travelers. Truly a 5-star experience.",
     serviceType: "tour",
     date: "2024-01-05",
   },
   {
     id: 5,
-    name: "Aisha Patel",
-    location: "Dubai, UAE",
-    avatar:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face",
+    name: "Priyanka Reddy",
+    location: "Google Reviewer",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Priyanka",
     rating: 5,
     review:
-      "Our honeymoon package to Maldives was pure magic. The overwater villa, private dinners, and spa treatments were all arranged flawlessly. Truly a dream come true!",
-    serviceType: "package",
-    date: "2024-01-02",
-  },
-  {
-    id: 6,
-    name: "David Kim",
-    location: "Seoul, South Korea",
-    avatar:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
-    rating: 5,
-    review:
-      "The flight booking process was incredibly smooth. Found great business class deals to Paris and the seat selection was perfect. Customer support was available 24/7!",
+      "I have been using Padham Travels for my business trips for 2 years now. Their efficiency in booking and handling rescheduling is unmatched. Reliable and trustworthy service every single time.",
     serviceType: "flight",
     date: "2023-12-28",
   },
   {
-    id: 7,
-    name: "Isabella Costa",
-    location: "Rio de Janeiro, Brazil",
-    avatar:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+    id: 6,
+    name: "Vikram Singh",
+    location: "Google Reviewer",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Vikram",
     rating: 5,
     review:
-      "Our family tour to Japan was absolutely magical! The itinerary was perfectly balanced between cultural experiences and fun activities for the kids. Highly recommend!",
-    serviceType: "tour",
-    date: "2023-12-20",
+      "Thank you Padham Travels for an unforgettable Dubai trip! The desert safari and Burj Khalifa tours were perfectly scheduled. Everything was handled with great care and professionalism.",
+    serviceType: "package",
+    date: "2023-12-15",
   },
 ];
 
@@ -111,7 +93,7 @@ const ReviewsCarousel = () => {
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
   const scrollTo = useCallback(
     (index) => emblaApi?.scrollTo(index),
-    [emblaApi]
+    [emblaApi],
   );
 
   const onSelect = useCallback(() => {

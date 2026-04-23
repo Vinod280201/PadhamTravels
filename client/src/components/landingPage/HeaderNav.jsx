@@ -2,29 +2,46 @@ import React, { useState } from "react";
 import { BiMenu, BiX } from "react-icons/bi";
 import { IoPersonCircle } from "react-icons/io5";
 import LogoImg from "@/assets/logo.png";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom"; // 1. Import useLocation
 import { useAuthUser } from "@/hooks/useAuthUser";
 
 export const HeaderNav = () => {
   const [open, setOpen] = useState(false);
   const { user, setUser } = useAuthUser();
-  console.log("HeaderNav user =", user);
   const navigate = useNavigate();
-  const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+  const location = useLocation(); // 2. Get current location
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
+  // 3. Helper to check if path is active and return classes
+  const getLinkClass = (path) => {
+    const isActive = location.pathname === path;
+    return isActive
+      ? "border-b-2 border-b-yellow-400 font-bold pb-1" // Active Style
+      : "hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1"; // Inactive Hover Style
+  };
+
+  // 4. Helper for mobile active styles
+  const getMobileLinkClass = (path) => {
+    const isActive = location.pathname === path;
+    return isActive
+      ? "py-2 border-b border-white/40 font-bold text-yellow-400 text-lg" // Active Mobile Style
+      : "py-2 border-b border-white/40 hover:font-medium hover:text-lg"; // Inactive Mobile Style
+  };
 
   const handleLogout = async () => {
     try {
-      await fetch(`${baseUrl}/api/auth/logout`, {
+      await fetch(`${baseUrl}/auth/logout`, {
         method: "POST",
         credentials: "include",
       });
     } catch (e) {
       // ignore
     } finally {
+      sessionStorage.clear(); // Clear flight search state
       localStorage.removeItem("authUser");
-      console.log("🧹 CLEARED localStorage");
+      //to clear the search form data
+      localStorage.removeItem("user_flight_search_pref");
       setUser(null);
-      console.log("👤 SET USER TO NULL");
       navigate("/", { replace: true });
     }
   };
@@ -36,40 +53,39 @@ export const HeaderNav = () => {
         <img
           src={LogoImg}
           alt="Padham Travels"
-          className="w-15 ml-2 lg:ml-15 sm:ml-6 lg:w-30 h-auto object-contain"
+          className="w-15 ml-2 lg:ml-15 sm:ml-6 lg:w-27.5 h-auto object-contain"
         />
       </div>
 
       {/* desktop / tablet nav */}
       <nav className="hidden lg:flex items-center gap-5 flex-nowrap">
-        <Link to="/home" className="whitespace-nowrap">
-          <div className="hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1">
+        <Link to="/" className="whitespace-nowrap">
+          <div className={getLinkClass("/")}>
             <p className="text-white">HOME</p>
           </div>
         </Link>
         <Link to="/flights" className="ml-5 whitespace-nowrap">
-          <div className="hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1">
+          <div className={getLinkClass("/flights")}>
             <p className="text-white">FLIGHTS</p>
           </div>
         </Link>
         <Link to="/tours-and-packages" className="ml-5 whitespace-nowrap">
-          <div className="hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1">
+          <div className={getLinkClass("/tours-and-packages")}>
             <p className="text-white">TOURS & PACKAGES</p>
           </div>
         </Link>
-        <Link to="/about-us" className="ml-5 whitespace-nowrap">
-          <div className="hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1">
-            <p className="text-white">ABOUT US</p>
-          </div>
-        </Link>
         <Link to="/terms-and-conditions" className="ml-5 whitespace-nowrap">
-          <div className="hover:border-b-2 hover:border-b-yellow-400 hover:font-bold pb-1">
+          <div className={getLinkClass("/terms-and-conditions")}>
             <p className="text-white">BOOKING TERMS</p>
           </div>
         </Link>
+        <Link to="/about-us" className="ml-5 whitespace-nowrap">
+          <div className={getLinkClass("/about-us")}>
+            <p className="text-white">ABOUT US</p>
+          </div>
+        </Link>
 
-        {/* Sign In button — mobile color is blue, md+ overrides to yellow */}
-        {/* RIGHT SIDE: auth area */}
+        {/* Right Side Auth Area */}
         {!user && (
           <button
             className="flex items-center h-12 relative rounded-sm  px-4 py-1.5 font-bold 
@@ -97,13 +113,12 @@ export const HeaderNav = () => {
         )}
       </nav>
 
-      {/* mobile actions: menu icon + sign-in (optional small) */}
+      {/* mobile actions */}
       <div className="flex justify-center items-center lg:hidden gap-2">
         {!user && (
           <button
             className="flex items-center mt-2 pl-1 pr-2 py-1 rounded-md border-2 text-sm font-medium border-gray-600 text-gray-600 bg-transparent 
           hover:bg-gray-600 hover:text-yellow-400 transition lg:hidden"
-            onClick={() => {}}
             aria-label="Sign In (mobile)"
           >
             <IoPersonCircle size={18} className="mr-1" />
@@ -120,7 +135,7 @@ export const HeaderNav = () => {
         </button>
       </div>
 
-      {/* mobile menu (slides down) */}
+      {/* mobile menu */}
       <div
         className={`absolute left-10 right-10 top-full rounded-b-lg bg-black/80 text-white transform transition-all duration-200 ease-in-out lg:hidden z-40 ${
           open
@@ -138,39 +153,39 @@ export const HeaderNav = () => {
         )}
         <div className="flex flex-col gap-3 px-6">
           <Link
-            to="/home"
+            to="/"
             onClick={() => setOpen(false)}
-            className="py-2 border-b border-white/40 hover:font-medium hover:text-lg"
+            className={getMobileLinkClass("/")}
           >
             Home
           </Link>
           <Link
             to="/flights"
             onClick={() => setOpen(false)}
-            className="py-2 border-b border-white/40 hover:font-medium"
+            className={getMobileLinkClass("/flights")}
           >
             Flights
           </Link>
           <Link
             to="/tours-and-packages"
             onClick={() => setOpen(false)}
-            className="py-2 border-b border-white/40 hover:font-medium"
+            className={getMobileLinkClass("/tours-and-packages")}
           >
             Tours & Packages
           </Link>
           <Link
-            to="/about-us"
+            to="/terms-and-conditions"
             onClick={() => setOpen(false)}
-            className="py-2 border-b border-white/40 hover:font-medium"
-          >
-            About Us
-          </Link>
-          <Link
-            to="#"
-            onClick={() => setOpen(false)}
-            className="py-2 border-b border-white/40 hover:font-medium"
+            className={getMobileLinkClass("/terms-and-conditions")}
           >
             Booking Terms
+          </Link>
+          <Link
+            to="/about-us"
+            onClick={() => setOpen(false)}
+            className={getMobileLinkClass("/about-us")}
+          >
+            About Us
           </Link>
           {!user && (
             <button

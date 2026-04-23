@@ -7,11 +7,11 @@ import { FiLogOut } from "react-icons/fi";
 const AdminLayout = () => {
   const { user, setUser } = useAuthUser();
   const navigate = useNavigate();
-  const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
   const handleLogout = async () => {
     try {
-      await fetch(`${baseUrl}/api/auth/logout`, {
+      await fetch(`${baseUrl}/auth/logout`, {
         method: "POST",
         credentials: "include",
       });
@@ -19,7 +19,10 @@ const AdminLayout = () => {
       // ignore
     } finally {
       localStorage.removeItem("authUser");
+      //to clear the search form data
+      localStorage.removeItem("user_flight_search_pref");
       console.log("🧹 CLEARED localStorage");
+      sessionStorage.clear(); // Clear flight search state
       setUser(null);
       console.log("👤 SET USER TO NULL");
       navigate("/", { replace: true });
@@ -28,7 +31,7 @@ const AdminLayout = () => {
 
   return (
     // 'overflow-hidden' prevents the whole page from scrolling; only the 'main' section will scroll
-    <div className="h-screen w-full flex bg-slate-50 overflow-hidden">
+    <div className="h-screen w-full flex bg-slate-50 overflow-hidden print:h-auto print:overflow-visible print:bg-white">
       {/* Sidebar Component 
           - On Mobile: It is fixed off-screen (drawer).
           - On Desktop: It sits relatively in the flex flow.
@@ -44,6 +47,7 @@ const AdminLayout = () => {
             py-2 pr-4           /* Base padding */
             pl-16               /* Mobile: Extra left padding so text doesn't hide behind Sidebar Toggle */
             md:py-4 md:px-6     /* Desktop: Standard padding */
+            print:hidden        /* Hide admin header entirely when printing ticket */
           "
         >
           {/* Left side: Page Title */}
@@ -75,7 +79,7 @@ const AdminLayout = () => {
         </header>
 
         {/* Page Content (Scrollable Area) */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50 relative">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50 relative print:overflow-visible print:bg-white print:p-0 print:m-0">
           <Outlet />
         </main>
       </div>

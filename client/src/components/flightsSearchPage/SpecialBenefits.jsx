@@ -29,7 +29,7 @@ const benefits = [
 export const SpecialBenefits = ({ selected, setSelected }) => {
   const toggle = (id) => {
     setSelected((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
   };
 
@@ -43,7 +43,7 @@ export const SpecialBenefits = ({ selected, setSelected }) => {
          - grid-cols-2: Keeps it 2 columns on small/medium devices (same as before).
          - lg:grid-cols-4: Forces 4 columns (single horizontal line) on large screens.
       */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {benefits.map((b) => {
           const isSelected = selected.includes(b.id);
 
@@ -55,7 +55,7 @@ export const SpecialBenefits = ({ selected, setSelected }) => {
                 ${
                   isSelected
                     ? "bg-yellow-50 border-yellow-400 shadow-sm"
-                    : "bg-transparent border-transparent hover:bg-gray-50"
+                    : "bg-transparent border-transparent hover:bg-yellow-50"
                 }
               `}
             >

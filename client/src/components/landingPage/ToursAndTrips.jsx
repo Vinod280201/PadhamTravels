@@ -2,9 +2,11 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import CONSTANTS from "@/constants/AppConstants";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 export const ToursAndTrips = () => {
   const TRIPS_AND_TOURS = CONSTANTS.TOURS_AND_PACKAGES;
+  const navigate = useNavigate(); // Initialize hook
 
   // Embla options
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -23,7 +25,7 @@ export const ToursAndTrips = () => {
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
   const scrollTo = useCallback(
     (index) => emblaApi && emblaApi.scrollTo(index),
-    [emblaApi]
+    [emblaApi],
   );
 
   const onInit = useCallback((emblaApi) => {
@@ -53,18 +55,31 @@ export const ToursAndTrips = () => {
   return (
     <section className="w-full h-auto py-8 sm:py-12 bg-[#1a63a8]">
       {/* CONTAINER PADDING UPDATE:
-         - Increased lg/xl padding (px-12/px-20) to make room for the arrows 
-           which are now pushed further outside the slides.
+          - Increased lg/xl padding (px-12/px-20) to make room for the arrows 
+            which are now pushed further outside the slides.
       */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-20">
         {/* Header Section */}
-        <div className="mb-8 sm:mb-12 text-center">
-          <p className="text-xs sm:text-sm text-gray-200 font-medium tracking-[0.2em] uppercase mb-2">
-            Tours & Packages
-          </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl text-white font-light">
-            Places to <span className="font-bold">Explore</span>
-          </h2>
+        <div className="mb-8 sm:mb-12 relative flex flex-col md:flex-row items-center justify-center md:justify-between">
+          {/* Centered Title Wrapper */}
+          <div className="text-center w-full md:absolute md:left-1/2 md:-translate-x-1/2">
+            <p className="text-xs sm:text-sm text-gray-200 font-medium tracking-[0.2em] uppercase mb-2">
+              Tours & Packages
+            </p>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl text-white font-light">
+              Places to <span className="font-bold">Explore</span>
+            </h2>
+          </div>
+
+          {/* "View All" Button - Positioned absolute right on desktop, static on mobile */}
+          <div className="mt-4 md:mt-0 md:ml-auto z-10">
+            <button
+              onClick={() => navigate("/tours-and-packages")}
+              className="px-4 py-2 bg-white text-[#1a63a8] rounded-lg hover:bg-yellow-400 hover:text-[#1a63a8] transition-colors duration-300 font-medium text-sm cursor-pointer"
+            >
+              View All Packages
+            </button>
+          </div>
         </div>
 
         {/* Carousel Container */}
@@ -137,6 +152,8 @@ export const ToursAndTrips = () => {
 };
 
 const ToursAndTripsCard = ({ trip }) => {
+  const navigate = useNavigate(); // Initialize hook inside the card component
+
   return (
     // CARD: Padded white border (p-3) + Rounded Corners
     <div className="group/card h-full flex flex-col bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-3 p-3">
@@ -176,7 +193,10 @@ const ToursAndTripsCard = ({ trip }) => {
             </span>
           </div>
 
-          <button className="w-full py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-bold text-white bg-yellow-500 hover:bg-[#1a63a8] transition-colors duration-300 shadow-sm active:scale-95">
+          <button
+            onClick={() => navigate("/tours-and-packages")} // Updated navigation here
+            className="w-full py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-bold text-white bg-yellow-500 hover:bg-[#1a63a8] transition-colors duration-300 shadow-sm active:scale-95"
+          >
             CHECK OUT NOW
           </button>
         </div>

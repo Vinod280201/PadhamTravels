@@ -7,17 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import CONSTANTS from "@/constants/AppConstants";
 
-const { BOOKINGS } = CONSTANTS;
-const getRecentBookings = () => {
-  return [...BOOKINGS]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 6);
-};
-
-export const RecentBookings = () => {
-  const recentBookings = getRecentBookings();
+export const RecentBookings = ({ recentBookings = [] }) => {
 
   return (
     <Card
@@ -32,7 +23,7 @@ export const RecentBookings = () => {
         <div className="space-y-3">
           {recentBookings.map((booking) => (
             <div
-              key={booking.id}
+              key={booking._id || booking.id}
               className="flex items-center justify-between py-3 px-4 rounded-lg border border-slate-300 hover:bg-slate-50 transition-colors"
               data-testid={`booking-item-${booking.id}`}
             >
@@ -50,7 +41,7 @@ export const RecentBookings = () => {
                 </div>
               </div>
               <div className="text-right">
-                <p className="font-semibold text-slate-900">{booking.amount}</p>
+                <p className="font-semibold text-slate-900 text-sm">{booking.amount}</p>
                 <span
                   className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
                     booking.status === "Confirmed"

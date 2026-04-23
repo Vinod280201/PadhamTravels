@@ -1,0 +1,30 @@
+{
+  "_id": "69c657588a5a8a96ac40802b",
+  "bookingRef": "EMT2703OQU494",
+  "customerName": "Mr Hemanth kumar",
+  "email": "test1@gmail.com",
+  "phone": "91 8667394514",
+  "flightDetails": "6E-694 JAI → MAA",
+  "departureTime": "14:15",
+  "arrivalTime": "16:50",
+  "bookingDate": "2026-03-27T10:09:28.502Z",
+  "travelDate": "2026-03-29T00:00:00.000Z",
+  "passengers": 1,
+  "amount": "0",
+  "status": "Confirmed",
+  "searchId": "EF320228-29C4-11F1-AAAD-D5DFB8C9F192",
+  "priceId": "0284F178-29C5-11F1-8339-E2DFB8C9F192",
+  "rawBookingData": {
+    "invoiceAmount": "0",
+    "grossAmount": "0",
+    "status": "PENDING",
+    "bookRef": "EMT2703OQU494",
+    "resCode": "200",
+    "commissionAmount": 0,
+    "resMessage": "success"
+  },
+  "fcn": "FLEXI",
+  "createdAt": "2026-03-27T10:09:28.504Z",
+  "updatedAt": "2026-03-27T10:22:33.865Z",
+  "__v": 0
+}

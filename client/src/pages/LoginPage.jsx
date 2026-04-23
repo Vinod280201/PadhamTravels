@@ -18,11 +18,12 @@ import { toast } from "sonner";
 import LoginPageImg from "@/assets/loginpageimg1.jpg";
 
 export const LoginPage = () => {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from || "/home";
+  const originalState = location.state?.originalState || null;
 
   /* Defining the schema for form validation using Zod */
   const formSchema = z.object({
@@ -44,7 +45,7 @@ export const LoginPage = () => {
   /* Handling form submission of Form */
   const handleForm = async (values) => {
     try {
-      const response = await fetch(`${baseUrl}/api/auth/login`, {
+      const response = await fetch(`${baseUrl}/auth/login`, {
         method: "Post",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -71,7 +72,8 @@ export const LoginPage = () => {
         if (role === "admin") {
           navigate("/admin/dashboard", { replace: true });
         } else {
-          navigate(from, { replace: true });
+          // If originalState was provided by RequireAuth (like flight selection data), apply it directly to state
+          navigate(from, { state: originalState ? { ...originalState } : null, replace: true });
         }
       } else {
         toast("Login Status!", {
@@ -198,6 +200,7 @@ export const LoginPage = () => {
                       Don't have an account?{" "}
                       <Link
                         to="/register"
+                        state={{ from, originalState }}
                         className="font-medium text-blue-600 hover:text-blue-500 hover:underline transition-colors"
                       >
                         Register now
