@@ -1,0 +1,441 @@
+{
+  "info": {
+    "_postman_id": "fe7571f8-a6d0-46b3-bbab-05cfb5a09aab",
+    "name": "Sharable-API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "471987",
+    "_collection_link": "https://go.postman.co/collection/471987-fe7571f8-a6d0-46b3-bbab-05cfb5a09aab?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Flights",
+      "item": [
+        {
+          "name": "1-Search-Oneway",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"destination\": \"BOM\",\r\n    \"origin\": \"DEL\",\r\n    \"inf\": 0,\r\n    \"adt\": 1,\r\n    \"cabin\": \"Economy\",\r\n    \"chd\": 0,\r\n    \"dDate\": \"2026-01-16\",\r\n    \"tokenId\": \"{{tokenId}}\",\r\n    \"companyCode\": \"{{companyCode}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{apiurl}}/air/search/fare",
+              "host": [
+                "{{apiurl}}"
+              ],
+              "path": [
+                "air",
+                "search",
+                "fare"
+              ]
+            },
+            "description": "### POST /air/list/supplier\n\nThis endpoint is used to retrieve a list of suppliers for air travel based on the provided parameters.\n\n**Request Body**\n\n- destination (string, required): The destination airport code.\n- origin (string, required): The origin airport code.\n- inf (integer, required): Number of infants.\n- adt (integer, required): Number of adults.\n- cabin (string, required): The cabin class for the travel, it could be Any, Economy, Business, First, Special.\n    \n- chd (integer, required): Number of children.\n- dDate (string, required): Departure date in YYYY-MM-DD format.\n    \n- tokenId (string, required): Token ID for authentication.\n    \n\n**Response**\n\n- Status: 200\n- Content-Type: application/json\n- dates (object): Object containing next and previous day dates for the specified sectors.\n- message (array): Array of messages, if any.\n- pollingId (string): ID for polling purposes.\n- resCode (string): Response code.\n- displayConfig (object): Configuration for display.\n    - show (string): Indicates whether to show or hide.\n    - orderBy (string): Indicates the order of display.\n- resMessage (string): Response message.\n- sectors (object): Object containing sectors with their respective values."
+          },
+          "response": []
+        },
+        {
+          "name": "1-Search-Roundtrip",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"destination\": \"BOM\",\r\n    \"origin\": \"DEL\",\r\n    \"inf\": 0,\r\n    \"adt\": 1,\r\n    \"cabin\": \"Economy\",\r\n    \"chd\": 0,\r\n    \"dDate\": \"2025-02-16\",\r\n    \"rDate\": \"2025-02-19\",\r\n    \"tokenId\": \"{{tokenId}}\",\r\n    \"companyCode\": \"{{companyCode}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{apiurl}}/air/search/fare",
+              "host": [
+                "{{apiurl}}"
+              ],
+              "path": [
+                "air",
+                "search",
+                "fare"
+              ]
+            },
+            "description": "### POST /air/list/supplier\n\nThis endpoint is used to retrieve a list of suppliers for air travel based on the provided parameters.\n\n**Request Body**\n\n- destination (string, required): The destination airport code.\n- origin (string, required): The origin airport code.\n- inf (integer, required): Number of infants.\n- adt (integer, required): Number of adults.\n- cabin (string, required): The cabin class for the travel, it could be Any, Economy, Business, First, Special.\n    \n- chd (integer, required): Number of children.\n- dDate (string, required): Departure date in YYYY-MM-DD format.\n    \n- tokenId (string, required): Token ID for authentication.\n    \n\n**Response**\n\n- Status: 200\n- Content-Type: application/json\n- dates (object): Object containing next and previous day dates for the specified sectors.\n- message (array): Array of messages, if any.\n- pollingId (string): ID for polling purposes.\n- resCode (string): Response code.\n- displayConfig (object): Configuration for display.\n    - show (string): Indicates whether to show or hide.\n    - orderBy (string): Indicates the order of display.\n- resMessage (string): Response message.\n- sectors (object): Object containing sectors with their respective values."
+          },
+          "response": []
+        },
+        {
+          "name": "1-Search-Special-Return",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"destination\": \"DXB\",\r\n    \"origin\": \"DEL\",\r\n    \"inf\": 0,\r\n    \"adt\": 1,\r\n    \"cabin\": \"Economy\",\r\n    \"chd\": 0,\r\n    \"dDate\": \"2025-02-16\",\r\n    \"rDate\": \"2025-02-19\",\r\n    \"issr\": \"true\",\r\n    \"tokenId\": \"{{tokenId}}\",\r\n    \"companyCode\": \"{{companyCode}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{apiurl}}/air/search/fare",
+              "host": [
+                "{{apiurl}}"
+              ],
+              "path": [
+                "air",
+                "search",
+                "fare"
+              ]
+            },
+            "description": "### POST /air/list/supplier\n\nThis endpoint is used to retrieve a list of suppliers for air travel based on the provided parameters.\n\n**Request Body**\n\n- destination (string, required): The destination airport code.\n- origin (string, required): The origin airport code.\n- inf (integer, required): Number of infants.\n- adt (integer, required): Number of adults.\n- cabin (string, required): The cabin class for the travel, it could be Any, Economy, Business, First, Special.\n    \n- chd (integer, required): Number of children.\n- dDate (string, required): Departure date in YYYY-MM-DD format.\n    \n- tokenId (string, required): Token ID for authentication.\n    \n\n**Response**\n\n- Status: 200\n- Content-Type: application/json\n- dates (object): Object containing next and previous day dates for the specified sectors.\n- message (array): Array of messages, if any.\n- pollingId (string): ID for polling purposes.\n- resCode (string): Response code.\n- displayConfig (object): Configuration for display.\n    - show (string): Indicates whether to show or hide.\n    - orderBy (string): Indicates the order of display.\n- resMessage (string): Response message.\n- sectors (object): Object containing sectors with their respective values."
+          },
+          "response": []
+        },
+        {
+          "name": "2-Review-Request-Oneway",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"pollingId\": \"57A4739A-E8E5-11EE-A764-12E4B8C9F192_1\",\r\n    \"index\": \"1\",\r\n    \"tokenId\": \"{{tokenId}}\",\r\n    \"companyCode\": \"{{companyCode}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{apiurl}}/air/price/price",
+              "host": [
+                "{{apiurl}}"
+              ],
+              "path": [
+                "air",
+                "price",
+                "price"
+              ]
+            },
+            "description": "This endpoint makes an HTTP POST request to fetch fare rules related to air travel. The request should include the polling ID, index, and token ID in the payload.\n\n### Request Body\n\n- `pollingId` (string): The polling ID for fetching fare rules.\n- `index` (string): Value of index key of selected flight from FetchResults response .\n- `tokenId` (string): The token ID for authentication.\n    \n\n### Response\n\nUpon a successful execution, the response will have a status code of 200 and a content type of application/json. The response body will contain the fetched fare rules in a nested structure, along with a response code.  \n  \nHere otf means old total fare, ntf means new total fare and diff means difference between otf and ntf\n\nExample:\n\n``` json\n{\n    \"otf\": \"4153.80\",\n    \"searchId\": \"57A4739A-E8E5-11EE-A764-12E4B8C9F192\",\n    \"amount\": \"4153.80\",\n    \"priceId\": \"62E3B946-E8E5-11EE-B88F-15E4B8C9F192\",\n    \"resCode\": \"200\",\n    \"diff\": \"0\",\n    \"ntf\": \"4153.80\",\n    \"invAmount\": \"4153.80\",\n    \"resMessage\": \"success\"\n}\n\n ```"
+          },
+          "response": []
+        },
+        {
+          "name": "2-Review-Request-Roundtrip",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"pollingId\": \"059E087A-E8E7-11EE-A052-13E4B8C9F192_1, 059E087A-E8E7-11EE-A052-13E4B8C9F192_4\",\r\n    \"index\": \"1,10\",\r\n    \"tokenId\": \"{{tokenId}}\",\r\n    \"companyCode\": \"{{companyCode}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{apiurl}}/air/price/price",
+              "host": [
+                "{{apiurl}}"
+              ],
+              "path": [
+                "air",
+                "price",
+                "price"
+              ]
+            },
+            "description": "This endpoint makes an HTTP POST request to fetch fare rules related to air travel. The request should include the polling ID, index, and token ID in the payload.\n\n### Request Body\n\n- `pollingId` (string): The polling ID for fetching fare rules.\n- `index` (string): Value of index key of selected flight from FetchResults response .\n- `tokenId` (string): The token ID for authentication.\n    \n\n### Response\n\nUpon a successful execution, the response will have a status code of 200 and a content type of application/json. The response body will contain the fetched fare rules in a nested structure, along with a response code.  \n  \nHere otf means old total fare, ntf means new total fare and diff means difference between otf and ntf\n\nExample:\n\n``` json\n{\n    \"otf\": \"4153.80\",\n    \"searchId\": \"57A4739A-E8E5-11EE-A764-12E4B8C9F192\",\n    \"amount\": \"4153.80\",\n    \"priceId\": \"62E3B946-E8E5-11EE-B88F-15E4B8C9F192\",\n    \"resCode\": \"200\",\n    \"diff\": \"0\",\n    \"ntf\": \"4153.80\",\n    \"invAmount\": \"4153.80\",\n    \"resMessage\": \"success\"\n}\n\n ```"
+          },
+          "response": []
+        },
+        {
+          "name": "3-Fetch-Review-Response",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"tokenId\": \"{{tokenId}}\",\r\n    \"companyCode\": \"{{companyCode}}\",\r\n    \"searchId\": \"57A4739A-E8E5-11EE-A764-12E4B8C9F192\",\r\n    \"priceId\": \"62E3B946-E8E5-11EE-B88F-15E4B8C9F192\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{apiurl}}/air/fetch/price",
+              "host": [
+                "{{apiurl}}"
+              ],
+              "path": [
+                "air",
+                "fetch",
+                "price"
+              ]
+            },
+            "description": "## Fetch Air Price\n\nThis endpoint allows you to fetch the price details for air travel.\n\n### Request Body\n\n- `tokenId` (string): The token ID for the search.\n- `searchId` (string): The search ID for the air travel.\n- `priceId` (string): The price ID for the air travel.\n    \n\n### Response\n\n- Status: 200\n- Content-Type: application/json\n- Body:\n    \n    ``` json\n      {\n        \"chdMinDOB\": \"\",\n        \"chdMaxDOB\": \"\",\n        \"passportMaxIssueYear\": \"\",\n        \"cityNames\": {\n          \"DEL\": \"\",\n          \"BLR\": \"\"\n        },\n        \"adtMaxDOB\": \"\",\n        \"passPortMandate\": \"\",\n        \"gstName\": \"\",\n        \"infMaxDOB\": \"\",\n        \"customerGST\": {},\n        \"gstEmail\": \"\",\n        \"infMinDOB\": \"\",\n        \"gstMandate\": \"\",\n        \"gstNumber\": \"\",\n        \"seniorCitizenIdEnable\": \"\",\n        \"resCode\": \"\",\n        \"seniorCitizenIdMandate\": \"\",\n        \"resMessage\": \"\",\n        \"fltOrder\": {\n          \"1\": \"\"\n        },\n        \"passportMaxExpireYear\": \"\",\n        \"adtMinDOB\": \"\",\n        \"studentIdEnable\": \"\",\n        \"airlineNames\": {\n          \"SG\": \"\"\n        },\n        \"minsLimit\": 0,\n        \"contactISD\": \"\",\n        \"passportMinExpireYear\": \"\",\n        \"studentIdMandate\": \"\",\n        \"infDOBMandate\": \"\",\n        \"passPortEnable\": \"\",\n        \"paymentMethod\": [\n          {\n            \"gateway\": \"\",\n            \"status\": \"\",\n            \"ajax\": \"\",\n            \"isSelected\": \"\",\n            \"balance\": \"\",\n            \"iconClass\": \"\",\n            \"label\": \"\",\n            \"code\": \"\",\n            \"rUrl\": \"\"\n          }\n        ],\n        \"adtDOBEnable\": \"\",\n        \"ffnEnable\": \"\",\n        \"chdDOBMandate\": \"\",\n        \"contactMobile\": \"\",\n        \"trip\": {\n          \"tripType\": \"\",\n          \"params\": {\n            \"dc\": \"\",\n            \"destination\": \"\",\n            \"origin\": \"\",\n            \"cabin\": \"\",\n            \"adt\": 0,\n            \"inf\": 0,\n            \"chd\": 0,\n            \"fromAPIServer\": \"\",\n            \"dDate\": \"\",\n            \"tokenId\": \"\",\n            \"product\": \"\",\n            \"oc\": \"\"\n          },\n          \"pollingId\": \"\"\n        },\n        \"defenseIdEnable\": \"\",\n        \"contactEmail\": \"\",\n        \"infDOBEnable\": \"\",\n        \"fltSchedule\": {\n          \"BLRDEL20240825\": {\n            \"ID\": \"\",\n            \"pollId\": \"\",\n            \"penalty\": \"\",\n            \"passPortMandate\": \"\",\n            \"meal\": {},\n            \"isGDS\": \"\",\n            \"seatMap\": \"\",\n            \"paxWise\": {\n              \"O\": {\n                \"ADT\": {\n                  \"fare\": {\n                    \"OC\": 0,\n                    \"QT\": 0,\n                    \"TF\": 0,\n                    \"DIS\": \"\",\n                    \"YQ\": 0,\n                    \"CMSN\": \"\",\n                    \"TX\": 0,\n                    \"HC\": 0,\n                    \"TDS\": \"\",\n                    \"AGMKP\": 0,\n                    \"NF\": 0,\n                    \"BF\": 0\n                  },\n                  \"bag\": {\n                    \"unit\": \"\",\n                    \"value\": \"\"\n                  }\n                }\n              }\n            },\n            \"passPortEnable\": \"\",\n            \"ffnEnable\": \"\",\n            \"remarks\": \"\",\n            \"gstMandate\": \"\",\n            \"totalFare\": {\n              \"TF\": 0,\n              \"DIS\": 0,\n              \"YQ\": 0,\n              \"CMSN\": 0,\n              \"TX\": 0,\n              \"HC\": 0,\n              \"TDS\": 0,\n              \"AGMKP\": 0,\n              \"NF\": 0,\n              \"BF\": 0\n            },\n            \"OD\": [\n              {\n                \"tdu\": \"\",\n                \"ft\": \"\",\n                \"FS\": [\n                  {\n                    \"vc\": \"\",\n                    \"ddt\": \"\",\n                    \"dcn\": \"\",\n                    \"dt\": \"\",\n                    \"du\": \"\",\n                    \"dan\": \"\",\n                    \"adt\": \"\",\n                    \"eqt\": \"\",\n                    \"ad\": \"\",\n                    \"at\": \"\",\n                    \"aan\": \"\",\n                    \"aac\": \"\",\n                    \"eq\": \"\",\n                    \"aname\": \"\",\n                    \"act\": \"\",\n                    \"so\": \"\",\n                    \"fl\": \"\",\n                    \"seat\": null,\n                    \"gdu\": \"\",\n                    \"ac\": \"\",\n                    \"dd\": \"\",\n                    \"cabin\": \"\",\n                    \"dac\": \"\",\n                    \"acn\": \"\",\n                    \"dct\": \"\"\n                  }\n                ],\n                \"bag\": {\n                  \"unit\": \"\",\n                  \"value\": \"\"\n                },\n                \"fbc\": \"\",\n                \"fcn\": \"\",\n                \"fc\": \"\"\n              }\n            ],\n            \"index\": \"\",\n            \"baggage\": {}\n          }\n        },\n        \"chdDOBEnable\": \"\",\n        \"pricingParam\": {\n          \"index\": \"\",\n          \"pollingId\": \"\"\n        },\n        \"passportMinIssueYear\": \"\",\n        \"defenseIdMandate\": \"\",\n        \"adtDOBMandate\": \"\"\n      }\n    \n     ```"
+          },
+          "response": []
+        },
+        {
+          "name": "4-Booking-Request",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"tokenId\": \"{{tokenId}}\",\r\n    \"companyCode\": \"{{companyCode}}\",\r\n    \"searchId\": \"41C5C376-ED46-11E8-BE2F-9803B9C9F192\",\r\n    \"priceId\": \"21117A54-ED4A-11E8-A2A9-8604B9C9F192\",\r\n    \"pmode\": \"cp\",\r\n    \"details\": {\r\n        \"pax\": {\r\n            \"chd1\": {\r\n                \"dob\": \"2017-01-02\",\r\n                \"firstName\": \"Aruna\",\r\n                \"meal\": {\r\n                    \"1\": [\r\n                        {\r\n                            \"depart\": \"SHJ\",\r\n                            \"arrival\": \"BLR\",\r\n                            \"flight\": \"G9497\",\r\n                            \"desc\": \"Haribo Gold Bears\",\r\n                            \"typ\": \"HGB\",\r\n                            \"amt\": \"100\"\r\n                        }\r\n                    ]\r\n                },\r\n                \"lastName\": \"Kuamri\",\r\n                \"title\": \"Ms\"\r\n            },\r\n            \"adt1\": {\r\n                \"firstName\": \"Ramesh\",\r\n                \"lastName\": \"mohan\",\r\n                \"title\": \"Mr\",\r\n                \"ffn\": {\r\n                    \"1\": {\r\n                        \"ac\": \"AI\",\r\n                        \"val\": \"101\"\r\n                    }\r\n                },\r\n                \"baggage\": {\r\n                    \"1\": [\r\n                        {\r\n                            \"currency\": \"INR\",\r\n                            \"desc\": \"20 Kg\",\r\n                            \"typ\": \"20 Kg\",\r\n                            \"amt\": \"176.01\"\r\n                        }\r\n                    ]\r\n                },\r\n                \"seat\": {\r\n                    \"2\": {\r\n                        \"1\": {\r\n                            \"1\": {\r\n                                \"fl\": \"218\",\r\n                                \"desc\": \"11E\",\r\n                                \"MIDDLE\": \"true\",\r\n                                \"ac\": \"6E\",\r\n                                \"dac\": \"DEL\",\r\n                                \"avl\": \"true\",\r\n                                \"typ\": \"11E\",\r\n                                \"aac\": \"BOM\",\r\n                                \"amt\": \"500\"\r\n                            }\r\n                        }\r\n                    }\r\n                }\r\n            },\r\n            \"inf1\": {\r\n                \"dob\": \"2018-07-10\",\r\n                \"firstName\": \"niasha\",\r\n                \"lastName\": \"bansal\",\r\n                \"title\": \"Ms\"\r\n            },\r\n            \"adt2\": {\r\n                \"firstName\": \"Namrata\",\r\n                \"passport\": {\r\n                    \"issuedCode\": \"IN\",\r\n                    \"nationalityCode\": \"IN\",\r\n                    \"expiry\": \"2019-11-28\",\r\n                    \"issueDate\": \"2019-11-28\",\r\n                    \"number\": \"12345678\",\r\n                    \"issued\": \"India\",\r\n                    \"nationality\": \"India\"\r\n                },\r\n                \"meal\": {\r\n                    \"1\": [\r\n                        {\r\n                            \"depart\": \"SHJ\",\r\n                            \"arrival\": \"BLR\",\r\n                            \"flight\": \"G9497\",\r\n                            \"desc\": \"Hot Chocolate\",\r\n                            \"typ\": \"HCDK\",\r\n                            \"amt\": \"140\"\r\n                        }\r\n                    ]\r\n                },\r\n                \"lastName\": \"Kumari\",\r\n                \"title\": \"Mrs\"\r\n            }\r\n        },\r\n        \"contact\": {\r\n            \"email\": \"test@gmail.com\",\r\n            \"isd\": \"0091\",\r\n            \"mobile\": \"9910671433\"\r\n        }\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{apiurl}}/air/book/book",
+              "host": [
+                "{{apiurl}}"
+              ],
+              "path": [
+                "air",
+                "book",
+                "book"
+              ]
+            },
+            "description": "This endpoint allows users to make a POST request to book air tickets.\n\nTitles can be used are Mr / Mrs / Ms  \nDate of Birth will always be in YYYY-MM-DD\n\nThe last call to this endpoint returned a 200 status code with a JSON response containing resCode and resMessage.\n\nTo use this endpoint, provide the required payload in the specified format to book air tickets."
+          },
+          "response": []
+        },
+        {
+          "name": "5-Fetch-Booking",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"tokenId\": \"{{tokenId}}\",\r\n    \"companyCode\": \"{{companyCode}}\",\r\n    \"searchId\": \"EE994B6E-ED59-11E8-9E80-8B04B9C9F192\",\r\n    \"priceId\": \"4381F494-ED5C-11E8-9483-8904B9C9F192\",\r\n    \"bookRef\": \"EMT250210EVEY\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{apiurl}}/air/fetch/book",
+              "host": [
+                "{{apiurl}}"
+              ],
+              "path": [
+                "air",
+                "fetch",
+                "book"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Agency Services",
+      "item": [
+        {
+          "name": "Agency Balance",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"tokenId\": \"{{tokenId}}\",\r\n    \"companyCode\":\"{{companyCode}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{apiurl}}/user/agencyBalance",
+              "host": [
+                "{{apiurl}}"
+              ],
+              "path": [
+                "user",
+                "agencyBalance"
+              ]
+            },
+            "description": "For agency login"
+          },
+          "response": [
+            {
+              "name": "Agency Balance",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "key": "token",
+                      "value": "{{tokenId}}",
+                      "description": "Token value from login response",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{url}}/user/agencyBalance",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "agencyBalance"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n    \"resCode\": \"200\",\n    \"total\": {\n        \"amount\": \"9150096.68\",\n        \"runningAmount\": \"8454774.73\",\n        \"blockedAmount\": \"695321.95\"\n    },\n    \"message\": [\n        {\n            \"balance\": \"0.00\",\n            \"limit\": \"0.00\",\n            \"type\": \"CASH\"\n        },\n        {\n            \"due\": \"849903.32\",\n            \"balance\": \"9150096.68\",\n            \"limit\": \"10000000.00\",\n            \"type\": \"CREDIT\"\n        }\n    ],\n    \"resMessage\": \"Success\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Agency Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"companyCode\": \"{{companyCode}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{apiurl}}/user/login",
+              "host": [
+                "{{apiurl}}"
+              ],
+              "path": [
+                "user",
+                "login"
+              ]
+            },
+            "description": "For agency login"
+          },
+          "response": [
+            {
+              "name": "Agency Login",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "key": "email",
+                      "value": "webandapi@gmail.com",
+                      "description": "Agency Registered Email Address",
+                      "type": "text"
+                    },
+                    {
+                      "key": "password",
+                      "value": "Flyagain@2020",
+                      "description": "Agency Password",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{apiurl}}/user/login",
+                  "host": [
+                    "{{apiurl}}"
+                  ],
+                  "path": [
+                    "user",
+                    "login"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n    \"resCode\": \"200\",\n    \"resMessage\": \"success\",\n    \"tokenId\": \"YtWY41wEeq0DxU9h9gHO3QAAAAU\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Agency Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"tokenId\": \"{{tokenId}}\",\r\n    \"companyCode\":\"{{companyCode}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/user/logout",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "user",
+                "logout"
+              ]
+            },
+            "description": "For agency login"
+          },
+          "response": [
+            {
+              "name": "Agency Logout",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "key": "token",
+                      "value": "{{tokenId}}",
+                      "description": "Token value from login response",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{url}}/user/logout",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "logout"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n    \"resCode\": \"200\",\n    \"resMessage\": \"success\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
