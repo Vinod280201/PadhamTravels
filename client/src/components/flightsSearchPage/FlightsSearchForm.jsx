@@ -58,6 +58,19 @@ export function FlightsSearchForm({
   const [fromSearch, setFromSearch] = React.useState("");
   const [toSearch, setToSearch] = React.useState("");
 
+  // Calculate min and max dates based on local system time
+  const { minDate, maxDate } = useMemo(() => {
+    const today = new Date();
+    const min = toISODate(today);
+    
+    // Maximum selectable date is 3 months from today
+    const max = new Date(today);
+    max.setMonth(max.getMonth() + 3);
+    const maxStr = toISODate(max);
+    
+    return { minDate: min, maxDate: maxStr };
+  }, []);
+
   const getFilteredOptions = React.useCallback((inputValue) => {
     if (!inputValue) return airportOptions.slice(0, 100);
     const lowerInput = inputValue.toLowerCase();
@@ -323,9 +336,18 @@ export function FlightsSearchForm({
             <input
               id="depart-date-hidden"
               type="date"
+              min={minDate}
+              max={maxDate}
               className="absolute inset-0 opacity-0 cursor-pointer focus:ring-0"
               value={departDate}
-              onChange={(e) => setDepartDate(e.target.value)}
+              onChange={(e) => {
+                const newDepart = e.target.value;
+                setDepartDate(newDepart);
+                // Ensure return date is not before depart date
+                if (returnDate && newDepart > returnDate) {
+                  setReturnDate(newDepart);
+                }
+              }}
             />
           </div>
         </div>
@@ -363,6 +385,8 @@ export function FlightsSearchForm({
             <input
               id="return-date-hidden"
               type="date"
+              min={departDate || minDate}
+              max={maxDate}
               className="absolute inset-0 opacity-0 cursor-pointer disabled:cursor-not-allowed focus:ring-0"
               value={returnDate}
               onChange={(e) => setReturnDate(e.target.value)}

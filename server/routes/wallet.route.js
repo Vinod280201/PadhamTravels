@@ -1,5 +1,7 @@
 import express from "express";
+import axios from "axios";
 import { WalletTransaction } from "../models/walletTransaction.model.js";
+import { getAgencyToken } from "../services/agencyService.js";
 
 const router = express.Router();
 
@@ -37,6 +39,28 @@ router.get("/balance", async (req, res) => {
   } catch (error) {
     console.error("❌ Error /balance:", error);
     res.status(500).json({ status: false, message: "Error calculating wallet balance", error: error.message });
+  }
+});
+
+// GET live B2B agency provider balance
+router.get("/agency-balance", async (req, res) => {
+  try {
+    const tokenId = await getAgencyToken();
+    console.log(`📡 GET /api/wallet/agency-balance - Fetching live B2B balance...`);
+    const response = await axios.post("http://apidev.webandapi.com/user/agencyBalance", {
+      tokenId,
+      companyCode: process.env.COMPANY_CODE || "EMT"
+    });
+
+    if (response.data && response.data.resCode === "200") {
+      res.status(200).json({ status: true, balance: response.data.total });
+    } else {
+      console.error("❌ B2B balance fetch error:", response.data);
+      res.status(400).json({ status: false, message: response.data.resMessage || "Failed to fetch B2B balance" });
+    }
+  } catch (error) {
+    console.error("❌ Error fetching agency balance:", error.message);
+    res.status(500).json({ status: false, message: "Error calculating B2B agency balance", error: error.message });
   }
 });
 

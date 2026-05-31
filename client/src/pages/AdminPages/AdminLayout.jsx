@@ -21,7 +21,12 @@ const AdminLayout = () => {
       localStorage.removeItem("authUser");
       //to clear the search form data
       localStorage.removeItem("user_flight_search_pref");
-      console.log("🧹 CLEARED localStorage");
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith("flightSearch_")) {
+          localStorage.removeItem(key);
+        }
+      });
+      console.log("🧹 CLEARED localStorage flightSearch keys");
       sessionStorage.clear(); // Clear flight search state
       setUser(null);
       console.log("👤 SET USER TO NULL");

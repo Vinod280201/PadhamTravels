@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FlightsSearchForm } from "@/components/flightsSearchPage/FlightsSearchForm";
 import FlightTicket from "@/assets/FlightsSearchPage/FlightTicket.png";
 import { FlightsSearchResults } from "@/components/flightsSearchPage/FlightsSearchResults";
@@ -17,7 +17,7 @@ const toISODate = (d = new Date()) => {
 
 const loadState = (key, defaultVal) => {
   try {
-    const stored = sessionStorage.getItem(`flightSearch_${key}`);
+    const stored = localStorage.getItem(`flightSearch_${key}`);
     return stored ? JSON.parse(stored) : defaultVal;
   } catch {
     return defaultVal;
@@ -31,6 +31,7 @@ export const BookFlights = () => {
   );
   
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Form state (persisted via loadState)
   const [from, setFrom] = useState(() => loadState("from", ""));
@@ -56,30 +57,30 @@ export const BookFlights = () => {
       setFlights(null);
       setHasSearched(false);
       setPollingId("");
-      sessionStorage.removeItem("flightSearch_flights");
-      sessionStorage.removeItem("flightSearch_hasSearched");
-      sessionStorage.removeItem("flightSearch_pollingId");
+      localStorage.removeItem("flightSearch_flights");
+      localStorage.removeItem("flightSearch_hasSearched");
+      localStorage.removeItem("flightSearch_pollingId");
       
-      // Clear the history state so refreshing doesn't keep clearing accidentally
-      window.history.replaceState({}, document.title);
+      // Clear the React Router state so navigating back doesn't keep clearing accidentally
+      navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location.state]);
+  }, [location.state, navigate, location.pathname]);
 
-  // Effect to save state to session storage
+  // Effect to save state to local storage
   useEffect(() => {
-    sessionStorage.setItem("flightSearch_from", JSON.stringify(from));
-    sessionStorage.setItem("flightSearch_to", JSON.stringify(to));
-    sessionStorage.setItem("flightSearch_departDate", JSON.stringify(departDate));
-    sessionStorage.setItem("flightSearch_returnDate", JSON.stringify(returnDate));
-    sessionStorage.setItem("flightSearch_tripType", JSON.stringify(tripType));
-    sessionStorage.setItem("flightSearch_paxData", JSON.stringify(paxData));
-    sessionStorage.setItem("flightSearch_travelClass", JSON.stringify(travelClass));
-    sessionStorage.setItem("flightSearch_benefitTypes", JSON.stringify(benefitTypes));
-    sessionStorage.setItem("flightSearch_flights", JSON.stringify(flights));
-    sessionStorage.setItem("flightSearch_hasSearched", JSON.stringify(hasSearched));
-    sessionStorage.setItem("flightSearch_pollingId", JSON.stringify(pollingId));
-    sessionStorage.setItem("flightSearch_nonstopOnly", JSON.stringify(nonstopOnly));
-    sessionStorage.setItem("flightSearch_airlines", JSON.stringify(airlines));
+    localStorage.setItem("flightSearch_from", JSON.stringify(from));
+    localStorage.setItem("flightSearch_to", JSON.stringify(to));
+    localStorage.setItem("flightSearch_departDate", JSON.stringify(departDate));
+    localStorage.setItem("flightSearch_returnDate", JSON.stringify(returnDate));
+    localStorage.setItem("flightSearch_tripType", JSON.stringify(tripType));
+    localStorage.setItem("flightSearch_paxData", JSON.stringify(paxData));
+    localStorage.setItem("flightSearch_travelClass", JSON.stringify(travelClass));
+    localStorage.setItem("flightSearch_benefitTypes", JSON.stringify(benefitTypes));
+    localStorage.setItem("flightSearch_flights", JSON.stringify(flights));
+    localStorage.setItem("flightSearch_hasSearched", JSON.stringify(hasSearched));
+    localStorage.setItem("flightSearch_pollingId", JSON.stringify(pollingId));
+    localStorage.setItem("flightSearch_nonstopOnly", JSON.stringify(nonstopOnly));
+    localStorage.setItem("flightSearch_airlines", JSON.stringify(airlines));
   }, [from, to, departDate, returnDate, tripType, paxData, travelClass, benefitTypes, flights, hasSearched, pollingId, nonstopOnly, airlines]);
 
   const pluralize = (n, s, p) => (n === 1 ? s : p);

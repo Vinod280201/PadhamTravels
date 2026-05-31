@@ -6,7 +6,9 @@ import { apiGet } from "@/apiClient";
 const ManageWallet = () => {
   const [transactions, setTransactions] = useState([]);
   const [adminBalance, setAdminBalance] = useState(0);
+  const [b2bBalance, setB2bBalance] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isB2bLoading, setIsB2bLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
   const formatINR = (amount) => {
@@ -55,7 +57,26 @@ const ManageWallet = () => {
       }
     };
 
+    const fetchB2bBalance = async () => {
+      try {
+        setIsB2bLoading(true);
+        console.log("📡 Fetching B2B Provider Wallet Balance...");
+        const agencyRes = await apiGet("/wallet/agency-balance");
+        const agencyData = await agencyRes.json();
+        console.log("💰 B2B Balance Response:", agencyData);
+        if (agencyData.status) {
+          const actualBalance = agencyData.balance?.runningAmount || agencyData.balance?.amount || 0;
+          setB2bBalance(parseFloat(actualBalance));
+        }
+      } catch (error) {
+        console.error("❌ Failed to fetch B2B balance data:", error);
+      } finally {
+        setIsB2bLoading(false);
+      }
+    };
+
     fetchWalletData();
+    fetchB2bBalance();
   }, []);
 
   const filteredTransactions = transactions.filter(t => 
@@ -96,7 +117,7 @@ const ManageWallet = () => {
               API Wallet (WebAndApi)
             </h3>
             <p className="text-2xl md:text-3xl font-black tracking-tight mb-2">
-              {formatINR(125000)} {/* Mock Value until API endpoint is known */}
+              {isB2bLoading ? "..." : formatINR(b2bBalance)}
             </p>
             <p className="text-slate-400 text-sm font-medium">
               Estimated balance. Updates on deposit.

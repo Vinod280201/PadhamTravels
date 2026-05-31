@@ -190,7 +190,7 @@ export const FlightBookingDetails = () => {
       const requestPayload = {
         searchId: priceSummary.searchId,
         priceId: priceSummary.priceId,
-        pmode: "cp",
+        pmode: "DEPOSIT",
         totalFare: extractedFare,
         commissionAmount: extractedComm,
         travelDate: state.departDate || flightSegments[0]?.ddt || flightDetails?.trip?.dDate, // Fallback chain ensures date is caught
@@ -252,7 +252,7 @@ export const FlightBookingDetails = () => {
              {isSessionExpired ? "This search session has expired. Kindly click on the OK button to search again." : error}
           </p>
           <button 
-             onClick={() => navigate(isAdminRoute ? "/admin/book-flights" : "/flights", { state: { clearSearch: true } })} 
+             onClick={() => navigate(isAdminRoute ? "/admin/book-flights" : "/flights", { state: { clearSearch: isSessionExpired } })} 
              className={`w-full py-3 rounded-xl font-bold text-white shadow-md transition-all ${isSessionExpired ? 'bg-orange-500 hover:bg-orange-600' : 'bg-red-600 hover:bg-red-700'}`}
           >
              {isSessionExpired ? "OK" : "Go Back"}

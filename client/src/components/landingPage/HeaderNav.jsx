@@ -39,8 +39,12 @@ export const HeaderNav = () => {
     } finally {
       sessionStorage.clear(); // Clear flight search state
       localStorage.removeItem("authUser");
-      //to clear the search form data
       localStorage.removeItem("user_flight_search_pref");
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith("flightSearch_")) {
+          localStorage.removeItem(key);
+        }
+      });
       setUser(null);
       navigate("/", { replace: true });
     }
