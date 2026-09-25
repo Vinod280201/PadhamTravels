@@ -1,244 +1,205 @@
+import React, { useState, useEffect } from "react";
 import { Stats } from "@/components/adminPage/Stats";
-import { RecentBookings } from "@/components/adminPage/RecentBookings";
-import { QuickActions } from "@/components/adminPage/QuickActions";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { X, CheckCircle, Loader2 } from "lucide-react";
-import { FaPlane } from "react-icons/fa6";
+import { apiGet } from "@/apiClient";
+import { Sparkles, MessageSquare, ArrowRight, Phone } from "lucide-react";
+import { MdCardTravel } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 export const AdminDashboard = () => {
-  const [loading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [dashboardStats, setDashboardStats] = useState(null);
-  const [recentBookings, setRecentBookings] = useState([]);
-  const [commissionDetails, setCommissionDetails] = useState([]);
-  const [customerDetails, setCustomerDetails] = useState([]);
+  const navigate = useNavigate();
 
-  // 1. PERSISTENCE: Initialize state directly from localStorage
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return localStorage.getItem("agencySynced") === "true";
+  const [stats, setStats] = useState({
+    activeTours: 0,
+    totalInquiries: 0,
+    featuredTours: 0,
+    totalCustomers: 0,
   });
+  const [recentInquiries, setRecentInquiries] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Form State
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    companyCode: "",
-  });
-
-  // Handle Modal Opening - Resetting form data to ensure no pre-filled values persist in state
-  const handleOpenModal = () => {
-    setFormData({ email: "", password: "", companyCode: "" });
-    setShowModal(true);
-  };
-
-  // 2. BACKEND SYNC: Verify with the server on mount
   useEffect(() => {
-    const verifySyncWithBackend = async () => {
+    const fetchStats = async () => {
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/admin/sync-status`,
-        );
-
-        if (response.data.isSynced) {
-          setIsLoggedIn(true);
-          localStorage.setItem("agencySynced", "true");
-        } else {
-          setIsLoggedIn(false);
-          localStorage.removeItem("agencySynced");
+        setLoading(true);
+        const res = await apiGet("/admin/dashboard-stats");
+        const data = await res.json();
+        if (data?.success) {
+          setStats(data.stats || {
+            activeTours: 0,
+            totalInquiries: 0,
+            featuredTours: 0,
+            totalCustomers: 0,
+          });
+          setRecentInquiries(data.recentInquiries || []);
         }
-      } catch (err) {
-        console.error("Backend sync check failed.");
+      } catch (error) {
+        console.error("Failed to load dashboard metrics:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    const fetchDashboardStats = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/bookings/dashboard-stats`
-        );
-        if (response.data.status) {
-          setDashboardStats(response.data.stats);
-          setRecentBookings(response.data.recentAdminBookings);
-          setCommissionDetails(response.data.commissionDetails || []);
-          setCustomerDetails(response.data.customerDetails || []);
-        }
-      } catch (err) {
-        console.error("Failed to fetch dashboard stats", err);
-      }
-    };
-
-    verifySyncWithBackend();
-    fetchDashboardStats();
+    fetchStats();
   }, []);
 
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleAgencyLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/admin/agency-login`,
-        formData,
-      );
-
-      if (response.data.success) {
-        localStorage.setItem("agencySynced", "true");
-        setIsLoggedIn(true);
-        setShowModal(false);
-        alert("✅ Agency Login Successful! Flight data synced.");
-      } else {
-        alert("❌ Failed to log in: " + response.data.message);
-      }
-    } catch (error) {
-      console.error("Agency Login Error:", error);
-      alert("Error connecting to server.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div className="w-full bg-slate-50 space-y-5 py-3 md:p-6 relative min-h-screen">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+    <div className="w-full space-y-6 py-2 md:p-4">
+      {/* HEADER BAR */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-bold text-slate-900 tracking-tight">
-            Dashboard Overview
+          <div className="flex items-center gap-2 text-cyan-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <Sparkles size={14} />
+            <span>Tour Showcase Dashboard</span>
+          </div>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
+            Padham Travels Management
           </h1>
-          <p className="text-slate-500 text-lg">
-            Welcome back! Here's what's happening today.
+          <p className="text-slate-500 text-sm mt-0.5">
+            Real-time analytics and management for tour packages & leads.
           </p>
         </div>
 
-        {isLoggedIn ? (
-          <div className="flex items-center gap-2 bg-green-50 text-green-700 px-5 py-2.5 rounded-xl font-bold border border-green-200 shadow-sm transition-all animate-in fade-in slide-in-from-right-4">
-            <CheckCircle size={20} className="text-green-500" />
-            <span>Agency API Active</span>
-            <span className="relative flex h-3 w-3 ml-1">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-            </span>
-          </div>
-        ) : (
+        <div className="flex items-center gap-3">
           <button
-            onClick={handleOpenModal}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-xl font-bold transition-all active:scale-95 shadow-lg shadow-blue-200 flex items-center gap-2"
+            onClick={() => navigate("/admin/manage-tours")}
+            className="bg-cyan-600 hover:bg-cyan-700 text-white px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all shadow-sm flex items-center gap-2 cursor-pointer"
           >
-            <FaPlane className="rotate-45 text-sm" />
-            Agency Login
+            <MdCardTravel size={18} />
+            <span>Add New Tour</span>
           </button>
-        )}
+        </div>
       </div>
 
-      {/* --- POP-UP MODAL --- */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 animate-in fade-in duration-300">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 relative animate-in zoom-in-95 duration-200">
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-1 hover:bg-slate-100 rounded-full transition-all"
-            >
-              <X size={24} />
-            </button>
+      {/* DYNAMIC METRIC CARDS */}
+      <Stats stats={stats} />
 
-            <div className="mb-6">
-              <h2 className="text-2xl font-black text-slate-900">
-                Agency Portal
-              </h2>
-              <p className="text-slate-500 text-sm mt-1">
-                Synchronize your Padham Travel dashboard with the live Flight
-                API.
+      {/* QUICK ACTIONS & RECENT LEADS GRID */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
+        {/* RECENT INQUIRIES LEADS */}
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6">
+          <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+            <div>
+              <h3 className="font-extrabold text-lg text-slate-900">
+                Recent Customer Inquiries
+              </h3>
+              <p className="text-xs text-slate-500">
+                Latest leads submitted via website packages
               </p>
             </div>
-
-            {/* Added autoComplete="off" to form and specific props to inputs */}
-            <form
-              onSubmit={handleAgencyLogin}
-              className="space-y-5"
-              autoComplete="off"
+            <button
+              onClick={() => navigate("/admin/manage-inquiries")}
+              className="text-xs font-bold text-cyan-600 hover:text-cyan-700 flex items-center gap-1 cursor-pointer"
             >
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-500 uppercase ml-1">
-                  Agency Email
-                </label>
-                <input
-                  required
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  autoComplete="off"
-                  data-lpignore="true"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all placeholder:text-slate-300"
-                  placeholder="admin@padhamtravels.com"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-500 uppercase ml-1">
-                  Password
-                </label>
-                <input
-                  required
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  autoComplete="new-password"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all placeholder:text-slate-300"
-                  placeholder="••••••••"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-500 uppercase ml-1">
-                  Agency Code
-                </label>
-                <input
-                  required
-                  type="text"
-                  name="companyCode"
-                  value={formData.companyCode}
-                  onChange={handleInputChange}
-                  autoComplete="off"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all placeholder:text-slate-300"
-                  placeholder="e.g. MJK789"
-                />
-              </div>
+              <span>View All</span>
+              <ArrowRight size={14} />
+            </button>
+          </div>
+
+          {loading ? (
+            <div className="text-center py-10 text-slate-400 text-sm font-semibold">
+              Loading recent inquiries...
+            </div>
+          ) : recentInquiries.length > 0 ? (
+            <div className="space-y-3">
+              {recentInquiries.map((item) => (
+                <div
+                  key={item._id}
+                  className="flex items-center justify-between p-3.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl border border-slate-200/60 transition"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-full bg-cyan-100 text-cyan-700 flex items-center justify-center font-bold shrink-0">
+                      {item.name ? item.name[0]?.toUpperCase() : "C"}
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="font-bold text-sm text-slate-900 truncate">
+                        {item.name}
+                      </h4>
+                      <div className="flex items-center gap-2 text-xs text-slate-500 truncate">
+                        <span className="flex items-center gap-1">
+                          <Phone size={12} className="text-emerald-600" />
+                          {item.phone}
+                        </span>
+                        <span>•</span>
+                        <span className="truncate">{item.tourTitle || item.destination || "General Inquiry"}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-right shrink-0">
+                    <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-700 block mb-1">
+                      {item.status || "Pending"}
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-medium block">
+                      {new Date(item.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 text-slate-400 text-sm font-medium">
+              No inquiries received yet.
+            </div>
+          )}
+        </div>
+
+        {/* QUICK NAVIGATION PANEL */}
+        <div className="lg:col-span-1 bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 flex flex-col justify-between">
+          <div>
+            <h3 className="font-extrabold text-lg text-slate-900 mb-1">
+              Quick Management
+            </h3>
+            <p className="text-xs text-slate-500 mb-4">
+              Direct shortcuts for tour operations
+            </p>
+
+            <div className="space-y-3">
+              <button
+                onClick={() => navigate("/admin/manage-tours")}
+                className="w-full flex items-center justify-between p-3.5 bg-cyan-50/60 hover:bg-cyan-100/70 border border-cyan-100 rounded-xl transition text-left cursor-pointer group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-cyan-600 text-white">
+                    <MdCardTravel size={18} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xs text-slate-900">
+                      Manage Tour Packages
+                    </h4>
+                    <p className="text-[11px] text-slate-500">
+                      Create, edit or delete tours
+                    </p>
+                  </div>
+                </div>
+                <ArrowRight size={16} className="text-cyan-600 group-hover:translate-x-1 transition-transform" />
+              </button>
 
               <button
-                type="submit"
-                disabled={loading}
-                className={`w-full py-4 rounded-xl font-black text-white transition-all mt-4 flex items-center justify-center gap-3 ${
-                  loading
-                    ? "bg-slate-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-100 active:translate-y-1"
-                }`}
+                onClick={() => navigate("/admin/manage-inquiries")}
+                className="w-full flex items-center justify-between p-3.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/80 rounded-xl transition text-left cursor-pointer group"
               >
-                {loading ? (
-                  <>
-                    <Loader2 className="animate-spin" size={20} />
-                    Syncing Data...
-                  </>
-                ) : (
-                  "Sync Agency API"
-                )}
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-slate-800 text-white">
+                    <MessageSquare size={18} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xs text-slate-900">
+                      Customer Leads & Inquiries
+                    </h4>
+                    <p className="text-[11px] text-slate-500">
+                      Review lead submissions
+                    </p>
+                  </div>
+                </div>
+                <ArrowRight size={16} className="text-slate-400 group-hover:translate-x-1 transition-transform" />
               </button>
-            </form>
+            </div>
           </div>
-        </div>
-      )}
 
-      {/* Stats and Activity Grid */}
-      <Stats dashboardStats={dashboardStats} commissionDetails={commissionDetails} customerDetails={customerDetails} />
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-        <div className="lg:col-span-2">
-          <RecentBookings recentBookings={recentBookings} />
-        </div>
-        <div className="lg:col-span-1">
-          <QuickActions />
+          <div className="mt-6 p-4 bg-cyan-50/40 rounded-xl border border-cyan-100 text-xs text-slate-600">
+            <span className="font-bold text-cyan-800 block mb-1">💡 Showcase Tip:</span>
+            Highlight your top package tours as "Featured" to display them on the landing page hero carousel.
+          </div>
         </div>
       </div>
     </div>

@@ -1,77 +1,44 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import LogoImg from "@/assets/logo.png";
-
-// Icons
-import HomeIcon from "@/assets/FlightsSearchPage/Home.png";
-import TravelIcon from "@/assets/FlightsSearchPage/travel1.png";
-import FlightIcon from "@/assets/FlightsSearchPage/flight.png";
-import BookingTermsIcon from "@/assets/FlightsSearchPage/terms1.png";
-import AboutUsIcon from "@/assets/FlightsSearchPage/about-us.png";
 import { IoPersonCircle } from "react-icons/io5";
-import { FiLogOut, FiMenu, FiX } from "react-icons/fi"; // Added Menu and X icons
-
+import { FiLogOut, FiMenu, FiX } from "react-icons/fi";
+import { MessageCircle, User as UserIcon } from "lucide-react";
 import { useAuthUser } from "@/hooks/useAuthUser";
 
 const MainNavbar = () => {
-  const { user, setUser } = useAuthUser();
+  const { user, logout } = useAuthUser();
   const navigate = useNavigate();
   const location = useLocation();
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State for mobile menu
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const whatsappPhone = import.meta.env.VITE_WHATSAPP_NUMBER || "919944229209";
 
-  // Data for Navigation Links to reduce repetition
   const navLinks = [
-    { path: "/home", label: "HOME", icon: HomeIcon },
-    { path: "/flights", label: "FLIGHTS", icon: FlightIcon },
-    {
-      path: "/tours-and-packages",
-      label: "TOURS & PACKAGES",
-      icon: TravelIcon,
-    },
-    {
-      path: "/terms-and-conditions",
-      label: "BOOKING TERMS",
-      icon: BookingTermsIcon,
-    },
-    { path: "/about-us", label: "ABOUT US", icon: AboutUsIcon },
+    { path: "/", label: "HOME" },
+    { path: "/tours-and-packages", label: "TOURS & PACKAGES" },
+    { path: "/terms-and-conditions", label: "BOOKING TERMS" },
+    { path: "/about-us", label: "ABOUT US" },
   ];
 
   const handleLogout = async () => {
-    try {
-      await fetch(`${baseUrl}/auth/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
-    } catch (e) {
-      // ignore
-    } finally {
-      localStorage.removeItem("authUser");
-      sessionStorage.clear(); // Clear flight search state
-      localStorage.removeItem("user_flight_search_pref");
-      Object.keys(localStorage).forEach(key => {
-        if (key.startsWith("flightSearch_")) {
-          localStorage.removeItem(key);
-        }
-      });
-      setUser(null);
-      navigate("/", { replace: true });
-      setIsMenuOpen(false);
-    }
+    setIsMenuOpen(false);
+    navigate("/", { replace: true });
+    await logout(navigate);
   };
 
-  // Helper to determine if a link is active
   const isActive = (path) => location.pathname === path;
 
-  // Toggle Mobile Menu
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const handleWhatsAppClick = () => {
+    const text = encodeURIComponent("Hi Padham Travels, I would like to inquire about your tour packages.");
+    window.open(`https://wa.me/${whatsappPhone}?text=${text}`, "_blank");
+  };
 
   return (
-    <div className="sticky top-0 z-50 w-full bg-white/85 backdrop-blur-sm shadow-sm">
-      <div className="flex justify-between items-center max-w-[1440px] mx-auto px-4 py-2">
+    <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-xs">
+      <div className="flex justify-between items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
         {/* --- LEFT: LOGO --- */}
         <div className="shrink-0">
-          <Link to="/home">
+          <Link to="/">
             <img
               src={LogoImg}
               alt="Padham Travels"
@@ -80,133 +47,171 @@ const MainNavbar = () => {
           </Link>
         </div>
 
-        {/* --- CENTER: DESKTOP NAVIGATION (Hidden on Mobile/Tablet) --- */}
-        <div className="hidden lg:flex items-center gap-6">
-          {navLinks.map((link) => (
-            <div
-              key={link.path}
-              className="flex items-center group cursor-pointer"
-            >
-              <img
-                src={link.icon}
-                alt={link.label}
-                className="w-5 h-auto object-contain mr-2 group-hover:scale-110 transition-transform"
-              />
-              <Link to={link.path} className="flex whitespace-nowrap">
-                <div
-                  className={`pt-0.5 transition-all duration-200 hover:font-bold ${
-                    isActive(link.path)
-                      ? "font-bold border-b-2 border-yellow-500 text-black"
-                      : "font-medium text-slate-700"
-                  }`}
-                >
-                  {link.label}
-                </div>
-              </Link>
-            </div>
-          ))}
-        </div>
-
-        {/* --- RIGHT: USER & MOBILE TOGGLE --- */}
-        <div className="flex items-center gap-3">
-          {/* UPDATED LOGIC:
-              Only render the User Avatar and Name block if 'user' exists.
-              If user is null/undefined, this block is skipped entirely.
-          */}
-          {user && (
-            <Link to="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer group" title="View Profile">
-              <div className="h-8 w-8 lg:h-9 lg:w-9 rounded-full bg-yellow-400 flex items-center justify-center text-slate-800 font-bold overflow-hidden shadow-sm group-hover:scale-105 transition-transform">
-                {user?.name ? (
-                  user.name[0]?.toUpperCase()
-                ) : (
-                  <IoPersonCircle size={26} />
-                )}
-              </div>
-              {/* User Name - Hidden on very small screens, visible on md+ */}
-              <span className="font-medium text-sm text-slate-800 hidden md:block max-w-[100px] truncate group-hover:text-blue-700">
-                {user?.name}
-              </span>
-            </Link>
-          )}
-
-          {/* Desktop Logout Button (Hidden on Mobile) */}
-          {user && (
-            <button
-              onClick={handleLogout}
-              className="hidden lg:flex items-center text-sm font-semibold h-9 px-3 rounded text-slate-700 border border-slate-800 bg-yellow-400 hover:bg-yellow-500 hover:font-bold transition"
-            >
-              Logout
-              <FiLogOut size={18} className="ml-2" />
-            </button>
-          )}
-
-          {/* Mobile Menu Toggle Button (Visible on Mobile/Tablet) */}
-          <button
-            onClick={toggleMenu}
-            className="lg:hidden text-slate-800 focus:outline-none p-1"
-          >
-            {isMenuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
-          </button>
-        </div>
-      </div>
-
-      {/* --- MOBILE/TABLET MENU DROPDOWN --- */}
-      {/* This div only renders when isMenuOpen is true */}
-      {isMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-sm shadow-lg border-t border-gray-200 flex flex-col pb-3 px-4 animate-fade-in-down">
+        {/* --- CENTER: DESKTOP NAVIGATION --- */}
+        <nav className="hidden lg:flex items-center gap-8">
           {navLinks.map((link) => (
             <Link
               key={link.path}
               to={link.path}
-              onClick={() => setIsMenuOpen(false)} // Close menu on click
-              className="flex items-center py-3.5 border-b border-gray-200 last:border-none hover:bg-gray-50 transition"
+              className={`text-sm font-semibold tracking-wide transition-all duration-200 py-1 ${
+                isActive(link.path)
+                  ? "text-cyan-600 border-b-2 border-cyan-500 font-bold"
+                  : "text-slate-600 hover:text-cyan-600"
+              }`}
             >
-              <img
-                src={link.icon}
-                alt={link.label}
-                className="w-5 h-auto object-contain mx-3"
-              />
-              <span
-                className={`text-base ${
-                  isActive(link.path)
-                    ? "font-bold text-yellow-600"
-                    : "font-medium text-slate-700"
-                }`}
-              >
-                {link.label}
-              </span>
+              {link.label}
             </Link>
           ))}
+        </nav>
 
-          {/* Mobile Logout Button */}
-          {user && (
-            <div className="pt-2 border-t border-gray-300">
-              <Link to="/profile" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-between mb-4 group px-2 cursor-pointer">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 bg-yellow-400 rounded-full flex items-center justify-center font-bold text-slate-800 text-lg shadow-sm group-hover:scale-105 transition-transform">
-                    {user?.name ? user.name[0]?.toUpperCase() : <IoPersonCircle size={26} />}
-                  </div>
-                  <div className="flex flex-col">
-                     <span className="text-xs text-gray-500 font-medium">Logged in as</span>
-                     <span className="font-bold text-slate-800 group-hover:text-blue-700 transition-colors">{user?.name}</span>
-                  </div>
+        {/* --- RIGHT: ACTIONS & AUTH --- */}
+        <div className="flex items-center gap-3">
+          {user ? (
+            <div className="flex items-center gap-3">
+              {/* Admin Portal Quick Link */}
+              {user.role === "admin" && (
+                <Link
+                  to="/admin/dashboard"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-cyan-700 bg-cyan-50 hover:bg-cyan-100 border border-cyan-200 rounded-xl transition shadow-xs cursor-pointer"
+                >
+                  <UserIcon className="w-3.5 h-3.5 text-cyan-600" />
+                  <span>Admin Portal</span>
+                </Link>
+              )}
+
+              {/* User Avatar Badge & Name */}
+              <Link
+                to="/profile"
+                className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer group"
+                title="View Profile"
+              >
+                <div className="h-9 w-9 rounded-full bg-cyan-100 border border-cyan-300 flex items-center justify-center text-cyan-800 font-bold overflow-hidden shadow-xs group-hover:scale-105 transition-transform">
+                  {user?.name ? user.name[0]?.toUpperCase() : (user?.email ? user.email[0]?.toUpperCase() : <IoPersonCircle size={26} />)}
                 </div>
-                <div className="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full group-hover:bg-blue-100 transition-colors border border-blue-200">
-                   View Profile
-                </div>
+                <span className="font-semibold text-xs text-slate-800 hidden md:block max-w-[100px] truncate group-hover:text-cyan-600">
+                  {user?.name || user?.email}
+                </span>
               </Link>
+
+              {/* Cyan WhatsApp CTA Button */}
+              <button
+                onClick={handleWhatsAppClick}
+                className="hidden sm:flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white text-xs sm:text-sm font-bold px-4 py-2 rounded-xl transition-all shadow-sm hover:shadow-md cursor-pointer"
+              >
+                <MessageCircle size={16} className="fill-current" />
+                <span>Inquire Now</span>
+              </button>
+
+              {/* Logout Action Button */}
               <button
                 onClick={handleLogout}
-                className="flex w-full items-center justify-center text-base font-bold h-10 px-4 rounded text-slate-800 bg-gray-100 hover:bg-gray-200 transition border border-gray-300"
+                className="hidden lg:flex items-center gap-1 text-xs font-semibold h-9 px-3 rounded-xl text-rose-600 hover:text-rose-700 border border-rose-200 bg-rose-50 hover:bg-rose-100 transition cursor-pointer"
               >
-                Logout
-                <FiLogOut size={20} className="ml-2" />
+                <span>Logout</span>
+                <FiLogOut size={14} className="ml-0.5" />
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Link
+                to="/login"
+                className="flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:text-cyan-600 border border-slate-200 hover:border-cyan-400 bg-white rounded-xl transition shadow-xs cursor-pointer"
+              >
+                <UserIcon className="w-4 h-4 text-slate-500" />
+                <span>Sign In</span>
+              </Link>
+
+              {/* Cyan WhatsApp CTA Button */}
+              <button
+                onClick={handleWhatsAppClick}
+                className="hidden sm:flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white text-xs sm:text-sm font-bold px-4 py-2 rounded-xl transition-all shadow-sm hover:shadow-md cursor-pointer"
+              >
+                <MessageCircle size={16} className="fill-current" />
+                <span>Inquire Now</span>
               </button>
             </div>
           )}
+
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="lg:hidden text-slate-800 focus:outline-none p-1.5"
+            aria-label="Toggle Menu"
+          >
+            {isMenuOpen ? <FiX size={26} /> : <FiMenu size={26} />}
+          </button>
+        </div>
+      </div>
+
+      {/* --- MOBILE DROPDOWN --- */}
+      {isMenuOpen && (
+        <div className="lg:hidden absolute top-full left-0 w-full bg-white shadow-xl border-t border-slate-100 flex flex-col py-4 px-6 gap-3 animate-in slide-in-from-top-2">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              onClick={() => setIsMenuOpen(false)}
+              className={`py-2 text-sm font-semibold border-b border-slate-100 last:border-none ${
+                isActive(link.path) ? "text-cyan-600 font-bold" : "text-slate-700"
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+
+          {/* Auth item in mobile menu */}
+          {user ? (
+            <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
+              <div className="flex items-center gap-2 py-1">
+                <div className="h-8 w-8 rounded-full bg-cyan-100 border border-cyan-300 flex items-center justify-center text-cyan-800 font-bold text-xs">
+                  {user?.name ? user.name[0]?.toUpperCase() : (user?.email ? user.email[0]?.toUpperCase() : "U")}
+                </div>
+                <span className="font-semibold text-sm text-slate-800 truncate">
+                  {user?.name || user?.email}
+                </span>
+              </div>
+              {user.role === "admin" && (
+                <Link
+                  to="/admin/dashboard"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center gap-2 py-1.5 text-xs font-bold text-cyan-600"
+                >
+                  <UserIcon size={16} />
+                  <span>Admin Portal</span>
+                </Link>
+              )}
+              <button
+                onClick={handleLogout}
+                className="flex w-full items-center justify-center text-xs font-bold py-2 rounded-xl text-rose-600 bg-rose-50 border border-rose-200 hover:bg-rose-100 transition mt-1 cursor-pointer"
+              >
+                Logout
+                <FiLogOut size={16} className="ml-1.5" />
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              onClick={() => setIsMenuOpen(false)}
+              className="flex items-center gap-2 py-2 text-sm font-semibold text-slate-700 border-b border-slate-100 hover:text-cyan-600"
+            >
+              <UserIcon size={18} className="text-slate-500" />
+              <span>Sign In</span>
+            </Link>
+          )}
+
+          <button
+            onClick={() => {
+              setIsMenuOpen(false);
+              handleWhatsAppClick();
+            }}
+            className="flex items-center justify-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2.5 rounded-xl transition text-sm mt-2 cursor-pointer"
+          >
+            <MessageCircle size={18} />
+            <span>Inquire on WhatsApp</span>
+          </button>
         </div>
       )}
-    </div>
+    </header>
   );
 };
 

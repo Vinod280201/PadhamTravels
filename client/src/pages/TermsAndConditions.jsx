@@ -1,8 +1,8 @@
+import React from "react";
 import MainNavbar from "@/components/layout/MainNavbar";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   FileText,
-  Plane,
   Package,
   MapPin,
   AlertCircle,
@@ -11,13 +11,8 @@ import {
   Shield,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { HeaderNav } from "@/components/landingPage/HeaderNav";
-import { useAuthUser } from "@/hooks/useAuthUser";
 
 const TermsAndConditions = () => {
-  // 2. Get user status
-  const { user } = useAuthUser();
-
   const sections = [
     {
       icon: MapPin,
@@ -41,18 +36,6 @@ const TermsAndConditions = () => {
         "Package components cannot be modified once booking is confirmed without additional fees.",
         "Any unused portion of the package is non-refundable.",
         "Upgrades and add-ons are subject to availability and additional charges.",
-      ],
-    },
-    {
-      icon: Plane,
-      title: "Flight Bookings",
-      terms: [
-        "All flight bookings are subject to airline terms and conditions.",
-        "Flight prices are not guaranteed until payment is completed.",
-        "Name changes after booking may incur airline penalties or may not be permitted.",
-        "Baggage allowances are as per airline policy and may vary.",
-        "Flight schedules are subject to change by airlines without prior notice.",
-        "Travel documents (passport, visa) are the responsibility of the traveler.",
       ],
     },
     {
@@ -84,7 +67,7 @@ const TermsAndConditions = () => {
       title: "Liability & Responsibility",
       terms: [
         "We act as an intermediary between travelers and service providers.",
-        "We are not liable for delays, cancellations, or changes made by airlines, hotels, or tour operators.",
+        "We are not liable for delays, cancellations, or changes made by third-party suppliers or weather conditions.",
         "Travelers are responsible for ensuring valid travel documents and vaccinations.",
         "We recommend purchasing comprehensive travel insurance.",
         "Force majeure events may affect bookings without liability on our part.",
@@ -94,118 +77,88 @@ const TermsAndConditions = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* 3. Conditional Navigation Rendering */}
-      {user ? (
-        <MainNavbar />
-      ) : (
-        <div className="bg-slate-600">
-          {" "}
-          <HeaderNav />
-        </div>
-      )}
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col">
+      {/* Top Navbar */}
+      <MainNavbar />
 
-      {/* Hero Section */}
-      <section className="relative py-10 bg-primary/10 mt-2">
-        <div className="container mx-auto px-4 text-center">
-          <div className="flex justify-center mb-6">
-            <div className="p-4 bg-primary/15 rounded-full">
-              <FileText className="w-12 h-12 text-primary" />
-            </div>
+      {/* Hero Header */}
+      <section className="bg-white border-b border-slate-100 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-flex p-3 bg-cyan-50 text-cyan-600 rounded-2xl mb-4 border border-cyan-100">
+            <FileText size={32} />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            Terms & Conditions
+          <span className="text-xs font-bold uppercase tracking-widest text-cyan-600 block mb-2">
+            LEGAL POLICIES
+          </span>
+          <h1 className="font-serif text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">
+            Booking Terms & Conditions
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Please read these booking terms and conditions carefully before
-            making any reservations for tours, travel packages, or flight
-            bookings.
+          <p className="text-base text-slate-500 max-w-2xl mx-auto">
+            Please review our booking guidelines and policies for tour packages and travel arrangements.
           </p>
         </div>
       </section>
 
-      {/* Last Updated */}
-      <section className="py-6 border-b border-gray-300">
-        <div className="container mx-auto px-4">
-          <p className="text-sm text-muted-foreground text-center">
-            Last updated: January 2026
-          </p>
-        </div>
-      </section>
-
-      {/* Terms Sections */}
-      <section className="py-8">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto space-y-8">
-            {sections.map((section, index) => (
-              <Card key={index} className="overflow-hidden py-0">
-                <CardContent className="p-0">
-                  <div className="flex items-center gap-4 p-6 bg-muted border-b border-border">
-                    <div className="p-3 bg-primary/10 rounded-lg">
-                      <section.icon className="w-6 h-6 text-primary" />
-                    </div>
-                    <h2 className="text-xl font-semibold text-foreground">
-                      {section.title}
-                    </h2>
+      {/* Terms Content */}
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+        <div className="space-y-6">
+          {sections.map((section, index) => (
+            <Card key={index} className="overflow-hidden border-slate-100 bg-white rounded-2xl shadow-xs">
+              <CardContent className="p-0">
+                <div className="flex items-center gap-3 p-5 bg-slate-50 border-b border-slate-100">
+                  <div className="p-2.5 bg-cyan-100 text-cyan-700 rounded-xl">
+                    <section.icon size={20} />
                   </div>
-                  <ul className="p-6 space-y-3">
-                    {section.terms.map((term, termIndex) => (
-                      <li key={termIndex} className="flex items-start gap-3">
-                        <span className="w-2 h-2 mt-2 bg-primary rounded-full shrink-0" />
-                        <span className="text-muted-foreground">{term}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  <h2 className="text-lg font-bold text-slate-900">
+                    {section.title}
+                  </h2>
+                </div>
+                <ul className="p-6 space-y-3">
+                  {section.terms.map((term, termIndex) => (
+                    <li key={termIndex} className="flex items-start gap-3 text-sm text-slate-600">
+                      <span className="w-2 h-2 mt-1.5 bg-cyan-500 rounded-full shrink-0" />
+                      <span>{term}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          ))}
         </div>
-      </section>
 
-      {/* Important Notice */}
-      <section className="py-8 bg-muted">
-        <div className="container mx-auto px-4">
-          <Card className="max-w-4xl mx-auto border-amber-500/50 bg-amber-50/50 dark:bg-amber-950/20">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-amber-500/10 rounded-lg">
-                  <AlertCircle className="w-6 h-6 text-amber-600" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-2">
-                    Important Notice
-                  </h3>
-                  <p className="text-muted-foreground">
-                    By making a booking with us, you acknowledge that you have
-                    read, understood, and agreed to these terms and conditions.
-                    These terms constitute a binding agreement between you and
-                    our company. We reserve the right to modify these terms at
-                    any time, and it is your responsibility to review them
-                    periodically.
-                  </p>
-                </div>
+        {/* Important Notice Box */}
+        <Card className="border-amber-200 bg-amber-50/60 rounded-2xl shadow-xs">
+          <CardContent className="p-6">
+            <div className="flex items-start gap-4">
+              <div className="p-2.5 bg-amber-500 text-white rounded-xl shrink-0 shadow-xs">
+                <AlertCircle size={22} />
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+              <div>
+                <h3 className="text-base font-bold text-amber-900 mb-1">
+                  Important Notice
+                </h3>
+                <p className="text-xs sm:text-sm text-amber-800 leading-relaxed">
+                  By confirming a booking with Padham Travels, you acknowledge that you have read, understood, and agreed to these terms and conditions. These terms constitute a binding agreement between you and our travel agency.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-      {/* Contact for Questions */}
-      <section className="pb-10 pt-4">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-muted-foreground">
-            Have questions about our terms?{" "}
+        {/* Questions Contact Link */}
+        <div className="text-center pt-2">
+          <p className="text-xs sm:text-sm text-slate-500">
+            Have questions regarding booking policies?{" "}
             <Link
-              to="/about-us#contact" // Added hash here
-              className="text-primary hover:underline font-medium"
+              to="/about-us#contact"
+              className="text-cyan-600 hover:underline font-bold"
             >
-              Contact us
+              Contact our team
             </Link>{" "}
-            for clarification.
+            for instant assistance.
           </p>
         </div>
-      </section>
+      </main>
     </div>
   );
 };

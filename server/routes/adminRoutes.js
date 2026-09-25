@@ -1,10 +1,18 @@
 import express from "express";
-const router = express.Router();
 import {
   getAgencyToken,
   clearTokenCache,
   getCachedToken,
 } from "../services/agencyService.js";
+import { getDashboardStats } from "../controllers/admin.controller.js";
+
+const router = express.Router();
+
+/**
+ * @route   GET /api/admin/dashboard-stats
+ * @desc    Fetch dynamic counts for Active Tours, Inquiries, Featured Destinations & Total Customers
+ */
+router.get("/dashboard-stats", getDashboardStats);
 
 /**
  * @route   GET /api/admin/sync-status
@@ -13,7 +21,6 @@ import {
 router.get("/sync-status", (req, res) => {
   try {
     const token = getCachedToken();
-    // Return isSynced true if token exists and is not null/undefined
     res.status(200).json({
       isSynced: !!token,
     });
@@ -29,13 +36,8 @@ router.get("/sync-status", (req, res) => {
 router.post("/agency-login", async (req, res) => {
   try {
     const { email, password, companyCode } = req.body;
-
     console.log(`🔄 Manual sync initiated for: ${email || "Default Admin"}`);
-
-    // Clear existing cache to force a fresh login with the provided credentials
     clearTokenCache();
-
-    // Fetch new token from the external Test API
     const token = await getAgencyToken(email, password, companyCode);
 
     res.status(200).json({

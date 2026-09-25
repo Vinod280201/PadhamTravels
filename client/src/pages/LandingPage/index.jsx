@@ -1,22 +1,19 @@
 import React from "react";
-import { BrandsScroller } from "@/components/landingPage/BrandsScroller";
-import { Footer } from "@/components/landingPage/Footer";
-import { Header } from "@/components/landingPage/Header";
-import { HeaderNav } from "@/components/landingPage/HeaderNav";
-import { Services } from "@/components/landingPage/Services";
+import MainNavbar from "@/components/layout/MainNavbar";
 import { TopBarContactUs } from "@/components/landingPage/TopBarContactUs";
+import { Header } from "@/components/landingPage/Header";
+import { Services } from "@/components/landingPage/Services";
 import { ToursAndTrips } from "@/components/landingPage/ToursAndTrips";
+import { BrandsScroller } from "@/components/landingPage/BrandsScroller";
 import ReviewsCarousel from "@/components/landingPage/ReviewsCarousel";
 import { StatSection } from "@/components/landingPage/StatSection";
+import { Footer } from "@/components/landingPage/Footer";
 
 export const LandingPage = () => {
   return (
-    <div className="w-full h-screen box-border">
+    <div className="w-full min-h-screen box-border bg-slate-100">
       <TopBarContactUs />
-      {/* show nav only on small devices and keep it outside Header */}
-      <div className="block lg:hidden">
-        <HeaderNav />
-      </div>
+      <MainNavbar />
       <Header />
       <Services />
       <ToursAndTrips />
@@ -27,3 +24,5 @@ export const LandingPage = () => {
     </div>
   );
 };
+
+export default LandingPage;

@@ -1,73 +1,124 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom"; // 1. Import useLocation
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 
-export function useAuthUser() {
-  const [user, setUser] = useState(null);
+const AuthContext = createContext(null);
+
+export const AuthProvider = ({ children }) => {
+  // Synchronously initialize state from localStorage if available
+  const [user, setUserState] = useState(() => {
+    try {
+      const savedUser = localStorage.getItem("authUser");
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch {
+      return null;
+    }
+  });
   const [loading, setLoading] = useState(true);
-
-  const location = useLocation(); // 2. Get current location
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-  useEffect(() => {
-    // 3. Define Public Pages where you DON'T want to check auth
-    // Add any other public paths here if needed
-    const publicPages = ["/"];
-
-    // If we are on the landing page, skip the fetch entirely
-    if (publicPages.includes(location.pathname)) {
-      setLoading(false);
-      return; // STOP HERE
+  // Centralized setter that keeps localStorage & React state in sync
+  const setUser = useCallback((userData) => {
+    if (userData) {
+      localStorage.setItem("authUser", JSON.stringify(userData));
+      setUserState(userData);
+    } else {
+      localStorage.removeItem("authUser");
+      sessionStorage.clear();
+      localStorage.removeItem("user_flight_search_pref");
+      setUserState(null);
     }
+  }, []);
 
-    // --- Standard Fetch Logic Below ---
-    const controller = new AbortController();
-    const signal = controller.signal;
+  const fetchUser = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${baseUrl}/auth/get-user`, {
+        method: "GET",
+        credentials: "include",
+      });
 
-    const fetchUser = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(`${baseUrl}/auth/get-user`, {
-          method: "GET",
-          credentials: "include",
-          signal: signal,
-        });
+      if (res.status === 401 || res.status === 403) {
+        setUser(null);
+        return;
+      }
 
-        if (res.status === 401 || res.status === 403) {
-          setUser(null);
-          localStorage.removeItem("authUser");
-          sessionStorage.clear();
-          localStorage.removeItem("user_flight_search_pref");
-          return;
+      const data = await res.json();
+
+      if (data.status && data.user) {
+        setUser(data.user);
+      } else if (!data.status && !localStorage.getItem("authUser")) {
+        setUser(null);
+      }
+    } catch (err) {
+      console.warn("Auth status check fallback:", err?.message || err);
+    } finally {
+      setLoading(false);
+    }
+  }, [baseUrl, setUser]);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
+  // Sync across tabs and storage events
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === "authUser" || e.key === null) {
+        try {
+          const savedUser = localStorage.getItem("authUser");
+          setUserState(savedUser ? JSON.parse(savedUser) : null);
+        } catch {
+          setUserState(null);
         }
-
-        const data = await res.json();
-
-        if (data.status) {
-          setUser(data.user);
-        } else {
-          setUser(null);
-          localStorage.removeItem("authUser");
-          sessionStorage.clear();
-          localStorage.removeItem("user_flight_search_pref");
-        }
-      } catch (err) {
-        if (err.name !== "AbortError") {
-          setUser(null);
-          localStorage.removeItem("authUser");
-          sessionStorage.clear();
-          localStorage.removeItem("user_flight_search_pref");
-        }
-      } finally {
-        if (!signal.aborted) setLoading(false);
       }
     };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
-    fetchUser();
+  const logout = useCallback(async (navigate) => {
+    try {
+      if (typeof navigate === "function") {
+        navigate("/", { replace: true });
+      }
 
-    return () => {
-      controller.abort();
-    };
-  }, []); // Run once on mount
+      localStorage.removeItem("authUser");
+      localStorage.removeItem("user_flight_search_pref");
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith("flightSearch_")) {
+          localStorage.removeItem(key);
+        }
+      });
+      sessionStorage.clear();
 
-  return { user, loading, setUser };
+      setUserState(null);
+
+      await fetch(`${baseUrl}/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      }).catch(() => {});
+    } catch (err) {
+      console.error("Logout error:", err);
+      setUserState(null);
+      if (typeof navigate === "function") {
+        navigate("/", { replace: true });
+      }
+    }
+  }, [baseUrl]);
+
+  return (
+    <AuthContext.Provider value={{ user, loading, setUser, fetchUser, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export function useAuthUser() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuthUser must be used within an AuthProvider");
+  }
+  return context;
 }
+
+export const useAuth = useAuthUser;
+export default useAuthUser;

@@ -38,7 +38,7 @@ async function handleResponse(res) {
     const message = msg || "Session expired. Please login again.";
 
     alert(message);
-    window.location.assign("/login");
+    window.location.assign("/");
     throw new Error(message);
   }
   // -------------------------------------------
@@ -56,22 +56,26 @@ export async function apiGet(path) {
   return handleResponse(res);
 }
 
-export async function apiPost(path, body) {
+export async function apiPost(path, body, options = {}) {
+  const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
+  const headers = isFormData ? {} : { "Content-Type": "application/json" };
   const res = await fetch(`${API_BASE}${path}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { ...headers, ...options?.headers },
     credentials: "include",
-    body: JSON.stringify(body),
+    body: isFormData ? body : JSON.stringify(body),
   });
   return handleResponse(res);
 }
 
-export async function apiPut(path, body) {
+export async function apiPut(path, body, options = {}) {
+  const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
+  const headers = isFormData ? {} : { "Content-Type": "application/json" };
   const res = await fetch(`${API_BASE}${path}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: { ...headers, ...options?.headers },
     credentials: "include",
-    body: JSON.stringify(body),
+    body: isFormData ? body : JSON.stringify(body),
   });
   return handleResponse(res);
 }
@@ -83,3 +87,12 @@ export async function apiDelete(path) {
   });
   return handleResponse(res);
 }
+
+export const apiClient = {
+  get: apiGet,
+  post: apiPost,
+  put: apiPut,
+  delete: apiDelete,
+};
+
+export default apiClient;

@@ -3,8 +3,6 @@ import { useLocation } from "react-router-dom";
 import { Award, Heart, MapPin, Phone, Mail, Clock, Users } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import MainNavbar from "@/components/layout/MainNavbar";
-import { HeaderNav } from "@/components/landingPage/HeaderNav";
-import { useAuthUser } from "@/hooks/useAuthUser";
 
 const stats = [
   { label: "Happy Travelers", value: "10,000+", icon: Users },
@@ -15,14 +13,11 @@ const stats = [
 
 const AboutUs = () => {
   const { hash } = useLocation();
-  // 2. Get user status
-  const { user } = useAuthUser();
 
   useEffect(() => {
     if (hash === "#contact") {
       const element = document.getElementById("contact");
       if (element) {
-        // Timeout ensures the DOM is fully rendered before scrolling
         setTimeout(() => {
           element.scrollIntoView({ behavior: "smooth" });
         }, 100);
@@ -31,42 +26,39 @@ const AboutUs = () => {
   }, [hash]);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* 3. Conditional Navigation Rendering */}
-      {user ? (
-        <MainNavbar />
-      ) : (
-        <div className="bg-slate-600">
-          {" "}
-          <HeaderNav />
-        </div>
-      )}
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col">
+      {/* Top Main Navbar */}
+      <MainNavbar />
 
       {/* Hero Section */}
-      <section className="relative py-10 md:py-16 bg-primary/10 mt-2">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
-            About Us
+      <section className="bg-white border-b border-slate-100 py-12 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <span className="text-xs font-bold uppercase tracking-widest text-cyan-600 mb-2 block">
+            ABOUT PADHAM TRAVELS
+          </span>
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 mb-4">
+            Creating Unforgettable Experiences
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            A one-person mission to create unforgettable travel experiences that
-            connect you with the world's most amazing destinations.
+          <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto font-normal">
+            Dedicated to connecting you with the world's most amazing destinations through customized tour packages and expert travel guidance.
           </p>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-10 md:py-16">
-        <div className="container mx-auto px-4">
+      <section className="py-12 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {stats.map((stat) => (
-              <Card key={stat.label} className="text-center">
+              <Card key={stat.label} className="text-center bg-white border-slate-100 rounded-2xl shadow-xs">
                 <CardContent className="p-6">
-                  <stat.icon className="w-10 h-10 text-primary mx-auto mb-4" />
-                  <div className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">
+                  <div className="w-12 h-12 bg-cyan-50 text-cyan-600 rounded-xl flex items-center justify-center mx-auto mb-4 border border-cyan-100">
+                    <stat.icon size={24} />
+                  </div>
+                  <div className="font-serif text-3xl md:text-4xl font-extrabold text-slate-900 mb-1">
                     {stat.value}
                   </div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                     {stat.label}
                   </div>
                 </CardContent>
@@ -77,69 +69,66 @@ const AboutUs = () => {
       </section>
 
       {/* My Story Section */}
-      <section className="py-10 md:py-16 bg-secondary/30">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-6">
-              My Story
-            </h2>
-            <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-              What started as a passion for travel has grown into a dedicated
-              service helping thousands of travelers explore the world. I
-              personally handle every booking, every tour, and every detail to
-              ensure you get the experience you deserve.
-            </p>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              With over 15 years of experience in the travel industry, I've
-              built relationships with the best local guides, hotels, and
-              service providers to bring you authentic, hassle-free adventures.
-              When you book with me, you're not just a customer — you're part of
-              my travel family.
-            </p>
-          </div>
+      <section className="py-12 md:py-16 bg-white border-y border-slate-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+          <span className="text-xs font-bold uppercase tracking-widest text-cyan-600 mb-2 block">
+            OUR JOURNEY
+          </span>
+          <h2 className="font-serif text-3xl md:text-4xl font-extrabold text-slate-900 mb-6">
+            Our Story & Passion
+          </h2>
+          <p className="text-base sm:text-lg text-slate-600 leading-relaxed mb-6">
+            What started as a passion for travel has grown into a dedicated service helping thousands of travelers explore the world. We handle every booking, every tour, and every detail to ensure you get an unforgettable experience.
+          </p>
+          <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
+            With over 15 years of experience in the travel industry, we have built relationships with top local guides, hotels, and transport providers to bring you authentic, hassle-free adventures.
+          </p>
         </div>
       </section>
 
-      {/* Values Section */}
-      <section className="py-10 md:py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground text-center mb-12">
-            What I Promise
-          </h2>
+      {/* Promises Section */}
+      <section className="py-12 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="text-xs font-bold uppercase tracking-widest text-cyan-600 mb-2 block">
+              OUR COMMITMENT
+            </span>
+            <h2 className="font-serif text-3xl md:text-4xl font-extrabold text-slate-900">
+              What We Promise
+            </h2>
+          </div>
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Heart className="w-8 h-8 text-primary" />
+            <div className="text-center bg-white p-6 rounded-2xl border border-slate-100 shadow-xs">
+              <div className="w-14 h-14 bg-cyan-50 text-cyan-600 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-cyan-100">
+                <Heart size={28} />
               </div>
-              <h3 className="font-display text-xl font-semibold text-foreground mb-3">
+              <h3 className="font-bold text-lg text-slate-900 mb-2">
                 Personal Attention
               </h3>
-              <p className="text-muted-foreground">
-                Every trip is personally crafted and monitored by me to ensure
-                perfection.
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Every trip is personally crafted and monitored by our travel experts to ensure perfection.
               </p>
             </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Award className="w-8 h-8 text-primary" />
+            <div className="text-center bg-white p-6 rounded-2xl border border-slate-100 shadow-xs">
+              <div className="w-14 h-14 bg-cyan-50 text-cyan-600 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-cyan-100">
+                <Award size={28} />
               </div>
-              <h3 className="font-display text-xl font-semibold text-foreground mb-3">
+              <h3 className="font-bold text-lg text-slate-900 mb-2">
                 Quality Service
               </h3>
-              <p className="text-muted-foreground">
-                I maintain the highest standards from planning to execution.
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                We maintain the highest standards from itinerary planning to hotel check-ins and transfers.
               </p>
             </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Clock className="w-8 h-8 text-primary" />
+            <div className="text-center bg-white p-6 rounded-2xl border border-slate-100 shadow-xs">
+              <div className="w-14 h-14 bg-cyan-50 text-cyan-600 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-cyan-100">
+                <Clock size={28} />
               </div>
-              <h3 className="font-display text-xl font-semibold text-foreground mb-3">
-                24/7 Support
+              <h3 className="font-bold text-lg text-slate-900 mb-2">
+                24/7 Dedicated Support
               </h3>
-              <p className="text-muted-foreground">
-                I'm always available to help you before, during, and after your
-                trip.
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                We are always available on call and WhatsApp to assist you before, during, and after your trip.
               </p>
             </div>
           </div>
@@ -147,55 +136,60 @@ const AboutUs = () => {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-10 md:py-16 bg-primary/10">
-        <div className="container mx-auto px-4">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground text-center mb-12">
-            Get In Touch
-          </h2>
+      <section id="contact" className="py-12 md:py-16 bg-white border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="text-xs font-bold uppercase tracking-widest text-cyan-600 mb-2 block">
+              REACH OUT
+            </span>
+            <h2 className="font-serif text-3xl md:text-4xl font-extrabold text-slate-900">
+              Get In Touch With Us
+            </h2>
+          </div>
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <Card className="text-center border-gray-300">
+            <Card className="text-center border-slate-100 bg-[#f8fafc] rounded-2xl">
               <CardContent className="p-8">
-                <div className="w-14 h-14 bg-primary/15 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Phone className="w-7 h-7 text-primary" />
+                <div className="w-12 h-12 bg-cyan-600 text-white rounded-xl flex items-center justify-center mx-auto mb-4 shadow-xs">
+                  <Phone size={22} />
                 </div>
-                <h3 className="font-display text-lg font-semibold text-foreground mb-2">
-                  Phone
+                <h3 className="font-bold text-base text-slate-900 mb-1">
+                  Phone / WhatsApp
                 </h3>
                 <a
-                  href="tel:+91 99442 29209"
-                  className="text-muted-foreground hover:text-primary transition-colors"
+                  href="tel:+919944229209"
+                  className="text-sm font-bold text-cyan-700 hover:underline"
                 >
                   +91 99442 29209
                 </a>
               </CardContent>
             </Card>
 
-            <Card className="text-center border-gray-300">
+            <Card className="text-center border-slate-100 bg-[#f8fafc] rounded-2xl">
               <CardContent className="p-8">
-                <div className="w-14 h-14 bg-primary/15 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Mail className="w-7 h-7 text-primary" />
+                <div className="w-12 h-12 bg-cyan-600 text-white rounded-xl flex items-center justify-center mx-auto mb-4 shadow-xs">
+                  <Mail size={22} />
                 </div>
-                <h3 className="font-display text-lg font-semibold text-foreground mb-2">
-                  Email
+                <h3 className="font-bold text-base text-slate-900 mb-1">
+                  Email Inquiry
                 </h3>
                 <a
                   href="mailto:info@padhamtravel.com"
-                  className="text-muted-foreground hover:text-primary transition-colors"
+                  className="text-sm font-bold text-cyan-700 hover:underline"
                 >
                   info@padhamtravel.com
                 </a>
               </CardContent>
             </Card>
 
-            <Card className="text-center border-gray-300">
+            <Card className="text-center border-slate-100 bg-[#f8fafc] rounded-2xl">
               <CardContent className="p-8">
-                <div className="w-14 h-14 bg-primary/15 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Clock className="w-7 h-7 text-primary" />
+                <div className="w-12 h-12 bg-cyan-600 text-white rounded-xl flex items-center justify-center mx-auto mb-4 shadow-xs">
+                  <Clock size={22} />
                 </div>
-                <h3 className="font-display text-lg font-semibold text-foreground mb-2">
-                  Hours
+                <h3 className="font-bold text-base text-slate-900 mb-1">
+                  Working Hours
                 </h3>
-                <p className="text-muted-foreground">Mon - Sun: 9AM - 9PM</p>
+                <p className="text-xs text-slate-600 font-medium">Mon - Sun: 9AM - 9PM</p>
               </CardContent>
             </Card>
           </div>

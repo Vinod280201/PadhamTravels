@@ -1,17 +1,17 @@
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import CONSTANTS from "@/constants/AppConstants";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { MessageCircle, ArrowRight } from "lucide-react";
 
 export const ToursAndTrips = () => {
   const TRIPS_AND_TOURS = CONSTANTS.TOURS_AND_PACKAGES;
-  const navigate = useNavigate(); // Initialize hook
+  const navigate = useNavigate();
 
-  // Embla options
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
-    align: "start", // Aligns slides to start for clean grid on desktop
+    align: "start",
     slidesToScroll: 1,
     containScroll: "trimSnaps",
   });
@@ -19,18 +19,9 @@ export const ToursAndTrips = () => {
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [scrollSnaps, setScrollSnaps] = useState([]);
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
-  const scrollTo = useCallback(
-    (index) => emblaApi && emblaApi.scrollTo(index),
-    [emblaApi],
-  );
-
-  const onInit = useCallback((emblaApi) => {
-    setScrollSnaps(emblaApi.scrollSnapList());
-  }, []);
 
   const onSelect = useCallback((emblaApi) => {
     setSelectedIndex(emblaApi.selectedScrollSnap());
@@ -40,60 +31,46 @@ export const ToursAndTrips = () => {
 
   useEffect(() => {
     if (!emblaApi) return;
-    onInit(emblaApi);
     onSelect(emblaApi);
-    emblaApi.on("reInit", onInit);
-    emblaApi.on("reInit", onSelect);
     emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
     return () => {
-      emblaApi.off("reInit", onInit);
-      emblaApi.off("reInit", onSelect);
       emblaApi.off("select", onSelect);
+      emblaApi.off("reInit", onSelect);
     };
-  }, [emblaApi, onInit, onSelect]);
+  }, [emblaApi, onSelect]);
 
   return (
-    <section className="w-full h-auto py-8 sm:py-12 bg-[#1a63a8]">
-      {/* CONTAINER PADDING UPDATE:
-          - Increased lg/xl padding (px-12/px-20) to make room for the arrows 
-            which are now pushed further outside the slides.
-      */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-20">
-        {/* Header Section */}
-        <div className="mb-8 sm:mb-12 relative flex flex-col md:flex-row items-center justify-center md:justify-between">
-          {/* Centered Title Wrapper */}
-          <div className="text-center w-full md:absolute md:left-1/2 md:-translate-x-1/2">
-            <p className="text-xs sm:text-sm text-gray-200 font-medium tracking-[0.2em] uppercase mb-2">
-              Tours & Packages
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl text-white font-light">
-              Places to <span className="font-bold">Explore</span>
+    <section className="w-full py-12 sm:py-16 bg-white border-t border-slate-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* HEADER ROW */}
+        <div className="mb-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
+          <div>
+            <span className="text-xs sm:text-sm font-bold tracking-widest text-cyan-600 uppercase mb-2 block">
+              TOP DESTINATIONS
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900">
+              Where Will You <span className="text-cyan-600">Go Next?</span>
             </h2>
           </div>
 
-          {/* "View All" Button - Positioned absolute right on desktop, static on mobile */}
-          <div className="mt-4 md:mt-0 md:ml-auto z-10">
-            <button
-              onClick={() => navigate("/tours-and-packages")}
-              className="px-4 py-2 bg-white text-[#1a63a8] rounded-lg hover:bg-yellow-400 hover:text-[#1a63a8] transition-colors duration-300 font-medium text-sm cursor-pointer"
-            >
-              View All Packages
-            </button>
-          </div>
+          <button
+            onClick={() => navigate("/tours-and-packages")}
+            className="px-5 py-2.5 border-2 border-cyan-600 text-cyan-700 hover:bg-cyan-600 hover:text-white font-bold rounded-xl transition-all text-xs tracking-wider uppercase flex items-center gap-2 cursor-pointer shadow-xs"
+          >
+            <span>VIEW ALL PACKAGES</span>
+            <ArrowRight size={16} />
+          </button>
         </div>
 
-        {/* Carousel Container */}
+        {/* CAROUSEL GRID */}
         <div className="relative group/carousel">
           <div className="embla overflow-hidden" ref={emblaRef}>
-            <div className="embla__container flex m-4 md:-ml-4">
+            <div className="embla__container flex -ml-4">
               {TRIPS_AND_TOURS.map((trip) => (
                 <div
                   key={trip.id}
-                  // RESPONSIVE LAYOUT UPDATE:
-                  // Mobile: flex-[0_0_100%] px-8 -> Single small card
-                  // Tablet (sm): flex-[0_0_50%] -> 2 cards
-                  // Laptop/Desktop (lg): flex-[0_0_25%] -> Exactly 4 cards fully visible
-                  className="embla__slide flex-[0_0_100%] px-8 sm:px-0 sm:pl-4 sm:flex-[0_0_50%] lg:flex-[0_0_25%] min-w-0"
+                  className="embla__slide flex-[0_0_100%] pl-4 sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] xl:flex-[0_0_25%] min-w-0"
                 >
                   <ToursAndTripsCard trip={trip} />
                 </div>
@@ -101,50 +78,28 @@ export const ToursAndTrips = () => {
             </div>
           </div>
 
-          {/* Navigation Buttons (Desktop/Tablet Only) */}
+          {/* Navigation Arrows */}
           {TRIPS_AND_TOURS.length > 0 && (
             <>
-              {/* Previous Button - Pushed further left (lg:-left-12) */}
               <button
                 onClick={scrollPrev}
-                className="hidden sm:flex absolute -left-4 lg:-left-12 xl:-left-16 top-1/2 -translate-y-1/2 
-                  w-10 h-10 lg:w-12 lg:h-12 items-center justify-center rounded-full 
-                  shadow-lg transition-all duration-300 z-10
-                  bg-white text-gray-800 hover:bg-yellow-500 hover:text-white cursor-pointer"
+                disabled={!canScrollPrev}
+                className="hidden sm:flex absolute -left-5 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center rounded-full shadow-md transition-all z-10 bg-white border border-slate-200 text-slate-700 hover:bg-cyan-600 hover:text-white hover:border-cyan-600 disabled:opacity-30 cursor-pointer"
                 aria-label="Previous slide"
               >
-                <FiChevronLeft size={24} />
+                <FiChevronLeft size={20} />
               </button>
 
-              {/* Next Button - Pushed further right (lg:-right-12) */}
               <button
                 onClick={scrollNext}
-                className="hidden sm:flex absolute -right-4 lg:-right-12 xl:-right-16 top-1/2 -translate-y-1/2 
-                  w-10 h-10 lg:w-12 lg:h-12 items-center justify-center rounded-full 
-                  shadow-lg transition-all duration-300 z-10
-                  bg-white text-gray-800 hover:bg-yellow-500 hover:text-white cursor-pointer"
+                disabled={!canScrollNext}
+                className="hidden sm:flex absolute -right-5 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center rounded-full shadow-md transition-all z-10 bg-white border border-slate-200 text-slate-700 hover:bg-cyan-600 hover:text-white hover:border-cyan-600 disabled:opacity-30 cursor-pointer"
                 aria-label="Next slide"
               >
-                <FiChevronRight size={24} />
+                <FiChevronRight size={20} />
               </button>
             </>
           )}
-
-          {/* Pagination Dots (Mobile Only) */}
-          <div className="flex sm:hidden justify-center mt-6 gap-2">
-            {scrollSnaps.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => scrollTo(index)}
-                className={`transition-all duration-300 rounded-full ${
-                  index === selectedIndex
-                    ? "w-8 h-2 bg-white"
-                    : "w-2 h-2 bg-white/40 hover:bg-white/60"
-                }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
         </div>
       </div>
     </section>
@@ -152,53 +107,68 @@ export const ToursAndTrips = () => {
 };
 
 const ToursAndTripsCard = ({ trip }) => {
-  const navigate = useNavigate(); // Initialize hook inside the card component
+  const navigate = useNavigate();
+  const whatsappPhone = import.meta.env.VITE_WHATSAPP_NUMBER || "919944229209";
+
+  const handleWhatsApp = (e) => {
+    e.stopPropagation();
+    const msg = encodeURIComponent(
+      `Hi Padham Travels, I am interested in booking the ${trip.title} package.`
+    );
+    window.open(`https://wa.me/${whatsappPhone}?text=${msg}`, "_blank");
+  };
 
   return (
-    // CARD: Padded white border (p-3) + Rounded Corners
-    <div className="group/card h-full flex flex-col bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-3 p-3">
-      {/* IMAGE: Rounded to fit inside the white border */}
-      <div className="relative aspect-4/3 w-full overflow-hidden rounded-xl">
+    <div className="group/card h-full flex flex-col bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden p-3.5">
+      {/* Image Banner */}
+      <div className="relative aspect-4/3 w-full overflow-hidden rounded-xl bg-slate-100">
         <img
           src={trip.image}
           alt={trip.title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-105"
         />
 
-        {/* Popular Badge */}
-        {trip.isPopular && (
-          <span className="absolute top-3 left-3 bg-red-600 text-white text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
-            POPULAR
-          </span>
-        )}
-
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+        {/* Category Pill Tag */}
+        <span className="absolute top-3 left-3 bg-cyan-50/95 backdrop-blur-md text-cyan-800 text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-xs border border-cyan-200">
+          {trip.isPopular ? "FEATURED" : "DESTINATION"}
+        </span>
       </div>
 
-      {/* CONTENT */}
-      <div className="flex flex-col grow pt-4 px-1">
-        <h3 className="font-bold text-lg sm:text-xl text-gray-800 mb-2 line-clamp-1 group-hover/card:text-[#1a63a8] transition-colors">
+      {/* Content */}
+      <div className="flex flex-col grow pt-3 px-1">
+        <h3 className="font-bold text-base sm:text-lg text-slate-900 mb-1 line-clamp-1 group-hover/card:text-cyan-600 transition-colors">
           {trip.title}
         </h3>
 
-        {/* Price Section */}
-        <div className="mt-auto pt-2 border-t border-gray-100">
-          <div className="flex items-baseline justify-between mb-4">
-            <span className="text-xs sm:text-sm text-gray-500 font-medium">
-              Starting from
-            </span>
-            <span className="text-lg sm:text-xl font-bold text-red-600">
+        <p className="text-xs text-slate-500 mb-3 line-clamp-1">
+          Customized Tour & Sightseeing Package
+        </p>
+
+        {/* Price & Action Section */}
+        <div className="mt-auto pt-3 border-t border-slate-100 space-y-2.5">
+          <div className="flex items-baseline justify-between">
+            <span className="text-xs text-slate-500 font-medium">Starting from</span>
+            <span className="text-base sm:text-lg font-bold text-slate-900">
               {trip.amount}
             </span>
           </div>
 
-          <button
-            onClick={() => navigate("/tours-and-packages")} // Updated navigation here
-            className="w-full py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-bold text-white bg-yellow-500 hover:bg-[#1a63a8] transition-colors duration-300 shadow-sm active:scale-95"
-          >
-            CHECK OUT NOW
-          </button>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={handleWhatsApp}
+              className="w-full py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors shadow-xs flex items-center justify-center gap-1 cursor-pointer"
+            >
+              <MessageCircle size={14} className="fill-current" />
+              <span>WhatsApp</span>
+            </button>
+
+            <button
+              onClick={() => navigate("/tours-and-packages")}
+              className="w-full py-2 rounded-xl text-xs font-bold text-slate-800 bg-cyan-50 hover:bg-cyan-100 text-cyan-700 border border-cyan-200 transition-colors cursor-pointer"
+            >
+              Details
+            </button>
+          </div>
         </div>
       </div>
     </div>

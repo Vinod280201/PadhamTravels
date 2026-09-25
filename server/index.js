@@ -4,17 +4,18 @@ import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "path";
+import multer from "multer";
 import { fileURLToPath } from "url";
 
 // Import Routes
 import AuthRoute from "./routes/auth.route.js";
 import flightsRoutes from "./routes/flights.route.js";
-import toursRouter from "./routes/tours.route.js";
-import adminToursRouter from "./routes/admin-tours.route.js";
+import tourRoutes from "./routes/tour.routes.js";
 import flightDealRoutes from "./routes/flightDealRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import bookingsRoutes from "./routes/bookings.route.js";
 import walletRoutes from "./routes/wallet.route.js";
+import inquiryRoutes from "./routes/inquiry.route.js";
 
 // Load environment variables
 dotenv.config();
@@ -56,7 +57,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // === 2. MIDDLEWARE ===
-app.use(express.json());
+app.use(express.json({ limit: "25mb" }));
+app.use(express.urlencoded({ extended: true, limit: "25mb" }));
 app.use(cookieParser());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -68,14 +70,34 @@ app.get("/", (req, res) => {
 // === 4. ROUTES ===
 app.use("/api/auth", AuthRoute);
 app.use("/api/flights", flightsRoutes);
-app.use("/api/tours", toursRouter);
-app.use("/api/admin/tours", adminToursRouter); 
-app.use("/api/admin", adminRoutes); 
+app.use("/api/tours", tourRoutes);
+app.use("/api/admin/tours", tourRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api/deals", flightDealRoutes);
 app.use("/api/bookings", bookingsRoutes);
 app.use("/api/wallet", walletRoutes);
+app.use("/api/inquiries", inquiryRoutes);
 
-// === 5. DATABASE CONNECTION ===
+// === 5. GRACEFUL MULTER & UPLOAD ERROR HANDLER ===
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === "LIMIT_FILE_SIZE") {
+      return res.status(400).json({
+        success: false,
+        message: "File size exceeds 20MB limit. Please upload a smaller file.",
+      });
+    }
+    return res.status(400).json({ success: false, message: err.message });
+  } else if (err) {
+    return res.status(400).json({
+      success: false,
+      message: err.message || "An error occurred during file upload/request processing.",
+    });
+  }
+  next();
+});
+
+// === 6. DATABASE CONNECTION ===
 const connectDB = async () => {
   try {
     if (!process.env.MONGODB_CONN) {
@@ -88,7 +110,7 @@ const connectDB = async () => {
   }
 };
 
-// === 6. START SERVER ===
+// === 7. START SERVER ===
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {

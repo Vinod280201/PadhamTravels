@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import MainNavbar from "@/components/layout/MainNavbar";
+import { formatPrice, getTourImageUrl } from "@/lib/utils";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -49,13 +50,12 @@ const TourBooking = () => {
           <div className="lg:col-span-2 space-y-6">
             <div className="rounded-xl overflow-hidden h-[400px]">
               <img
-                src={
-                  tour.image
-                    ? `${API_BASE}${tour.image}`
-                    : "https://via.placeholder.com/800x400"
-                }
+                src={getTourImageUrl(tour)}
                 alt={tour.name}
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = "https://via.placeholder.com/800x400?text=Tour+Package";
+                }}
               />
             </div>
 
@@ -117,7 +117,7 @@ const TourBooking = () => {
                     Price per person
                   </p>
                   <p className="text-3xl font-black text-slate-900">
-                    {tour.price}
+                    {formatPrice(tour.price, tour.currency)}
                   </p>
                 </div>
 

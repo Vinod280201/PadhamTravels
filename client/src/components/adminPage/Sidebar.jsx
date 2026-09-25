@@ -5,16 +5,10 @@ import ProfileImg from "@/assets/Profile.png";
 import {
   ChevronFirst,
   ChevronLast,
-  MoreVerticalIcon,
   LayoutDashboard,
-  Plane,
-  SquareChartGantt,
-  Calendar,
   Menu,
   X,
-  Tag, 
-  Wallet,
-  UserX,
+  UserCheck,
 } from "lucide-react";
 import { MdCardTravel } from "react-icons/md";
 
@@ -22,12 +16,12 @@ const SidebarContext = createContext();
 
 export const Sidebar = () => {
   const [user, setUser] = useState(null);
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Strictly Tour Showcase Focus Navigation items
   const items = [
     {
       icon: <LayoutDashboard size={20} />,
@@ -35,41 +29,14 @@ export const Sidebar = () => {
       path: "/admin/dashboard",
     },
     {
-      icon: <Plane size={20} />,
-      text: "Book Flights",
-      path: "/admin/book-flights",
-    },
-    {
-      icon: <SquareChartGantt size={20} />,
-      text: "Manage Bookings",
-      path: "/admin/manage-bookings",
-    },
-    {
-      icon: <Tag size={20} />,
-      text: "Manage Deals",
-      path: "/admin/manage-deals",
-    },
-    {
-      icon: <Calendar size={20} />,
-      text: "Booking Calendar",
-      alert: true,
-      path: "/admin/booking-calendar",
-    },
-    {
       icon: <MdCardTravel size={20} />,
       text: "Manage Tours",
       path: "/admin/manage-tours",
     },
     {
-      icon: <Wallet size={20} />,
-      text: "Manage Wallet",
-      path: "/admin/manage-wallet",
-    },
-    {
-      icon: <UserX size={20} />,
-      text: "Manage Requests",
-      path: "/admin/manage-requests",
-      alert: notificationCount > 0,
+      icon: <UserCheck size={20} />,
+      text: "Customer Inquiries",
+      path: "/admin/manage-inquiries",
     },
   ];
 
@@ -82,7 +49,6 @@ export const Sidebar = () => {
         });
 
         if (!res.ok) {
-          console.log("ME not ok:", res.status);
           return;
         }
 
@@ -95,23 +61,7 @@ export const Sidebar = () => {
       }
     };
 
-    const fetchNotifications = async () => {
-      try {
-        const baseUrl = import.meta.env.VITE_API_BASE_URL;
-        const res = await fetch(`${baseUrl}/bookings/dashboard-stats`, {
-           credentials: "include",
-        });
-        const data = await res.json();
-        if (data.status && data.stats) {
-          setNotificationCount(data.stats.activeCancellationsCount || 0);
-        }
-      } catch (err) {
-        console.error("SIDEBAR NOTIFICATION FETCH ERROR:", err);
-      }
-    };
-
     fetchMe();
-    fetchNotifications();
   }, []);
 
   return (
@@ -119,96 +69,103 @@ export const Sidebar = () => {
       {/* --- MOBILE TOGGLE BUTTON --- */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="fixed top-3 left-4 z-40 p-2 bg-slate-700 text-white rounded-md shadow-lg md:hidden hover:bg-slate-800"
+        className="fixed top-3 left-4 z-40 p-2 bg-slate-900 text-white rounded-xl shadow-md md:hidden hover:bg-slate-800 transition"
       >
-        <Menu size={24} />
+        <Menu size={22} />
       </button>
 
       {/* --- MOBILE OVERLAY --- */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-xs md:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}
 
-      {/* --- SIDEBAR CONTAINER --- */}
+      {/* --- SIDEBAR CONTAINER (Clean Crisp White Light Theme) --- */}
       <aside
         className={`
-          h-screen bg-slate-700 border-r shadow-sm transition-all duration-300 ease-in-out z-50
+          h-screen bg-white border-r border-slate-200/80 shadow-xs transition-all duration-300 ease-in-out z-50
           fixed top-0 left-0 md:relative 
           ${mobileOpen ? "translate-x-0" : "-translate-x-full"} 
           md:translate-x-0
         `}
       >
-        <nav className="h-full flex flex-col">
-          {/* HEADER */}
-          <div className="p-4 pb-2 flex justify-between items-center">
-            <img
-              src={LogoImg}
-              className={`overflow-hidden transition-all ${
-                expanded ? "w-22" : "w-0"
-              }`}
-              alt="Logo"
-            />
+        <nav className="h-full flex flex-col justify-between">
+          <div>
+            {/* HEADER */}
+            <div className="p-4 pb-3 flex justify-between items-center border-b border-slate-100">
+              <div className="flex items-center gap-3 overflow-hidden">
+                <img
+                  src={LogoImg}
+                  className={`overflow-hidden transition-all object-contain ${
+                    expanded ? "w-16" : "w-0"
+                  }`}
+                  alt="Logo"
+                />
+                {expanded && (
+                  <span className="font-extrabold text-sm tracking-tight text-slate-800 truncate">
+                    Admin Portal
+                  </span>
+                )}
+              </div>
 
-            {/* Desktop: Collapse/Expand Button */}
-            <button
-              onClick={() => setExpanded((curr) => !curr)}
-              className="hidden md:block p-1.5 rounded-lg bg-gray-50 hover:bg-gray-200 cursor-pointer"
-            >
-              {expanded ? <ChevronFirst /> : <ChevronLast />}
-            </button>
+              {/* Desktop: Collapse/Expand Button */}
+              <button
+                onClick={() => setExpanded((curr) => !curr)}
+                className="hidden md:block p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition cursor-pointer"
+              >
+                {expanded ? <ChevronFirst size={18} /> : <ChevronLast size={18} />}
+              </button>
 
-            {/* Mobile: Close 'X' Button */}
-            <button
-              onClick={() => setMobileOpen(false)}
-              className="md:hidden p-1.5 rounded-lg bg-gray-700 text-white hover:bg-gray-600"
-            >
-              <X size={20} />
-            </button>
+              {/* Mobile: Close 'X' Button */}
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="md:hidden p-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* MENU ITEMS */}
+            <SidebarContext.Provider value={{ expanded }}>
+              <ul className="flex-1 px-2.5 py-4 space-y-1.5">
+                {items.map((item) => (
+                  <SidebarItem
+                    key={item.text}
+                    icon={item.icon}
+                    text={item.text}
+                    active={location.pathname === item.path}
+                    onClick={() => {
+                      if (item.path) navigate(item.path);
+                      setMobileOpen(false);
+                    }}
+                  />
+                ))}
+              </ul>
+            </SidebarContext.Provider>
           </div>
 
-          {/* MENU ITEMS */}
-          <SidebarContext.Provider value={{ expanded }}>
-            <ul className={`flex-1 px-3 ${expanded ? "pt-2" : "pt-0"}`}>
-              {items.map((item) => (
-                <SidebarItem
-                  key={item.text}
-                  icon={item.icon}
-                  text={item.text}
-                  active={location.pathname === item.path}
-                  alert={item.alert}
-                  onClick={() => {
-                    if (item.path) navigate(item.path);
-                    setMobileOpen(false);
-                  }}
-                />
-              ))}
-            </ul>
-          </SidebarContext.Provider>
-
           {/* FOOTER (USER PROFILE) */}
-          <div className="border-t border-slate-600 flex p-3">
+          <div className="border-t border-slate-100 bg-slate-50/60 p-3.5 flex items-center">
             <img
               src={ProfileImg}
-              className="w-10 h-10 rounded-full object-cover"
+              className="w-9 h-9 rounded-full object-cover border border-slate-200 shadow-xs"
               alt="Profile"
             />
             <div
               className={`flex justify-between items-center overflow-hidden transition-all ${
-                expanded ? "w-42 ml-3" : "w-0"
+                expanded ? "w-40 ml-3" : "w-0"
               }`}
             >
-              <div className="leading-4">
-                <h4 className="font-semibold text-white">
-                  {user?.name || "Admin"}
+              <div className="leading-tight truncate">
+                <h4 className="font-bold text-xs text-slate-800 truncate">
+                  {user?.name || "Padham Admin"}
                 </h4>
-                <span className="text-xs text-gray-300">
-                  {user?.email || ""}
+                <span className="text-[11px] font-medium text-slate-500 truncate block">
+                  {user?.email || "admin@padhamtravels.com"}
                 </span>
               </div>
-              <MoreVerticalIcon className="text-gray-300" size={20} />
             </div>
           </div>
         </nav>
@@ -223,27 +180,27 @@ export function SidebarItem({ icon, text, active, alert, onClick }) {
     <li
       onClick={onClick}
       className={`
-        relative flex items-center my-1 rounded-md font-medium cursor-pointer transition-colors group
+        relative flex items-center py-2.5 px-3 rounded-xl font-semibold cursor-pointer transition-all duration-200 group text-sm
         ${
           active
-            ? "bg-orange-500 text-white"
-            : "text-gray-300 hover:bg-slate-200 hover:text-slate-800"
+            ? "bg-cyan-50 text-cyan-700 font-bold border-r-4 border-cyan-600 shadow-2xs"
+            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
         }
       `}
     >
-      <div className="flex items-center justify-center min-w-10 h-10">
+      <div className="flex items-center justify-center shrink-0 w-6 h-6">
         {icon}
       </div>
       <span
         className={`overflow-hidden transition-all whitespace-nowrap ${
-          expanded ? "w-42 ml-3" : "w-0"
+          expanded ? "w-40 ml-3 opacity-100" : "w-0 opacity-0"
         }`}
       >
         {text}
       </span>
       {alert && (
         <div
-          className={`absolute right-2 w-2 h-2 rounded bg-orange-400 ${
+          className={`absolute right-2.5 w-2 h-2 rounded-full bg-cyan-500 ${
             expanded ? "" : "top-2"
           }`}
         />
@@ -253,11 +210,11 @@ export function SidebarItem({ icon, text, active, alert, onClick }) {
       {!expanded && (
         <div
           className={`
-            absolute left-full rounded-md px-2 py-1 ml-6 
-            bg-slate-600 text-white text-sm 
-            invisible opacity-20 -translate-x-3 transition-all whitespace-nowrap 
+            absolute left-full rounded-lg px-3 py-1.5 ml-4
+            bg-slate-900 text-white text-xs font-semibold
+            invisible opacity-0 -translate-x-2 transition-all whitespace-nowrap 
             group-hover:visible group-hover:opacity-100 group-hover:translate-x-0
-            z-50
+            z-50 shadow-md
           `}
         >
           {text}
@@ -266,3 +223,5 @@ export function SidebarItem({ icon, text, active, alert, onClick }) {
     </li>
   );
 }
+
+export default Sidebar;

@@ -7,10 +7,9 @@ import { useAuthUser } from "@/hooks/useAuthUser";
 
 export const HeaderNav = () => {
   const [open, setOpen] = useState(false);
-  const { user, setUser } = useAuthUser();
+  const { user, logout } = useAuthUser();
   const navigate = useNavigate();
-  const location = useLocation(); // 2. Get current location
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const location = useLocation();
 
   // 3. Helper to check if path is active and return classes
   const getLinkClass = (path) => {
@@ -29,25 +28,9 @@ export const HeaderNav = () => {
   };
 
   const handleLogout = async () => {
-    try {
-      await fetch(`${baseUrl}/auth/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
-    } catch (e) {
-      // ignore
-    } finally {
-      sessionStorage.clear(); // Clear flight search state
-      localStorage.removeItem("authUser");
-      localStorage.removeItem("user_flight_search_pref");
-      Object.keys(localStorage).forEach(key => {
-        if (key.startsWith("flightSearch_")) {
-          localStorage.removeItem(key);
-        }
-      });
-      setUser(null);
-      navigate("/", { replace: true });
-    }
+    setOpen(false);
+    navigate("/", { replace: true });
+    await logout(navigate);
   };
 
   return (
@@ -68,11 +51,11 @@ export const HeaderNav = () => {
             <p className="text-white">HOME</p>
           </div>
         </Link>
-        <Link to="/flights" className="ml-5 whitespace-nowrap">
+        {/* <Link to="/flights" className="ml-5 whitespace-nowrap">
           <div className={getLinkClass("/flights")}>
             <p className="text-white">FLIGHTS</p>
           </div>
-        </Link>
+        </Link> */}
         <Link to="/tours-and-packages" className="ml-5 whitespace-nowrap">
           <div className={getLinkClass("/tours-and-packages")}>
             <p className="text-white">TOURS & PACKAGES</p>
@@ -163,13 +146,13 @@ export const HeaderNav = () => {
           >
             Home
           </Link>
-          <Link
+          {/* <Link
             to="/flights"
             onClick={() => setOpen(false)}
             className={getMobileLinkClass("/flights")}
           >
             Flights
-          </Link>
+          </Link> */}
           <Link
             to="/tours-and-packages"
             onClick={() => setOpen(false)}

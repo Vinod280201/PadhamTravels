@@ -16,13 +16,15 @@ import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import LoginPageImg from "@/assets/loginpageimg1.jpg";
+import { useAuthUser } from "@/hooks/useAuthUser";
 
 export const LoginPage = () => {
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const { setUser } = useAuthUser();
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from || "/home";
+  const from = (location.state?.from && location.state.from !== "/home") ? location.state.from : "/";
   const originalState = location.state?.originalState || null;
 
   /* Defining the schema for form validation using Zod */
@@ -63,16 +65,21 @@ export const LoginPage = () => {
           },
         });
 
-        // If backend returns role, redirect based on role
-        const role = data.user?.role;
-        const user = { email: data.email, role: data.role };
-        localStorage.setItem("authUser", JSON.stringify(user));
+        // Extract logged in user data
+        const role = data.user?.role || data.role || "user";
+        const userData = data.user || {
+          email: data.email || values.email,
+          role: role,
+          name: data.name,
+        };
+        
+        // Immediately update global AuthContext state & localStorage
+        setUser(userData);
 
         // redirect logic using `from`
         if (role === "admin") {
           navigate("/admin/dashboard", { replace: true });
         } else {
-          // If originalState was provided by RequireAuth (like flight selection data), apply it directly to state
           navigate(from, { state: originalState ? { ...originalState } : null, replace: true });
         }
       } else {

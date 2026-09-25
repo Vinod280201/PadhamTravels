@@ -379,7 +379,7 @@ export const FlightTicketPage = () => {
            </div>
            <div className="text-right text-xs text-slate-600 font-medium">
               <p className="font-bold text-slate-800 text-sm mb-1 uppercase tracking-wide">Contact Us</p>
-              <p>📞 +91 98765 43210</p>
+              <p>📞 +91 99442 29209</p>
               <p>✉️ info@padhamtravel.com</p>
               <p>🌐 www.padhamtravel.com</p>
            </div>

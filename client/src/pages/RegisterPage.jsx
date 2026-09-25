@@ -22,7 +22,7 @@ export const RegisterPage = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from || "/home";
+  const from = (location.state?.from && location.state.from !== "/home") ? location.state.from : "/";
   const originalState = location.state?.originalState || null;
 
   /* Defining the schema for form validation using Zod */

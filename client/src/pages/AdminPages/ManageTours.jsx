@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { apiGet, apiDelete } from "@/apiClient";
+import apiClient, { apiGet, apiPost, apiPut, apiDelete } from "@/apiClient";
+import { formatPrice, getTourImageUrl } from "@/lib/utils";
 import {
   X,
   FileText,
@@ -12,21 +13,36 @@ import {
   UploadCloud,
   MapPin,
   Clock,
+  Plus,
 } from "lucide-react";
 
-// 1. Get Backend URL for images
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
+const SERVER_BASE = (import.meta.env.VITE_API_BASE_URL || "http://localhost:3000").replace(/\/api\/?$/, "");
+const API_BASE = SERVER_BASE;
+
+const parseBulletLines = (text) => {
+  if (!text) return [];
+  if (Array.isArray(text)) return text;
+  return text
+    .split("\n")
+    .map((line) => line.replace(/^[\s•\-\*]+/, "").trim())
+    .filter((line) => line.length > 0);
+};
 
 const initialForm = {
   name: "",
   destination: "",
   duration: "",
   price: "",
+  currency: "INR",
+  pricingUnit: "per person",
   rating: "",
   reviews: "",
-  itinerary: "", // Stores DB path string
+  itinerary: "",
   highlights: "",
-  image: null, // Stores DB path string
+  inclusions: "",
+  exclusions: "",
+  isFeatured: false,
+  image: null,
 };
 
 const ManageTours = () => {
@@ -36,7 +52,6 @@ const ManageTours = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
-  // File states hold the actual File objects when selected
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedPdf, setSelectedPdf] = useState(null);
 
@@ -48,9 +63,10 @@ const ManageTours = () => {
     const fetchTours = async () => {
       try {
         setLoading(true);
-        const res = await apiGet("/admin/tours");
+        const res = await apiGet("/tours");
         const data = await res.json();
-        setTours(Array.isArray(data) ? data : []);
+        const tourList = Array.isArray(data) ? data : (data.tours || []);
+        setTours(tourList);
       } catch (err) {
         console.error("LOAD ERROR:", err);
       } finally {
@@ -61,20 +77,34 @@ const ManageTours = () => {
   }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
-  // --- File Handlers ---
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
+      const file = e.target.files[0];
+      if (file.size > 20 * 1024 * 1024) {
+        alert("File size exceeds 20MB. Please choose an optimized image under 20MB.");
+        e.target.value = null;
+        return;
+      }
+      setSelectedFile(file);
     }
   };
 
   const handlePdfChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setSelectedPdf(e.target.files[0]);
+      const file = e.target.files[0];
+      if (file.size > 20 * 1024 * 1024) {
+        alert("File size exceeds 20MB. Please choose a PDF file under 20MB.");
+        e.target.value = null;
+        return;
+      }
+      setSelectedPdf(file);
     }
   };
 
@@ -83,7 +113,6 @@ const ManageTours = () => {
     setSelectedFile(null);
     setSelectedPdf(null);
     setEditingId(null);
-    // Reset file inputs visually
     if (document.getElementById("image-upload"))
       document.getElementById("image-upload").value = "";
     if (document.getElementById("pdf-upload"))
@@ -106,11 +135,15 @@ const ManageTours = () => {
       formData.append("destination", form.destination);
       formData.append("duration", form.duration);
       formData.append("price", form.price);
+      formData.append("currency", form.currency || "INR");
+      formData.append("pricingUnit", form.pricingUnit || "per person");
       formData.append("rating", form.rating || 0);
       formData.append("reviews", form.reviews || 0);
-      formData.append("highlights", form.highlights);
+      formData.append("highlights", JSON.stringify(parseBulletLines(form.highlights)));
+      formData.append("inclusions", JSON.stringify(parseBulletLines(form.inclusions)));
+      formData.append("exclusions", JSON.stringify(parseBulletLines(form.exclusions)));
+      formData.append("isFeatured", form.isFeatured);
 
-      // Only append files if a *new* one was selected
       if (selectedFile) {
         formData.append("image", selectedFile);
       }
@@ -119,31 +152,21 @@ const ManageTours = () => {
         formData.append("itinerary", selectedPdf);
       }
 
-      const url = editingId
-        ? `${API_BASE}/api/admin/tours/${editingId}`
-        : `${API_BASE}/api/admin/tours`;
-
-      const method = editingId ? "PUT" : "POST";
-
-      const res = await fetch(url, {
-        method: method,
-        body: formData,
-        credentials: "include",
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to save tour");
-      }
+      const path = editingId ? `/tours/${editingId}` : "/tours";
+      const res = editingId
+        ? await apiPut(path, formData)
+        : await apiPost(path, formData);
 
       const savedData = await res.json();
+      const savedTour = savedData.tour || savedData;
 
       if (!editingId) {
-        setTours((prev) => [savedData, ...prev]);
+        setTours((prev) => [savedTour, ...prev]);
       } else {
         setTours((prev) =>
           prev.map((t) =>
-            t.id === editingId || t._id === editingId ? savedData : t,
-          ),
+            (t.id || t._id) === editingId ? savedTour : t
+          )
         );
       }
 
@@ -160,16 +183,25 @@ const ManageTours = () => {
   const handleEditClick = (tour) => {
     setEditingId(tour.id || tour._id);
     setForm({
-      name: tour.name || "",
+      name: tour.name || tour.title || "",
       destination: tour.destination || "",
       duration: tour.duration || "",
       price: tour.price || "",
+      currency: tour.currency || "INR",
+      pricingUnit: tour.pricingUnit || "per person",
       rating: tour.rating || "",
       reviews: tour.reviews || "",
       itinerary: tour.itinerary || "",
       highlights: Array.isArray(tour.highlights)
-        ? tour.highlights.join(", ")
-        : tour.highlights,
+        ? tour.highlights.join("\n")
+        : tour.highlights || "",
+      inclusions: Array.isArray(tour.inclusions)
+        ? tour.inclusions.join("\n")
+        : tour.inclusions || "",
+      exclusions: Array.isArray(tour.exclusions)
+        ? tour.exclusions.join("\n")
+        : tour.exclusions || "",
+      isFeatured: tour.isFeatured || false,
       image: tour.image || "",
     });
     setSelectedFile(null);
@@ -180,7 +212,7 @@ const ManageTours = () => {
   const handleDeleteClick = async (id) => {
     if (!confirm("Delete this tour?")) return;
     try {
-      await apiDelete(`/admin/tours/${id}`);
+      await apiDelete(`/tours/${id}`);
       setTours((prev) => prev.filter((t) => (t.id || t._id) !== id));
     } catch (err) {
       alert("Failed to delete");
@@ -188,41 +220,42 @@ const ManageTours = () => {
   };
 
   return (
-    <div className="p-4 md:p-6 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 max-w-7xl mx-auto space-y-6">
       {/* HEADER */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-slate-900">
-            Manage Tours
+          <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900">
+            Manage Tour Packages
           </h1>
           <p className="text-slate-500 text-sm">
-            Create, update or remove tour packages
+            Create, update or remove tour packages for your website showcase
           </p>
         </div>
-        <Button
+        <button
           onClick={() => {
             resetForm();
             setShowForm(true);
           }}
-          className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white shadow-sm"
+          className="w-full sm:w-auto bg-cyan-600 hover:bg-cyan-700 text-white font-bold px-4 py-2.5 rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer text-sm"
         >
-          + Add New Tour
-        </Button>
+          <Plus size={18} />
+          <span>Add New Tour</span>
+        </button>
       </div>
 
       {/* FORM SECTION */}
       {showForm && (
-        <Card className="mb-8 border-slate-300 shadow-md">
+        <Card className="bg-white border-slate-200 shadow-md rounded-2xl">
           <CardContent className="p-4 md:p-6">
-            <div className="flex justify-between items-center mb-4 border-b pb-2">
-              <h2 className="text-xl font-semibold text-slate-800">
-                {editingId ? "Edit Tour Details" : "Add New Tour"}
+            <div className="flex justify-between items-center mb-6 border-b border-slate-100 pb-3">
+              <h2 className="text-xl font-extrabold text-slate-800">
+                {editingId ? "Edit Tour Details" : "Add New Tour Package"}
               </h2>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowForm(false)}
-                className="h-8 w-8 p-0 text-slate-400"
+                className="h-8 w-8 p-0 text-slate-400 hover:text-slate-700"
               >
                 <X size={20} />
               </Button>
@@ -234,7 +267,7 @@ const ManageTours = () => {
             >
               {/* Name */}
               <div>
-                <Label htmlFor="name" className="mb-1.5 block font-medium">
+                <Label htmlFor="name" className="mb-1.5 block font-bold text-slate-700 text-xs uppercase">
                   Tour Name <span className="text-red-500">*</span>
                 </Label>
                 <Input
@@ -243,7 +276,7 @@ const ManageTours = () => {
                   value={form.name}
                   onChange={handleChange}
                   placeholder="e.g. Swiss Alps Adventure"
-                  className="bg-white"
+                  className="bg-slate-50/50 border-slate-200 focus:border-cyan-500 focus:ring-cyan-500 rounded-xl"
                 />
               </div>
 
@@ -251,7 +284,7 @@ const ManageTours = () => {
               <div>
                 <Label
                   htmlFor="destination"
-                  className="mb-1.5 block font-medium"
+                  className="mb-1.5 block font-bold text-slate-700 text-xs uppercase"
                 >
                   Destination <span className="text-red-500">*</span>
                 </Label>
@@ -261,13 +294,13 @@ const ManageTours = () => {
                   value={form.destination}
                   onChange={handleChange}
                   placeholder="e.g. Switzerland"
-                  className="bg-white"
+                  className="bg-slate-50/50 border-slate-200 focus:border-cyan-500 focus:ring-cyan-500 rounded-xl"
                 />
               </div>
 
               {/* Duration */}
               <div>
-                <Label htmlFor="duration" className="mb-1.5 block font-medium">
+                <Label htmlFor="duration" className="mb-1.5 block font-bold text-slate-700 text-xs uppercase">
                   Duration
                 </Label>
                 <Input
@@ -276,28 +309,68 @@ const ManageTours = () => {
                   value={form.duration}
                   onChange={handleChange}
                   placeholder="e.g. 7 Days / 6 Nights"
-                  className="bg-white"
+                  className="bg-slate-50/50 border-slate-200 focus:border-cyan-500 focus:ring-cyan-500 rounded-xl"
                 />
               </div>
 
-              {/* Price */}
+              {/* Price & Currency */}
               <div>
-                <Label htmlFor="price" className="mb-1.5 block font-medium">
-                  Price <span className="text-red-500">*</span>
+                <Label htmlFor="price" className="mb-1.5 block font-bold text-slate-700 text-xs uppercase">
+                  Price & Currency <span className="text-red-500">*</span>
                 </Label>
-                <Input
-                  id="price"
-                  name="price"
-                  value={form.price}
+                <div className="flex rounded-xl border border-slate-200 bg-slate-50/50 focus-within:ring-2 focus-within:ring-cyan-100 focus-within:border-cyan-500 overflow-hidden transition">
+                  {/* Currency Selector */}
+                  <select
+                    id="currency"
+                    name="currency"
+                    value={form.currency || "INR"}
+                    onChange={handleChange}
+                    className="bg-slate-100/80 border-r border-slate-200 text-slate-700 text-sm font-semibold px-3 py-2.5 outline-none cursor-pointer hover:bg-slate-200/60 transition shrink-0"
+                  >
+                    <option value="INR">₹ INR</option>
+                    <option value="USD">$ USD</option>
+                    <option value="EUR">€ EUR</option>
+                    <option value="AED">AED</option>
+                    <option value="SGD">S$ SGD</option>
+                    <option value="THB">฿ THB</option>
+                  </select>
+
+                  {/* Amount Input */}
+                  <Input
+                    id="price"
+                    name="price"
+                    type="number"
+                    min="0"
+                    value={form.price}
+                    onChange={handleChange}
+                    placeholder="e.g. 35000"
+                    className="w-full border-0 bg-transparent px-3 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none focus-visible:ring-0 shadow-none rounded-none"
+                  />
+                </div>
+              </div>
+
+              {/* Pricing Basis */}
+              <div>
+                <Label htmlFor="pricingUnit" className="mb-1.5 block font-bold text-slate-700 text-xs uppercase">
+                  Pricing Basis <span className="text-red-500">*</span>
+                </Label>
+                <select
+                  id="pricingUnit"
+                  name="pricingUnit"
+                  value={form.pricingUnit || "per person"}
                   onChange={handleChange}
-                  placeholder="e.g. ₹1,25,000"
-                  className="bg-white"
-                />
+                  className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 font-medium outline-none focus:ring-2 focus:ring-cyan-100 focus:border-cyan-500 transition cursor-pointer"
+                >
+                  <option value="per person">Per Person</option>
+                  <option value="for 2 persons">For 2 Persons (Twin Sharing)</option>
+                  <option value="for couple">For Couple</option>
+                  <option value="total package">Total Package</option>
+                </select>
               </div>
 
               {/* Rating */}
               <div>
-                <Label htmlFor="rating" className="mb-1.5 block font-medium">
+                <Label htmlFor="rating" className="mb-1.5 block font-bold text-slate-700 text-xs uppercase">
                   Rating (0-5)
                 </Label>
                 <Input
@@ -309,13 +382,13 @@ const ManageTours = () => {
                   value={form.rating}
                   onChange={handleChange}
                   placeholder="e.g. 4.8"
-                  className="bg-white"
+                  className="bg-slate-50/50 border-slate-200 focus:border-cyan-500 focus:ring-cyan-500 rounded-xl"
                 />
               </div>
 
               {/* Reviews */}
               <div>
-                <Label htmlFor="reviews" className="mb-1.5 block font-medium">
+                <Label htmlFor="reviews" className="mb-1.5 block font-bold text-slate-700 text-xs uppercase">
                   Review Count
                 </Label>
                 <Input
@@ -325,13 +398,13 @@ const ManageTours = () => {
                   value={form.reviews}
                   onChange={handleChange}
                   placeholder="e.g. 124"
-                  className="bg-white"
+                  className="bg-slate-50/50 border-slate-200 focus:border-cyan-500 focus:ring-cyan-500 rounded-xl"
                 />
               </div>
 
               {/* PDF UPLOAD */}
               <div className="md:col-span-2">
-                <Label className="mb-1.5 block font-medium">
+                <Label className="mb-1.5 block font-bold text-slate-700 text-xs uppercase">
                   Itinerary PDF
                 </Label>
                 <Input
@@ -343,16 +416,16 @@ const ManageTours = () => {
                 />
 
                 {!selectedPdf ? (
-                  <div className="border border-dashed border-slate-300 rounded-lg p-4 bg-slate-50 flex flex-col sm:flex-row items-center gap-4">
+                  <div className="border border-dashed border-slate-300 rounded-xl p-4 bg-slate-50 flex flex-col sm:flex-row items-center gap-4">
                     <Button
                       type="button"
                       variant="outline"
                       asChild
-                      className="cursor-pointer bg-white"
+                      className="cursor-pointer bg-white border-slate-200"
                     >
                       <label
                         htmlFor="pdf-upload"
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-2 font-semibold"
                       >
                         <UploadCloud size={16} /> Select PDF
                       </label>
@@ -363,7 +436,7 @@ const ManageTours = () => {
                           href={`${API_BASE}${form.itinerary}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm text-blue-600 hover:underline flex items-center justify-center sm:justify-start gap-1"
+                          className="text-xs font-semibold text-cyan-600 hover:underline flex items-center justify-center sm:justify-start gap-1"
                         >
                           <FileText size={14} /> View Current PDF
                         </a>
@@ -375,10 +448,10 @@ const ManageTours = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-md">
+                  <div className="flex items-center justify-between p-3 bg-cyan-50 border border-cyan-200 rounded-xl">
                     <div className="flex items-center gap-2 truncate">
-                      <FileText size={20} className="text-blue-600 shrink-0" />
-                      <span className="text-sm font-medium text-blue-900 truncate max-w-[150px] sm:max-w-xs">
+                      <FileText size={20} className="text-cyan-600 shrink-0" />
+                      <span className="text-sm font-semibold text-cyan-900 truncate max-w-[150px] sm:max-w-xs">
                         {selectedPdf.name}
                       </span>
                     </div>
@@ -400,7 +473,7 @@ const ManageTours = () => {
 
               {/* IMAGE UPLOAD */}
               <div className="md:col-span-2">
-                <Label className="mb-1.5 block font-medium">Tour Image</Label>
+                <Label className="mb-1.5 block font-bold text-slate-700 text-xs uppercase">Tour Image</Label>
                 <Input
                   type="file"
                   id="image-upload"
@@ -410,16 +483,16 @@ const ManageTours = () => {
                 />
 
                 {!selectedFile ? (
-                  <div className="border border-dashed border-slate-300 rounded-lg p-4 bg-slate-50 flex flex-col sm:flex-row items-center gap-4">
+                  <div className="border border-dashed border-slate-300 rounded-xl p-4 bg-slate-50 flex flex-col sm:flex-row items-center gap-4">
                     <Button
                       type="button"
                       variant="outline"
                       asChild
-                      className="cursor-pointer bg-white"
+                      className="cursor-pointer bg-white border-slate-200"
                     >
                       <label
                         htmlFor="image-upload"
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-2 font-semibold"
                       >
                         <ImageIcon size={16} /> Select Image
                       </label>
@@ -428,11 +501,11 @@ const ManageTours = () => {
                     {editingId && form.image ? (
                       <div className="flex items-center gap-3">
                         <img
-                          src={`${API_BASE}${form.image}`}
+                          src={getTourImageUrl({ image: form.image })}
                           alt="Current"
-                          className="h-10 w-16 object-cover rounded border border-slate-200"
+                          className="h-10 w-16 object-cover rounded-md border border-slate-200"
                         />
-                        <span className="text-xs text-slate-500">
+                        <span className="text-xs font-medium text-slate-500">
                           Current Image
                         </span>
                       </div>
@@ -443,13 +516,13 @@ const ManageTours = () => {
                     )}
                   </div>
                 ) : (
-                  <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-md">
+                  <div className="flex items-center justify-between p-3 bg-cyan-50 border border-cyan-200 rounded-xl">
                     <div className="flex items-center gap-2 truncate">
                       <ImageIcon
                         size={20}
-                        className="text-green-600 shrink-0"
+                        className="text-cyan-600 shrink-0"
                       />
-                      <span className="text-sm font-medium text-green-900 truncate max-w-[150px] sm:max-w-xs">
+                      <span className="text-sm font-semibold text-cyan-900 truncate max-w-[150px] sm:max-w-xs">
                         {selectedFile.name}
                       </span>
                     </div>
@@ -473,19 +546,72 @@ const ManageTours = () => {
               <div className="md:col-span-2">
                 <Label
                   htmlFor="highlights"
-                  className="mb-1.5 block font-medium"
+                  className="mb-1.5 block font-bold text-slate-700 text-xs uppercase"
                 >
-                  Highlights
+                  HIGHLIGHTS (ONE PER LINE OR BULLETS)
                 </Label>
                 <Textarea
                   id="highlights"
                   name="highlights"
                   value={form.highlights}
                   onChange={handleChange}
-                  placeholder="e.g. Mountain Hiking, Cable Car Rides"
-                  rows={3}
-                  className="bg-white"
+                  placeholder={`• Mountain Hiking & Trekking\n• Cable Car Rides in Alps\n• Scenic River Cruise`}
+                  rows={4}
+                  className="bg-slate-50/50 border-slate-200 focus:border-cyan-500 focus:ring-cyan-500 rounded-xl font-sans text-sm"
                 />
+              </div>
+
+              {/* Inclusions */}
+              <div>
+                <Label
+                  htmlFor="inclusions"
+                  className="mb-1.5 block font-bold text-emerald-700 text-xs uppercase"
+                >
+                  PACKAGE INCLUSIONS (ONE PER LINE OR BULLETS)
+                </Label>
+                <Textarea
+                  id="inclusions"
+                  name="inclusions"
+                  value={form.inclusions}
+                  onChange={handleChange}
+                  placeholder={`• Accommodation on Double Sharing Basis\n• Breakfast & Dinner throughout the tour\n• Private Vehicle for Transfers & Sightseeing`}
+                  rows={4}
+                  className="bg-slate-50/50 border-slate-200 focus:border-cyan-500 focus:ring-cyan-500 rounded-xl font-sans text-sm"
+                />
+              </div>
+
+              {/* Exclusions */}
+              <div>
+                <Label
+                  htmlFor="exclusions"
+                  className="mb-1.5 block font-bold text-red-700 text-xs uppercase"
+                >
+                  PACKAGE EXCLUSIONS (ONE PER LINE OR BULLETS)
+                </Label>
+                <Textarea
+                  id="exclusions"
+                  name="exclusions"
+                  value={form.exclusions}
+                  onChange={handleChange}
+                  placeholder={`• Personal Expenses & Laundry\n• Flight / Train Tickets\n• Any optional activity fees`}
+                  rows={4}
+                  className="bg-slate-50/50 border-slate-200 focus:border-cyan-500 focus:ring-cyan-500 rounded-xl font-sans text-sm"
+                />
+              </div>
+
+              {/* Is Featured Toggle */}
+              <div className="md:col-span-2 flex items-center gap-2 pt-2">
+                <input
+                  type="checkbox"
+                  id="isFeatured"
+                  name="isFeatured"
+                  checked={form.isFeatured}
+                  onChange={handleChange}
+                  className="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500"
+                />
+                <Label htmlFor="isFeatured" className="font-semibold text-slate-800 cursor-pointer text-sm">
+                  Feature this package on the Landing Page Hero Showcase
+                </Label>
               </div>
 
               {/* Actions */}
@@ -494,47 +620,39 @@ const ManageTours = () => {
                   type="button"
                   variant="outline"
                   onClick={() => setShowForm(false)}
-                  className="w-full sm:w-auto"
+                  className="w-full sm:w-auto rounded-xl"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={saving}
-                  className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white"
+                  className="w-full sm:w-auto bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl font-bold"
                 >
-                  {saving ? "Saving..." : "Save Tour"}
+                  {saving ? "Saving..." : "Save Tour Package"}
                 </Button>
               </div>
             </form>
             {error && (
-              <p className="text-red-500 mt-4 text-center text-sm">{error}</p>
+              <p className="text-red-500 mt-4 text-center text-sm font-semibold">{error}</p>
             )}
           </CardContent>
         </Card>
       )}
 
       {/* TOUR GRID */}
-      {/* - Mobile: 1 col
-         - Tablet: 1 col (but horizontal cards)
-         - Desktop: 2 cols
-      */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         {tours.map((t) => (
           <Card
             key={t.id || t._id}
-            className="overflow-hidden border-slate-200 shadow-sm hover:shadow-md transition-shadow group"
+            className="bg-white overflow-hidden border-slate-200/80 shadow-xs hover:shadow-md transition-shadow group rounded-2xl"
           >
-            {/* Responsive Card Layout:
-               - Mobile: Flex-col (Image Top, Content Bottom)
-               - Tablet+: Flex-row (Image Left, Content Right)
-            */}
             <div className="flex flex-col sm:flex-row h-full">
               {/* IMAGE SECTION */}
               <div className="relative w-full sm:w-40 md:w-48 h-48 sm:h-auto shrink-0 bg-slate-100">
-                {t.image ? (
+                {t.image || (t.images && t.images.length > 0) ? (
                   <img
-                    src={`${API_BASE}${t.image}`}
+                    src={getTourImageUrl(t)}
                     alt={t.name}
                     className="absolute inset-0 w-full h-full object-cover"
                     onError={(e) =>
@@ -543,7 +661,7 @@ const ManageTours = () => {
                     }
                   />
                 ) : (
-                  <div className="flex items-center justify-center h-full text-slate-400 text-sm">
+                  <div className="flex items-center justify-center h-full text-slate-400 text-sm font-medium">
                     No Image
                   </div>
                 )}
@@ -553,15 +671,20 @@ const ManageTours = () => {
               <div className="flex flex-col flex-1 p-4">
                 <div className="flex-1">
                   <div className="flex justify-between items-start gap-2 mb-2">
-                    <h3 className="font-bold text-lg text-slate-900 line-clamp-2 leading-tight">
+                    <h3 className="font-extrabold text-base md:text-lg text-slate-900 line-clamp-2 leading-tight">
                       {t.name}
                     </h3>
-                    <span className="font-bold text-orange-600 whitespace-nowrap">
-                      {t.price}
-                    </span>
+                    <div className="text-right shrink-0">
+                      <span className="font-extrabold text-cyan-600 whitespace-nowrap text-base block">
+                        {formatPrice(t.price, t.currency)}
+                      </span>
+                      <span className="text-[11px] text-slate-400 font-medium capitalize block">
+                        /{t.pricingUnit || "person"}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="space-y-1.5 text-sm text-slate-500 mb-3">
+                  <div className="space-y-1.5 text-xs text-slate-500 mb-3">
                     <div className="flex items-center gap-1.5">
                       <MapPin size={14} className="text-slate-400" />
                       <span className="truncate">{t.destination}</span>
@@ -579,9 +702,9 @@ const ManageTours = () => {
                       href={`${API_BASE}${t.itinerary}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 inline-flex items-center gap-1 transition-colors"
+                      className="text-xs font-semibold text-cyan-600 bg-cyan-50 px-2.5 py-1 rounded-lg hover:bg-cyan-100 inline-flex items-center gap-1 transition-colors border border-cyan-100"
                     >
-                      <FileText size={12} /> View Itinerary
+                      <FileText size={12} /> View Itinerary PDF
                     </a>
                   )}
                 </div>
@@ -592,7 +715,7 @@ const ManageTours = () => {
                     size="sm"
                     variant="outline"
                     onClick={() => handleEditClick(t)}
-                    className="h-8 px-3 text-xs"
+                    className="h-8 px-3 text-xs rounded-lg font-semibold"
                   >
                     Edit
                   </Button>
@@ -600,7 +723,7 @@ const ManageTours = () => {
                     size="sm"
                     variant="destructive"
                     onClick={() => handleDeleteClick(t.id || t._id)}
-                    className="h-8 px-3 text-xs bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 border border-red-200"
+                    className="h-8 px-3 text-xs bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 border border-red-200 rounded-lg font-semibold"
                   >
                     Delete
                   </Button>
@@ -612,7 +735,7 @@ const ManageTours = () => {
       </div>
 
       {!loading && tours.length === 0 && (
-        <div className="text-center py-10 text-slate-500">
+        <div className="text-center py-12 bg-white rounded-2xl border border-slate-200 text-slate-500 text-sm font-medium">
           No tours found. Click "Add New Tour" to create one.
         </div>
       )}

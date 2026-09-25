@@ -1,58 +1,136 @@
-import LandingPageimg1 from "@/assets/LandingPageimg_1.png";
-import { HeaderNav } from "./HeaderNav";
-import { FlightBookingForm } from "./FlightBookingForm";
+import React from "react";
+import { HeroCarousel } from "./HeroCarousel";
 import { useNavigate } from "react-router-dom";
+import { Compass, Clock, MessageCircle, ArrowRight, ShieldCheck } from "lucide-react";
 
 export const Header = () => {
   const navigate = useNavigate();
+  const whatsappPhone = import.meta.env.VITE_WHATSAPP_NUMBER || "919944229209";
+
+  const handleWhatsAppClick = () => {
+    const text = encodeURIComponent(
+      "Hi Padham Travels, I would like to inquire about your customized tour packages."
+    );
+    window.open(`https://wa.me/${whatsappPhone}?text=${text}`, "_blank");
+  };
+
   return (
-    <div
-      className="max-w-full relative min-h-[70vh] md:min-h-[80vh] bg-cover bg-no-repeat bg-center"
-      style={{ backgroundImage: `url(${LandingPageimg1})` }}
-    >
-      {" "}
-      {/*Background Image*/}
-      {/* show only on md+ when nav is part of header */}
-      <div className="hidden lg:block">
-        <HeaderNav />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 h-[86.3%]">
-        <div className="hidden md:flex md:pt-60 md:ml-12 lg:pt-35 lg:ml-20 items-center flex-nowrap">
-          <div>
-            <p className="md:text-md xl:text-xl text-white whitespace-nowrap">
-              PADHAM TRAVELS
+    <div className="w-full h-auto min-h-0 bg-[#f8fafc] text-slate-900 pt-6 pb-4 lg:pb-12 relative overflow-hidden">
+      {/* EXPANDED FULL-WIDTH HERO CONTAINER (max-w-[1550px]) */}
+      <div className="w-full max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+          {/* LEFT COLUMN: Shifted Text (lg:col-span-5) */}
+          <div className="lg:col-span-5 flex flex-col justify-center text-left pl-2 lg:pl-4 space-y-6">
+            <div>
+              <span className="inline-block px-3.5 py-1.5 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-700 text-xs font-bold uppercase tracking-widest mb-4">
+                EXPLORE THE WORLD
+              </span>
+
+              <h1 className="font-serif text-4xl md:text-5xl xl:text-6xl font-extrabold text-slate-900 leading-tight tracking-tight">
+                Travel Far, <br className="hidden sm:inline" />
+                <span className="text-cyan-600">Live Fully</span>
+              </h1>
+            </div>
+
+            <p className="text-slate-600 text-base md:text-lg font-normal leading-relaxed max-w-xl">
+              Discover customized tour packages, spiritual yatras,
+              and international holidays with Padham Travels. Experience seamless booking and 24/7 dedicated travel guidance.
             </p>
-            <p className="md:text-3xl xl:text-5xl text-white whitespace-nowrap">
-              We Are Very Reliable
-            </p>
-            <p className="md:text-3xl xl:text-5xl text-yellow-400 whitespace-nowrap">
-              Professional, Experienced
-            </p>
-            <p className="md:text-xs xl:text-sm text-white mt-3">
-              <span className="text-yellow-400">Padham Travels</span> is the
-              versatile website emporing you
-            </p>
-            <p className="md:text-xs lg:text-sm text-white">
-              full-service airline offering{" "}
-              <span className="text-yellow-400">reduce fares.</span>
-            </p>
-            <div className="flex">
+
+            <div className="flex flex-wrap items-center justify-start gap-4 pt-2">
               <button
-                onClick={() => navigate("/flights")}
-                className="relative mt-3 px-4 py-2 rounded-md text-gray-600 font-bold bg-yellow-400
-              transition-all duration-300 hover:bg-white 
-              cursor-pointer hover:text-yellow-600"
+                onClick={() => navigate("/tours-and-packages")}
+                className="px-6 py-3.5 rounded-xl font-bold bg-cyan-600 hover:bg-cyan-700 text-white transition-all shadow-md hover:shadow-cyan-600/25 hover:scale-105 flex items-center gap-2 cursor-pointer text-sm"
               >
-                FIND FLIGHTS
+                <span>Explore Packages</span>
+                <ArrowRight size={18} />
+              </button>
+
+              <button
+                onClick={handleWhatsAppClick}
+                className="px-6 py-3.5 rounded-xl font-bold bg-white hover:bg-slate-100 text-slate-800 border border-slate-200 transition-all shadow-xs flex items-center gap-2 cursor-pointer text-sm"
+              >
+                <MessageCircle size={18} className="text-emerald-600 fill-current" />
+                <span>WhatsApp Us</span>
               </button>
             </div>
           </div>
-        </div>
 
-        <div className="flex px-3 xl:ml-35 max-md:justify-center mt-15 md:mt-10 mb-5 h-[90%]">
-          <FlightBookingForm />
+          {/* RIGHT COLUMN: Enlarged 3D Carousel (lg:col-span-7) */}
+          <div className="lg:col-span-7 flex justify-center items-center w-full overflow-visible relative">
+            <HeroCarousel />
+          </div>
+        </div>
+      </div>
+
+      {/* FLOATING FEATURE HIGHLIGHTS BAR */}
+      <div className="max-w-[1550px] mx-auto my-4 lg:-mt-10 relative z-20 px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-2xl shadow-2xl border border-slate-300 p-6 md:p-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Feature 1 */}
+            <div className="flex items-start gap-4 p-2">
+              <div className="p-3 rounded-xl bg-cyan-50 text-cyan-600 shrink-0 border border-cyan-100">
+                <Compass size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-900 text-base mb-1">
+                  Curated Packages
+                </h3>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Handcrafted itineraries tailored for families, couples & groups.
+                </p>
+              </div>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="flex items-start gap-4 p-2">
+              <div className="p-3 rounded-xl bg-cyan-50 text-cyan-600 shrink-0 border border-cyan-100">
+                <ShieldCheck size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-900 text-base mb-1">
+                  Best Price Guarantee
+                </h3>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Transparent pricing with zero hidden fees and exclusive deals.
+                </p>
+              </div>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="flex items-start gap-4 p-2">
+              <div className="p-3 rounded-xl bg-cyan-50 text-cyan-600 shrink-0 border border-cyan-100">
+                <Clock size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-900 text-base mb-1">
+                  Seamless Support
+                </h3>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  24/7 dedicated travel guidance from departure to arrival.
+                </p>
+              </div>
+            </div>
+
+            {/* Feature 4 */}
+            <div className="flex items-start gap-4 p-2">
+              <div className="p-3 rounded-xl bg-emerald-50 text-emerald-600 shrink-0 border border-emerald-100">
+                <MessageCircle size={24} className="fill-current" />
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-900 text-base mb-1">
+                  Instant Lead Response
+                </h3>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Direct WhatsApp inquiry with instant customized quotes.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 };
+
+export default Header;

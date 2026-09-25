@@ -1,26 +1,37 @@
-import { Navigate, useLocation, Outlet } from "react-router-dom"; // 1. Added Outlet
+import React from "react";
+import { Navigate, useLocation, Outlet } from "react-router-dom";
 import { useAuthUser } from "@/hooks/useAuthUser";
 
-export const RequireAuth = () => {
-  // 2. Removed { children } prop
+export const RequireAdmin = ({ children }) => {
+  const { user, loading } = useAuthUser();
+  const location = useLocation();
+
+  if (loading) return null;
+
+  if (!user || user.role !== "admin") {
+    return <Navigate to="/" replace state={{ from: location }} />;
+  }
+
+  return children ? children : <Outlet />;
+};
+
+export const RequireAuth = ({ children }) => {
   const { user, loading } = useAuthUser();
   const location = useLocation();
 
   if (loading) {
-    // Optional: Return a spinner here so it's not a white screen while loading
     return (
-      <div className="h-screen w-screen flex items-center justify-center">
+      <div className="h-screen w-screen flex items-center justify-center font-semibold text-slate-500">
         Loading...
       </div>
     );
   }
 
   if (!user) {
-    const from = location.pathname + location.search;
-    console.log("✈️ RequireAuth Triggered! Saving state for login redirect:", location.state);
-    return <Navigate to="/login" state={{ from, originalState: location.state }} replace />;
+    return <Navigate to="/" replace state={{ from: location }} />;
   }
 
-  // 3. Use Outlet to render the child routes (like HomePage)
-  return <Outlet />;
+  return children ? children : <Outlet />;
 };
+
+export default RequireAuth;

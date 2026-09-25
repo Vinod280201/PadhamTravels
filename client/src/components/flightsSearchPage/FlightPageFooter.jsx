@@ -118,25 +118,25 @@ export const FlightPageFooter = () => {
             <h2 className="font-bold text-xl text-yellow-600">Quick Links</h2>
             <nav className="flex flex-col gap-2 text-sm text-gray-800">
               <Link
-                to={"/home"}
+                to={"/"}
                 className="hover:text-yellow-600 transition-colors"
               >
                 Home
               </Link>
               <Link
-                to={"/home"}
+                to={"/about-us"}
                 className="hover:text-yellow-600 transition-colors"
               >
                 About Us
               </Link>
               <Link
-                to={"/home"}
+                to={"/about-us#contact"}
                 className="hover:text-yellow-600 transition-colors"
               >
                 Contact Us
               </Link>
               <Link
-                to={"/home"}
+                to={"/tours-and-packages"}
                 className="hover:text-yellow-600 transition-colors"
               >
                 Tours & Trips
