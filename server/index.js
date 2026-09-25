@@ -61,8 +61,6 @@ app.use(
   })
 );
 
-// Explicitly handle all pre-flight OPTIONS requests
-app.options("*", cors());
 
 // === 2. BODY PARSERS & OTHER MIDDLEWARE ===
 app.use(express.json({ limit: "25mb" }));
