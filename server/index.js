@@ -25,7 +25,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// === 1. DYNAMIC CORS SETUP ===
+// === 1. DYNAMIC CORS SETUP (Top Middleware) ===
 const allowedOrigins = [
   "https://www.padhamtravel.com",
   "https://padhamtravel.com",
@@ -35,32 +35,36 @@ const allowedOrigins = [
   process.env.CLIENT_URL,
 ].filter(Boolean);
 
-const corsOptions = {
-  origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, server-to-server)
-    if (!origin) return callback(null, true);
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, Postman, server-to-server)
+      if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    console.log("🚫 BLOCKED BY CORS:", origin);
-    return callback(new Error(`CORS blocked for origin: ${origin}`));
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: [
-    "Content-Type",
-    "Authorization",
-    "X-Requested-With",
-    "Accept",
-  ],
-  optionsSuccessStatus: 200,
-};
+      const isAllowed =
+        allowedOrigins.includes(origin) ||
+        /^https:\/\/([a-z0-9-]+\.)?padhamtravel\.com$/.test(origin) ||
+        /^http:\/\/localhost(:[0-9]+)?$/.test(origin);
 
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+      if (isAllowed) {
+        return callback(null, true);
+      }
 
-// === 2. MIDDLEWARE ===
+      console.log("🚫 BLOCKED BY CORS:", origin);
+      // Return null, false to deny cleanly without failing Express headers
+      return callback(null, false);
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
+    exposedHeaders: ["Set-Cookie"],
+  })
+);
+
+// Explicitly handle all pre-flight OPTIONS requests
+app.options("*", cors());
+
+// === 2. BODY PARSERS & OTHER MIDDLEWARE ===
 app.use(express.json({ limit: "25mb" }));
 app.use(express.urlencoded({ extended: true, limit: "25mb" }));
 app.use(cookieParser());
@@ -95,7 +99,7 @@ app.use((err, req, res, next) => {
   } else if (err) {
     return res.status(400).json({
       success: false,
-      message: err.message || "An error occurred during file upload/request processing.",
+      message: err.message || "An error occurred during request processing.",
     });
   }
   next();
