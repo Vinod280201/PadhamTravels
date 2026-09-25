@@ -27,21 +27,24 @@ const app = express();
 
 // === 1. DYNAMIC CORS SETUP ===
 const allowedOrigins = [
-  "http://localhost:5173", // Vite Local Frontend
-  "http://localhost:3000", // Local Backend/Frontend on same port
-  "https://padham-travels.vercel.app", // Deployed Frontend
-];
+  "https://www.padhamtravel.com",
+  "https://padhamtravel.com",
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://padham-travels.vercel.app",
+  process.env.CLIENT_URL,
+].filter(Boolean);
 
 const corsOptions = {
   origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, server-to-server)
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.log("🚫 BLOCKED BY CORS:", origin);
-      callback(new Error("Not allowed by CORS"));
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
     }
+    console.log("🚫 BLOCKED BY CORS:", origin);
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
@@ -55,6 +58,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 // === 2. MIDDLEWARE ===
 app.use(express.json({ limit: "25mb" }));

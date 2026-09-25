@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { MapPin, Clock, Star, Search, FileText, MessageCircle, ArrowRight } from "lucide-react";
+import { MapPin, Clock, Star, Search, FileText, MessageCircle, ArrowRight, AlertCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -138,9 +138,26 @@ export const ToursDisplay = () => {
 
       {/* Tours Grid Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {error && <p className="text-red-600 text-sm mb-4">{error}</p>}
-
-        {loading ? (
+        {/* Error State */}
+        {error ? (
+          <div className="max-w-md mx-auto my-12 p-6 bg-slate-50 border border-slate-200 rounded-2xl text-center shadow-xs">
+            <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-3 text-amber-500">
+              <AlertCircle className="w-6 h-6" />
+            </div>
+            <h3 className="text-base font-semibold text-slate-800 mb-1">
+              Unable to load tour packages
+            </h3>
+            <p className="text-xs text-slate-500 mb-4">
+              Something went wrong while connecting to our services. Please try again.
+            </p>
+            <button
+              onClick={() => fetchTours(false)}
+              className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-semibold rounded-xl shadow-xs transition cursor-pointer"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : loading ? (
           <div className="py-20 text-center text-slate-500 text-lg font-medium">
             Loading tour packages...
           </div>
