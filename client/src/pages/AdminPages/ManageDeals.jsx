@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ConfirmModal from "@/components/common/ConfirmModal";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -129,18 +130,31 @@ export const ManageDeals = () => {
     }
   };
 
-  const handleDeleteDeal = async (id) => {
-    if (!confirm("Delete this deal?")) return;
+  const [deleteModalState, setDeleteModalState] = useState({
+    isOpen: false,
+    dealId: null,
+    isDeleting: false,
+  });
+
+  const handleDeleteDeal = (id) => {
+    setDeleteModalState({ isOpen: true, dealId: id, isDeleting: false });
+  };
+
+  const handleConfirmDeleteDeal = async () => {
+    if (!deleteModalState.dealId) return;
     try {
-      const res = await fetch(`${baseUrl}/deals/${id}`, {
+      setDeleteModalState((prev) => ({ ...prev, isDeleting: true }));
+      const res = await fetch(`${baseUrl}/deals/${deleteModalState.dealId}`, {
         method: "DELETE",
       });
       if (res.ok) {
-        setDeals(deals.filter((d) => d._id !== id));
-        if (id === editingId) handleCancelEdit();
+        setDeals((prev) => prev.filter((d) => d._id !== deleteModalState.dealId));
+        if (deleteModalState.dealId === editingId) handleCancelEdit();
       }
+      setDeleteModalState({ isOpen: false, dealId: null, isDeleting: false });
     } catch (error) {
       console.error("Error deleting deal:", error);
+      setDeleteModalState((prev) => ({ ...prev, isDeleting: false }));
     }
   };
 
@@ -416,6 +430,17 @@ export const ManageDeals = () => {
           </Card>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={deleteModalState.isOpen}
+        title="Delete Special Deal"
+        message="Are you sure you want to delete this promotional deal? This action cannot be undone."
+        confirmText="Delete Deal"
+        cancelText="Keep Deal"
+        isLoading={deleteModalState.isDeleting}
+        onConfirm={handleConfirmDeleteDeal}
+        onCancel={() => setDeleteModalState({ isOpen: false, dealId: null, isDeleting: false })}
+      />
     </div>
   );
 };

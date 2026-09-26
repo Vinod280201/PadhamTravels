@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import apiClient, { apiGet, apiPost, apiPut, apiDelete } from "@/apiClient";
 import { formatPrice, getTourImageUrl } from "@/lib/utils";
+import ConfirmModal from "@/components/common/ConfirmModal";
 import {
   X,
   FileText,
@@ -209,13 +210,26 @@ const ManageTours = () => {
     setShowForm(true);
   };
 
-  const handleDeleteClick = async (id) => {
-    if (!confirm("Delete this tour?")) return;
+  const [deleteModalState, setDeleteModalState] = useState({
+    isOpen: false,
+    tourId: null,
+    isDeleting: false,
+  });
+
+  const handleDeleteClick = (id) => {
+    setDeleteModalState({ isOpen: true, tourId: id, isDeleting: false });
+  };
+
+  const handleConfirmDeleteTour = async () => {
+    if (!deleteModalState.tourId) return;
     try {
-      await apiDelete(`/tours/${id}`);
-      setTours((prev) => prev.filter((t) => (t.id || t._id) !== id));
+      setDeleteModalState((prev) => ({ ...prev, isDeleting: true }));
+      await apiDelete(`/tours/${deleteModalState.tourId}`);
+      setTours((prev) => prev.filter((t) => (t.id || t._id) !== deleteModalState.tourId));
+      setDeleteModalState({ isOpen: false, tourId: null, isDeleting: false });
     } catch (err) {
-      alert("Failed to delete");
+      console.error("Failed to delete tour:", err);
+      setDeleteModalState((prev) => ({ ...prev, isDeleting: false }));
     }
   };
 
@@ -739,6 +753,18 @@ const ManageTours = () => {
           No tours found. Click "Add New Tour" to create one.
         </div>
       )}
+
+      {/* CONFIRMATION MODAL FOR DELETION */}
+      <ConfirmModal
+        isOpen={deleteModalState.isOpen}
+        title="Delete Tour Package"
+        message="Are you sure you want to delete this tour package? This action cannot be undone."
+        confirmText="Delete Package"
+        cancelText="Keep Package"
+        isLoading={deleteModalState.isDeleting}
+        onConfirm={handleConfirmDeleteTour}
+        onCancel={() => setDeleteModalState({ isOpen: false, tourId: null, isDeleting: false })}
+      />
     </div>
   );
 };

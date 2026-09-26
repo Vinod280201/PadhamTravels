@@ -128,18 +128,7 @@ export const LoginPage = () => {
 
   return (
     // MAIN CONTAINER: Flex layout, full height
-    <div className="min-h-screen w-full flex bg-sky-100 overflow-hidden relative">
-      {/* BACK TO HOME LINK */}
-      <div className="absolute top-6 left-6 z-20">
-        <Link
-          className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white/80 hover:bg-white backdrop-blur border border-slate-200/80 rounded-xl shadow-sm transition"
-          to="/"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to Home</span>
-        </Link>
-      </div>
-
+    <div className="min-h-screen w-full flex bg-sky-100 overflow-hidden">
       {/* LEFT SIDE: Image Section */}
       <div className="hidden md:block md:w-1/2 relative">
         <div
@@ -175,7 +164,18 @@ export const LoginPage = () => {
 
           {/* Login Card */}
           <Card className="w-full shadow-lg shadow-gray-300/50 border">
-            <CardContent className="pt-2 sm:pt-4 px-6 sm:px-8 pb-4">
+            <CardContent className="pt-4 sm:pt-6 px-6 sm:px-8 pb-4">
+              {/* Back to Home Link */}
+              <div className="mb-4">
+                <Link
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-cyan-600 transition-colors group"
+                  to="/"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" />
+                  <span>Back to Home</span>
+                </Link>
+              </div>
+
               <h2 className="text-xl font-semibold mb-6 text-center text-slate-800">
                 Login Now
               </h2>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiGet, apiDelete } from "@/apiClient";
 import { formatPrice, getTourImageUrl } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import ConfirmModal from "@/components/common/ConfirmModal";
 import {
   Phone,
   Mail,
@@ -28,6 +28,12 @@ export const ManageInquiries = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("ALL");
   const [selectedTour, setSelectedTour] = useState(null);
+
+  const [deleteModalState, setDeleteModalState] = useState({
+    isOpen: false,
+    inquiryId: null,
+    isDeleting: false,
+  });
 
   const fetchInquiries = async () => {
     try {
@@ -63,17 +69,22 @@ export const ManageInquiries = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this inquiry lead?")) return;
-    try {
-      await apiDelete(`/inquiries/${id}`);
-      setInquiries((prev) => prev.filter((item) => item._id !== id));
-    } catch (err) {
-      alert("Failed to delete inquiry.");
-    }
+  const promptDeleteInquiry = (id) => {
+    setDeleteModalState({ isOpen: true, inquiryId: id, isDeleting: false });
   };
 
-  const handleDeleteInquiry = handleDelete;
+  const handleConfirmDelete = async () => {
+    if (!deleteModalState.inquiryId) return;
+    try {
+      setDeleteModalState((prev) => ({ ...prev, isDeleting: true }));
+      await apiDelete(`/inquiries/${deleteModalState.inquiryId}`);
+      setInquiries((prev) => prev.filter((i) => i._id !== deleteModalState.inquiryId));
+      setDeleteModalState({ isOpen: false, inquiryId: null, isDeleting: false });
+    } catch (err) {
+      console.error("Failed to delete inquiry:", err);
+      setDeleteModalState((prev) => ({ ...prev, isDeleting: false }));
+    }
+  };
 
   const filteredInquiries = inquiries.filter((inquiry) => {
     const matchesSearch =
@@ -156,7 +167,7 @@ export const ManageInquiries = () => {
               key={inquiry._id}
               className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs hover:shadow-md transition grid grid-cols-1 md:grid-cols-12 gap-6 items-center"
             >
-              {/* LEFT COLUMN: Customer Information (md:col-span-4) */}
+              {/* LEFT COLUMN: Customer Information */}
               <div className="space-y-2 md:col-span-4">
                 <div className="flex items-center gap-2.5 flex-wrap">
                   <h3 className="text-base font-bold text-slate-900">
@@ -210,13 +221,12 @@ export const ManageInquiries = () => {
                 )}
               </div>
 
-              {/* CENTER COLUMN: Clickable Tour & Destination Block (md:col-span-5) */}
+              {/* CENTER COLUMN: Clickable Tour & Destination Block */}
               <div className="md:col-span-5 flex flex-col items-start md:items-center justify-center text-left md:text-center border-t md:border-t-0 md:border-x border-slate-100 pt-4 md:pt-0 px-0 md:px-4">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
                   Inquired Package
                 </span>
 
-                {/* Clickable Tour Card Button that triggers the Details Modal */}
                 <button
                   type="button"
                   onClick={() => setSelectedTour(inquiry.tourId || inquiry)}
@@ -227,7 +237,6 @@ export const ManageInquiries = () => {
                     {inquiry.tourTitle || inquiry.tourId?.title || inquiry.tourId?.name || "Tour Package"}
                   </span>
 
-                  {/* Clickable Destination with Location Pin */}
                   <span className="inline-flex items-center gap-1 text-xs font-semibold text-cyan-600 bg-cyan-50 group-hover:bg-cyan-100 border border-cyan-200/80 px-2.5 py-0.5 rounded-full transition">
                     <MapPin className="w-3 h-3 text-cyan-500 shrink-0" />
                     {inquiry.tourId?.destination || inquiry.destination || "View Itinerary & Inclusions"}
@@ -235,7 +244,7 @@ export const ManageInquiries = () => {
                 </button>
               </div>
 
-              {/* RIGHT COLUMN: Actions (md:col-span-3) */}
+              {/* RIGHT COLUMN: Actions */}
               <div className="md:col-span-3 flex flex-col sm:flex-row md:flex-col items-stretch md:items-end gap-2.5 w-full">
                 <a
                   href={`https://wa.me/${inquiry.phone?.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
@@ -263,7 +272,7 @@ export const ManageInquiries = () => {
 
                   <button
                     type="button"
-                    onClick={() => handleDeleteInquiry(inquiry._id)}
+                    onClick={() => promptDeleteInquiry(inquiry._id)}
                     className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition cursor-pointer"
                     title="Delete Inquiry"
                   >
@@ -417,6 +426,18 @@ export const ManageInquiries = () => {
           </div>
         </div>
       )}
+
+      {/* CONFIRMATION MODAL FOR DELETION */}
+      <ConfirmModal
+        isOpen={deleteModalState.isOpen}
+        title="Delete Customer Inquiry"
+        message="Are you sure you want to delete this customer lead? This action cannot be undone."
+        confirmText="Delete Lead"
+        cancelText="Keep Inquiry"
+        isLoading={deleteModalState.isDeleting}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteModalState({ isOpen: false, inquiryId: null, isDeleting: false })}
+      />
     </div>
   );
 };

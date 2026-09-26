@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -159,7 +159,18 @@ export const RegisterPage = () => {
 
           {/* Registration Card */}
           <Card className="w-full shadow-lg shadow-gray-300/50 border">
-            <CardContent className="pt-2 sm:pt-4 px-6 sm:px-8 pb-4">
+            <CardContent className="pt-4 sm:pt-6 px-6 sm:px-8 pb-4">
+              {/* Back to Home Link */}
+              <div className="mb-4">
+                <Link
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-cyan-600 transition-colors group"
+                  to="/"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" />
+                  <span>Back to Home</span>
+                </Link>
+              </div>
+
               <h2 className="text-xl font-semibold mb-6 text-center text-slate-800">
                 Register Here
               </h2>
