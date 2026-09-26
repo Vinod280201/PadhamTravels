@@ -176,19 +176,21 @@ const ReviewsCarousel = () => {
         </div>
 
         {/* Dots Navigation */}
-        <div className="flex justify-center gap-2 mt-8">
+        <div className="flex items-center justify-center gap-2.5 mt-6">
           {reviews.map((_, index) => {
-            const isActive = index === selectedIndex;
+            const isActive = selectedIndex === index;
             return (
               <button
                 key={index}
+                type="button"
                 onClick={() => scrollTo(index)}
-                className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${
-                  isActive
-                    ? "bg-primary border-primary scale-125"
-                    : "border-muted-foreground hover:bg-primary/20"
-                }`}
                 aria-label={`Go to slide ${index + 1}`}
+                aria-current={isActive ? "true" : undefined}
+                className={`h-3 rounded-full transition-all duration-300 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 ${
+                  isActive
+                    ? "w-8 bg-cyan-600 shadow-sm"
+                    : "w-3 bg-slate-300 hover:bg-slate-400"
+                }`}
               />
             );
           })}

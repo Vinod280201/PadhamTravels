@@ -8,14 +8,14 @@ function Row({ title, subtitle, value, onChange, min = 0 }) {
   return (
     <div className="flex items-center justify-between py-2">
       <div>
-        <p className="font-semibold text-sm text-gray-900">{title}</p>
-        <p className="text-xs text-gray-500">{subtitle}</p>
+        <p className="font-semibold text-sm text-slate-900">{title}</p>
+        <p className="text-xs text-slate-500">{subtitle}</p>
       </div>
       <div className="flex items-center ml-5 gap-4">
         <button
           type="button"
           onClick={dec}
-          className="w-6 h-6 flex items-center justify-center pb-1 rounded-full text-xl bg-gray-100 font-semibold text-yellow-600 hover:bg-gray-200"
+          className="w-6 h-6 flex items-center justify-center pb-1 rounded-full text-xl bg-slate-100 font-semibold text-cyan-600 hover:bg-slate-200"
         >
           –
         </button>
@@ -23,7 +23,7 @@ function Row({ title, subtitle, value, onChange, min = 0 }) {
         <button
           type="button"
           onClick={inc}
-          className="w-6 h-6 flex items-center justify-center pb-1 rounded-full text-xl bg-gray-100 font-semibold text-yellow-600 hover:bg-gray-200"
+          className="w-6 h-6 flex items-center justify-center pb-1 rounded-full text-xl bg-slate-100 font-semibold text-cyan-600 hover:bg-slate-200"
         >
           +
         </button>
@@ -72,16 +72,16 @@ export default function TravellerCounter({
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className={`w-full h-10 px-0 bg-transparent text-black font-semibold text-left flex items-center justify-between outline-none ${
+        className={`w-full h-10 px-0 bg-transparent text-slate-900 font-semibold text-left flex items-center justify-between outline-none ${
           className || ""
         }`}
       >
-        <span className="font-bold text-gray-800 text-sm truncate">
+        <span className="font-bold text-slate-800 text-sm truncate">
           {totalPax} {pluralize(totalPax, "Passenger", "Passengers")}
         </span>
 
         {/* Arrow pushed to the far right */}
-        <FaChevronDown className="text-gray-600 text-xs pointer-events-none shrink-0 ml-2" />
+        <FaChevronDown className="text-slate-600 text-xs pointer-events-none shrink-0 ml-2" />
       </button>
 
       {/* Popup */}

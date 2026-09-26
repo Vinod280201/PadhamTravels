@@ -23,7 +23,7 @@ const ReviewCard = ({ review }) => {
         </div>
 
         {/* Review Text */}
-        <p className="text-foreground/80 leading-relaxed grow mb-6 font-body text-sm md:text-base">
+        <p className="text-slate-700 leading-relaxed grow mb-6 font-body text-sm md:text-base">
           "{review.review}"
         </p>
 
@@ -48,13 +48,13 @@ const ReviewCard = ({ review }) => {
               src={review.avatar}
               alt={review.name}
               referrerPolicy="no-referrer"
-              className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/10"
+              className="w-12 h-12 rounded-full object-cover ring-2 ring-cyan-500/10"
             />
             <div>
-              <h4 className="font-display font-semibold text-foreground">
+              <p className="font-display font-semibold text-slate-900">
                 {review.name}
-              </h4>
-              <p className="text-sm text-muted-foreground">{review.location}</p>
+              </p>
+              <p className="text-sm text-slate-500">{review.location}</p>
             </div>
           </div>
           <span className={serviceBadgeStyles[review.serviceType]}>

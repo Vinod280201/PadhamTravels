@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { apiGet, apiDelete } from "@/apiClient";
 import { formatPrice, getTourImageUrl } from "@/lib/utils";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import Button from "@/components/common/Button";
 import {
   Phone,
   Mail,
   Calendar,
   MessageSquare,
+  MessageCircle,
   Trash2,
   Search,
   RefreshCw,
@@ -112,13 +114,16 @@ export const ManageInquiries = () => {
           </p>
         </div>
 
-        <button
+        <Button
+          variant="outline"
+          size="sm"
+          icon={RefreshCw}
           onClick={fetchInquiries}
-          className="flex items-center gap-2 border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-700 shadow-2xs transition cursor-pointer"
+          isLoading={loading}
+          className="cursor-pointer"
         >
-          <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
-          <span>Refresh Leads</span>
-        </button>
+          Refresh Leads
+        </Button>
       </div>
 
       {/* FILTERS & SEARCH */}
@@ -136,17 +141,15 @@ export const ManageInquiries = () => {
 
         <div className="flex gap-2 shrink-0">
           {["ALL", "Pending", "Contacted", "Closed"].map((status) => (
-            <button
+            <Button
               key={status}
+              variant={filterStatus === status ? "primary" : "secondary"}
+              size="sm"
               onClick={() => setFilterStatus(status)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                filterStatus === status
-                  ? "bg-cyan-600 text-white shadow-2xs"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-              }`}
+              className="cursor-pointer"
             >
               {status}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -184,7 +187,7 @@ export const ManageInquiries = () => {
                   >
                     {inquiry.status || "Pending"}
                   </span>
-                  <span className="text-[11px] text-slate-400">
+                  <span className="text-xs text-slate-400">
                     Submitted: {new Date(inquiry.createdAt || inquiry.submittedAt || Date.now()).toLocaleDateString()}
                   </span>
                 </div>
@@ -223,7 +226,7 @@ export const ManageInquiries = () => {
 
               {/* CENTER COLUMN: Clickable Tour & Destination Block */}
               <div className="md:col-span-5 flex flex-col items-start md:items-center justify-center text-left md:text-center border-t md:border-t-0 md:border-x border-slate-100 pt-4 md:pt-0 px-0 md:px-4">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
                   Inquired Package
                 </span>
 
@@ -254,9 +257,16 @@ export const ManageInquiries = () => {
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl shadow-xs transition"
+                  className="inline-flex w-full"
                 >
-                  <span>WhatsApp Contact</span>
+                  <Button
+                    variant="success"
+                    size="sm"
+                    icon={MessageCircle}
+                    className="w-full cursor-pointer"
+                  >
+                    WhatsApp Contact
+                  </Button>
                 </a>
 
                 <div className="flex items-center justify-between md:justify-end gap-2 w-full">
@@ -270,14 +280,14 @@ export const ManageInquiries = () => {
                     <option value="Closed">Mark Closed</option>
                   </select>
 
-                  <button
-                    type="button"
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    icon={Trash2}
                     onClick={() => promptDeleteInquiry(inquiry._id)}
-                    className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition cursor-pointer"
                     title="Delete Inquiry"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                    className="cursor-pointer px-2.5"
+                  />
                 </div>
               </div>
             </div>
@@ -400,28 +410,30 @@ export const ManageInquiries = () => {
 
             {/* Actions */}
             <div className="flex flex-wrap items-center justify-end gap-3 pt-4 border-t border-slate-100">
-              <button
-                type="button"
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() =>
                   window.open(
                     `/tours/${selectedTour._id || selectedTour.id || selectedTour.tourId?._id}`,
                     "_blank"
                   )
                 }
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition cursor-pointer"
+                className="cursor-pointer"
               >
                 View Public Page ↗
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
                 onClick={() => {
                   setSelectedTour(null);
                   navigate("/admin/tours");
                 }}
-                className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded-xl transition shadow-xs cursor-pointer"
+                className="cursor-pointer"
               >
                 Edit Tour in Admin
-              </button>
+              </Button>
             </div>
           </div>
         </div>

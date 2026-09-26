@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/common/Button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
@@ -245,16 +245,18 @@ const ManageTours = () => {
             Create, update or remove tour packages for your website showcase
           </p>
         </div>
-        <button
+        <Button
+          variant="primary"
+          size="md"
+          icon={Plus}
           onClick={() => {
             resetForm();
             setShowForm(true);
           }}
-          className="w-full sm:w-auto bg-cyan-600 hover:bg-cyan-700 text-white font-bold px-4 py-2.5 rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer text-sm"
+          className="w-full sm:w-auto cursor-pointer"
         >
-          <Plus size={18} />
-          <span>Add New Tour</span>
-        </button>
+          Add New Tour
+        </Button>
       </div>
 
       {/* FORM SECTION */}
@@ -266,7 +268,7 @@ const ManageTours = () => {
                 {editingId ? "Edit Tour Details" : "Add New Tour Package"}
               </h2>
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={() => setShowForm(false)}
                 className="h-8 w-8 p-0 text-slate-400 hover:text-slate-700"
@@ -434,15 +436,12 @@ const ManageTours = () => {
                     <Button
                       type="button"
                       variant="outline"
-                      asChild
-                      className="cursor-pointer bg-white border-slate-200"
+                      size="sm"
+                      icon={UploadCloud}
+                      onClick={() => document.getElementById("pdf-upload")?.click()}
+                      className="cursor-pointer bg-white"
                     >
-                      <label
-                        htmlFor="pdf-upload"
-                        className="flex items-center gap-2 font-semibold"
-                      >
-                        <UploadCloud size={16} /> Select PDF
-                      </label>
+                      Select PDF
                     </Button>
                     <div className="flex-1 text-center sm:text-left">
                       {editingId && form.itinerary ? (
@@ -471,16 +470,15 @@ const ManageTours = () => {
                     </div>
                     <Button
                       type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-red-500 hover:bg-red-50"
+                      variant="danger"
+                      size="sm"
+                      icon={X}
                       onClick={() => {
                         setSelectedPdf(null);
                         document.getElementById("pdf-upload").value = "";
                       }}
-                    >
-                      <X size={16} />
-                    </Button>
+                      className="p-1.5"
+                    />
                   </div>
                 )}
               </div>
@@ -501,15 +499,12 @@ const ManageTours = () => {
                     <Button
                       type="button"
                       variant="outline"
-                      asChild
-                      className="cursor-pointer bg-white border-slate-200"
+                      size="sm"
+                      icon={ImageIcon}
+                      onClick={() => document.getElementById("image-upload")?.click()}
+                      className="cursor-pointer bg-white"
                     >
-                      <label
-                        htmlFor="image-upload"
-                        className="flex items-center gap-2 font-semibold"
-                      >
-                        <ImageIcon size={16} /> Select Image
-                      </label>
+                      Select Image
                     </Button>
 
                     {editingId && form.image ? (
@@ -542,16 +537,15 @@ const ManageTours = () => {
                     </div>
                     <Button
                       type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-red-500 hover:bg-red-50"
+                      variant="danger"
+                      size="sm"
+                      icon={X}
                       onClick={() => {
                         setSelectedFile(null);
                         document.getElementById("image-upload").value = "";
                       }}
-                    >
-                      <X size={16} />
-                    </Button>
+                      className="p-1.5"
+                    />
                   </div>
                 )}
               </div>
@@ -633,17 +627,20 @@ const ManageTours = () => {
                 <Button
                   type="button"
                   variant="outline"
+                  size="md"
                   onClick={() => setShowForm(false)}
-                  className="w-full sm:w-auto rounded-xl"
+                  className="w-full sm:w-auto cursor-pointer"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  disabled={saving}
-                  className="w-full sm:w-auto bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl font-bold"
+                  variant="primary"
+                  size="md"
+                  isLoading={saving}
+                  className="w-full sm:w-auto cursor-pointer"
                 >
-                  {saving ? "Saving..." : "Save Tour Package"}
+                  Save Tour Package
                 </Button>
               </div>
             </form>
@@ -692,7 +689,7 @@ const ManageTours = () => {
                       <span className="font-extrabold text-cyan-600 whitespace-nowrap text-base block">
                         {formatPrice(t.price, t.currency)}
                       </span>
-                      <span className="text-[11px] text-slate-400 font-medium capitalize block">
+                      <span className="text-xs text-slate-400 font-medium capitalize block">
                         /{t.pricingUnit || "person"}
                       </span>
                     </div>
@@ -729,15 +726,15 @@ const ManageTours = () => {
                     size="sm"
                     variant="outline"
                     onClick={() => handleEditClick(t)}
-                    className="h-8 px-3 text-xs rounded-lg font-semibold"
+                    className="cursor-pointer"
                   >
                     Edit
                   </Button>
                   <Button
                     size="sm"
-                    variant="destructive"
+                    variant="danger"
                     onClick={() => handleDeleteClick(t.id || t._id)}
-                    className="h-8 px-3 text-xs bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 border border-red-200 rounded-lg font-semibold"
+                    className="cursor-pointer"
                   >
                     Delete
                   </Button>

@@ -17,7 +17,7 @@ import {
   Phone,
   User,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/common/Button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
@@ -122,13 +122,15 @@ export const TourDetailPage = () => {
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back Button */}
-        <button
+        <Button
+          variant="outline"
+          size="sm"
+          icon={ArrowLeft}
           onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 text-slate-600 hover:text-cyan-600 font-semibold mb-6 group cursor-pointer text-sm"
+          className="mb-6 cursor-pointer"
         >
-          <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-          <span>Back to Tour Packages</span>
-        </button>
+          Back to Tour Packages
+        </Button>
 
         {loading ? (
           <div className="py-20 text-center text-slate-500 font-medium text-lg">
@@ -179,7 +181,7 @@ export const TourDetailPage = () => {
                     <Star size={20} className="fill-amber-400 text-amber-400" />
                   </div>
                   <div>
-                    <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Rating</div>
+                    <div className="text-xs text-slate-400 uppercase font-bold tracking-wider">Rating</div>
                     <div className="font-bold text-slate-800 text-sm">{tour.rating || 4.8} / 5</div>
                   </div>
                 </div>
@@ -189,7 +191,7 @@ export const TourDetailPage = () => {
                     <Clock size={20} />
                   </div>
                   <div>
-                    <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Duration</div>
+                    <div className="text-xs text-slate-400 uppercase font-bold tracking-wider">Duration</div>
                     <div className="font-bold text-slate-800 text-sm">{tour.duration || "N/A"}</div>
                   </div>
                 </div>
@@ -199,7 +201,7 @@ export const TourDetailPage = () => {
                     <MapPin size={20} />
                   </div>
                   <div>
-                    <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Location</div>
+                    <div className="text-xs text-slate-400 uppercase font-bold tracking-wider">Location</div>
                     <div className="font-bold text-slate-800 text-sm truncate">{tour.destination}</div>
                   </div>
                 </div>
@@ -209,7 +211,7 @@ export const TourDetailPage = () => {
                     <FileText size={20} />
                   </div>
                   <div>
-                    <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Itinerary</div>
+                    <div className="text-xs text-slate-400 uppercase font-bold tracking-wider">Itinerary</div>
                     {tour.itinerary ? (
                       <a
                         href={tour.itinerary.startsWith("http") ? tour.itinerary : `${API_BASE}${tour.itinerary}`}
@@ -318,13 +320,15 @@ export const TourDetailPage = () => {
                   </div>
 
                   {/* WhatsApp Action */}
-                  <button
+                  <Button
+                    variant="success"
+                    size="md"
+                    icon={MessageCircle}
                     onClick={handleWhatsAppClick}
-                    className="w-full py-3.5 px-4 rounded-xl font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer text-sm"
+                    className="w-full font-bold cursor-pointer"
                   >
-                    <MessageCircle size={20} className="fill-current" />
                     Book via WhatsApp
-                  </button>
+                  </Button>
 
                   <div className="relative flex py-1 items-center">
                     <div className="flex-grow border-t border-slate-200"></div>
@@ -435,11 +439,12 @@ export const TourDetailPage = () => {
 
                       <Button
                         type="submit"
-                        disabled={submitting}
-                        className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-xl text-sm"
+                        variant="primary"
+                        size="md"
+                        isLoading={submitting}
+                        className="w-full font-bold cursor-pointer"
                       >
-                        {submitting ? "Sending..." : "Submit Lead Inquiry"}
-                        <Send size={16} className="ml-2" />
+                        Submit Lead Inquiry
                       </Button>
                     </form>
                   )}

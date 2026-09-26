@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/common/Button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import LoginPageImg from "@/assets/loginpageimg1.jpg";
 import { useAuthUser } from "@/hooks/useAuthUser";
@@ -154,16 +154,16 @@ export const LoginPage = () => {
         <div className="w-full max-w-md flex flex-col gap-6">
           {/* Header Text */}
           <div className="text-center space-y-2">
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
               Welcome Back
             </h1>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-slate-500">
               Please login to your account to continue
             </p>
           </div>
 
           {/* Login Card */}
-          <Card className="w-full shadow-lg shadow-gray-300/50 border">
+          <Card className="w-full shadow-lg shadow-slate-300/50 border">
             <CardContent className="pt-4 sm:pt-6 px-6 sm:px-8 pb-4">
               {/* Back to Home Link */}
               <div className="mb-4">
@@ -176,7 +176,7 @@ export const LoginPage = () => {
                 </Link>
               </div>
 
-              <h2 className="text-xl font-semibold mb-6 text-center text-slate-800">
+              <h2 className="text-xl font-semibold mb-6 text-center text-slate-900">
                 Login Now
               </h2>
 
@@ -197,11 +197,11 @@ export const LoginPage = () => {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email ID</FormLabel>
+                        <FormLabel className="text-slate-700 font-semibold">Email ID</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Enter your email"
-                            className="h-10"
+                            className="h-10 border-slate-200 focus:border-cyan-500"
                             {...field}
                           />
                         </FormControl>
@@ -215,14 +215,14 @@ export const LoginPage = () => {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel className="text-slate-700 font-semibold">Password</FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Input
                               type={showPassword ? "text" : "password"}
                               placeholder="Enter your password"
                               autoComplete="new-password"
-                              className="h-10 pr-10"
+                              className="h-10 pr-10 border-slate-200 focus:border-cyan-500"
                               {...field}
                             />
                             <button
@@ -244,20 +244,22 @@ export const LoginPage = () => {
                   <div className="pt-2">
                     <Button
                       type="submit"
-                      disabled={loading}
-                      className="w-full h-10 text-md bg-slate-900 hover:bg-slate-800"
+                      variant="primary"
+                      size="md"
+                      isLoading={loading}
+                      className="w-full cursor-pointer"
                     >
-                      {loading ? "Logging in..." : "Login"}
+                      Login
                     </Button>
                   </div>
 
-                  <div className="flex justify-center text-sm mt-4 text-gray-600">
+                  <div className="flex justify-center text-sm mt-4 text-slate-600">
                     <p>
                       Don't have an account?{" "}
                       <Link
                         to="/register"
                         state={{ from, originalState }}
-                        className="font-medium text-blue-600 hover:text-blue-500 hover:underline transition-colors"
+                        className="font-medium text-cyan-600 hover:text-cyan-700 hover:underline transition-colors"
                       >
                         Register now
                       </Link>

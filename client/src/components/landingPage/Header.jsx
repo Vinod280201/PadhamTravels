@@ -2,6 +2,7 @@ import React from "react";
 import { HeroCarousel } from "./HeroCarousel";
 import { useNavigate } from "react-router-dom";
 import { Compass, Clock, MessageCircle, ArrowRight, ShieldCheck } from "lucide-react";
+import Button from "@/components/common/Button";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -38,21 +39,25 @@ export const Header = () => {
             </p>
 
             <div className="flex flex-wrap items-center justify-start gap-4 pt-2">
-              <button
+              <Button
+                variant="primary"
+                size="lg"
                 onClick={() => navigate("/tours-and-packages")}
-                className="px-6 py-3.5 rounded-xl font-bold bg-cyan-600 hover:bg-cyan-700 text-white transition-all shadow-md hover:shadow-cyan-600/25 hover:scale-105 flex items-center gap-2 cursor-pointer text-sm"
+                className="cursor-pointer"
               >
                 <span>Explore Packages</span>
-                <ArrowRight size={18} />
-              </button>
+                <ArrowRight size={18} className="ml-2" />
+              </Button>
 
-              <button
+              <Button
+                variant="success"
+                size="lg"
+                icon={MessageCircle}
                 onClick={handleWhatsAppClick}
-                className="px-6 py-3.5 rounded-xl font-bold bg-white hover:bg-slate-100 text-slate-800 border border-slate-200 transition-all shadow-xs flex items-center gap-2 cursor-pointer text-sm"
+                className="cursor-pointer"
               >
-                <MessageCircle size={18} className="text-emerald-600 fill-current" />
-                <span>WhatsApp Us</span>
-              </button>
+                WhatsApp Us
+              </Button>
             </div>
           </div>
 
@@ -73,9 +78,9 @@ export const Header = () => {
                 <Compass size={24} />
               </div>
               <div>
-                <h3 className="font-bold text-slate-900 text-base mb-1">
+                <h2 className="font-bold text-slate-900 text-base mb-1">
                   Curated Packages
-                </h3>
+                </h2>
                 <p className="text-xs text-slate-500 leading-relaxed">
                   Handcrafted itineraries tailored for families, couples & groups.
                 </p>
@@ -88,9 +93,9 @@ export const Header = () => {
                 <ShieldCheck size={24} />
               </div>
               <div>
-                <h3 className="font-bold text-slate-900 text-base mb-1">
+                <h2 className="font-bold text-slate-900 text-base mb-1">
                   Best Price Guarantee
-                </h3>
+                </h2>
                 <p className="text-xs text-slate-500 leading-relaxed">
                   Transparent pricing with zero hidden fees and exclusive deals.
                 </p>
@@ -103,9 +108,9 @@ export const Header = () => {
                 <Clock size={24} />
               </div>
               <div>
-                <h3 className="font-bold text-slate-900 text-base mb-1">
+                <h2 className="font-bold text-slate-900 text-base mb-1">
                   Seamless Support
-                </h3>
+                </h2>
                 <p className="text-xs text-slate-500 leading-relaxed">
                   24/7 dedicated travel guidance from departure to arrival.
                 </p>
@@ -118,9 +123,9 @@ export const Header = () => {
                 <MessageCircle size={24} className="fill-current" />
               </div>
               <div>
-                <h3 className="font-bold text-slate-900 text-base mb-1">
+                <h2 className="font-bold text-slate-900 text-base mb-1">
                   Instant Lead Response
-                </h3>
+                </h2>
                 <p className="text-xs text-slate-500 leading-relaxed">
                   Direct WhatsApp inquiry with instant customized quotes.
                 </p>

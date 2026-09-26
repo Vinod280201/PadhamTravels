@@ -4,6 +4,7 @@ import CONSTANTS from "@/constants/AppConstants";
 import { useNavigate } from "react-router-dom";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { MessageCircle, ArrowRight } from "lucide-react";
+import Button from "@/components/common/Button";
 
 export const ToursAndTrips = () => {
   const TRIPS_AND_TOURS = CONSTANTS.TOURS_AND_PACKAGES;
@@ -54,13 +55,15 @@ export const ToursAndTrips = () => {
             </h2>
           </div>
 
-          <button
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => navigate("/tours-and-packages")}
-            className="px-5 py-2.5 border-2 border-cyan-600 text-cyan-700 hover:bg-cyan-600 hover:text-white font-bold rounded-xl transition-all text-xs tracking-wider uppercase flex items-center gap-2 cursor-pointer shadow-xs"
+            className="uppercase tracking-wider font-bold cursor-pointer"
           >
             <span>VIEW ALL PACKAGES</span>
-            <ArrowRight size={16} />
-          </button>
+            <ArrowRight size={16} className="ml-1" />
+          </Button>
         </div>
 
         {/* CAROUSEL GRID */}
@@ -129,7 +132,7 @@ const ToursAndTripsCard = ({ trip }) => {
         />
 
         {/* Category Pill Tag */}
-        <span className="absolute top-3 left-3 bg-cyan-50/95 backdrop-blur-md text-cyan-800 text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-xs border border-cyan-200">
+        <span className="absolute top-3 left-3 bg-cyan-50/95 backdrop-blur-md text-cyan-800 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-xs border border-cyan-200">
           {trip.isPopular ? "FEATURED" : "DESTINATION"}
         </span>
       </div>
@@ -145,29 +148,37 @@ const ToursAndTripsCard = ({ trip }) => {
         </p>
 
         {/* Price & Action Section */}
-        <div className="mt-auto pt-3 border-t border-slate-100 space-y-2.5">
-          <div className="flex items-baseline justify-between">
-            <span className="text-xs text-slate-500 font-medium">Starting from</span>
-            <span className="text-base sm:text-lg font-bold text-slate-900">
-              {trip.amount}
+        <div className="mt-auto pt-3 border-t border-slate-100 space-y-3">
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              Starting from
             </span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-xl font-extrabold text-cyan-600">
+                {trip.amount}
+              </span>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
-            <button
+            <Button
+              variant="success"
+              size="sm"
+              icon={MessageCircle}
               onClick={handleWhatsApp}
-              className="w-full py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors shadow-xs flex items-center justify-center gap-1 cursor-pointer"
+              className="w-full cursor-pointer"
             >
-              <MessageCircle size={14} className="fill-current" />
-              <span>WhatsApp</span>
-            </button>
+              WhatsApp
+            </Button>
 
-            <button
+            <Button
+              variant="secondary"
+              size="sm"
               onClick={() => navigate("/tours-and-packages")}
-              className="w-full py-2 rounded-xl text-xs font-bold text-slate-800 bg-cyan-50 hover:bg-cyan-100 text-cyan-700 border border-cyan-200 transition-colors cursor-pointer"
+              className="w-full cursor-pointer"
             >
               Details
-            </button>
+            </Button>
           </div>
         </div>
       </div>

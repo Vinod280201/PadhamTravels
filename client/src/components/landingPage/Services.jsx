@@ -34,11 +34,11 @@ export const Services = () => {
               className="w-6 h-6 md:w-7 md:h-7"
             />
           </div>
-          <p className="text-gray-800 text-base md:text-lg font-medium">
+          <p className="text-slate-900 text-base md:text-lg font-medium">
             Price Beating Guarantee
           </p>
           <div className="lg:w-[250px]">
-            <p className="text-gray-400 text-sm md:text-sm leading-relaxed">
+            <p className="text-slate-500 text-sm md:text-sm leading-relaxed">
               Our goal is to provide the best travel experience from start to
               finish at the best price.
             </p>
@@ -54,11 +54,11 @@ export const Services = () => {
               className="w-6 h-6 md:w-8 md:h-8"
             />
           </div>
-          <p className="text-gray-800 text-base md:text-lg font-medium">
+          <p className="text-slate-900 text-base md:text-lg font-medium">
             Special Offers
           </p>
           <div className="lg:w-[250px]">
-            <p className="text-gray-400 text-sm md:text-sm leading-relaxed">
+            <p className="text-slate-500 text-sm md:text-sm leading-relaxed">
               We offer promotional deals - just contact us to get exclusive
               discounts.
             </p>
@@ -74,11 +74,11 @@ export const Services = () => {
               className="w-6 h-6 md:w-7 md:h-7"
             />
           </div>
-          <p className="text-gray-800 text-base md:text-lg font-medium">
+          <p className="text-slate-900 text-base md:text-lg font-medium">
             Customer Service 24/7
           </p>
           <div className="lg:w-[250px]">
-            <p className="text-gray-400 text-sm md:text-sm leading-relaxed">
+            <p className="text-slate-500 text-sm md:text-sm leading-relaxed">
               We're available round-the-clock to help you at every step of your
               journey.
             </p>
@@ -94,11 +94,11 @@ export const Services = () => {
               className="w-5 h-5 md:w-6 md:h-6"
             />
           </div>
-          <p className="text-gray-800 text-base md:text-lg font-medium">
+          <p className="text-slate-900 text-base md:text-lg font-medium">
             Satisfaction
           </p>
           <div className="lg:w-[250px]">
-            <p className="text-gray-400 text-sm md:text-sm leading-relaxed">
+            <p className="text-slate-500 text-sm md:text-sm leading-relaxed">
               We strive to exceed expectations and deliver a delightful travel
               experience.
             </p>
@@ -114,11 +114,11 @@ export const Services = () => {
               className="w-6 h-6 md:w-8 md:h-8"
             />
           </div>
-          <p className="text-gray-800 text-base md:text-lg font-medium">
+          <p className="text-slate-900 text-base md:text-lg font-medium">
             Low Budget
           </p>
           <div className="lg:w-[250px]">
-            <p className="text-gray-400 text-sm md:text-sm leading-relaxed">
+            <p className="text-slate-500 text-sm md:text-sm leading-relaxed">
               Affordable options so you can travel the way you want without
               breaking the bank.
             </p>

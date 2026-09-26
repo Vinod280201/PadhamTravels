@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/common/Button";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import LoginPageImg from "@/assets/loginpageimg1.jpg";
@@ -114,11 +114,7 @@ export const RegisterPage = () => {
   return (
     // MAIN CONTAINER: Flex layout, full height, prevents horizontal scroll
     <div className="min-h-screen w-full flex bg-sky-100 overflow-hidden">
-      {/* LEFT SIDE: Image Section 
-          - Hidden on mobile (hidden)
-          - Visible on tablet/desktop (md:block)
-          - Width 50% on desktop (w-1/2)
-      */}
+      {/* LEFT SIDE: Image Section */}
       <div className="hidden md:block md:w-1/2 relative">
         <div
           className="absolute inset-0 h-full w-full object-cover bg-cover bg-no-repeat bg-center md:rounded-r-[3rem] border-r-4 border-white shadow-2xl z-10"
@@ -137,28 +133,24 @@ export const RegisterPage = () => {
         </div>
       </div>
 
-      {/* RIGHT SIDE: Form Section 
-          - Full width on mobile (w-full)
-          - Half width on desktop (md:w-1/2)
-          - Uses flexbox to center content vertically and horizontally
-      */}
+      {/* RIGHT SIDE: Form Section */}
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center py-6 px-12 sm:p-12">
         <div className="w-full max-w-md flex flex-col gap-5">
           {/* Header Text */}
           <div className="text-center">
-            <h1 className="text-xl sm:text-2xl font-bold text-slate-800">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
               Welcome To
             </h1>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+            <p className="text-2xl sm:text-3xl font-extrabold text-cyan-600">
               Padham Travels
-            </h2>
-            <p className="text-sm text-gray-600 pt-1">
+            </p>
+            <p className="text-sm text-slate-500 pt-1">
               Let's get you started on your journey with us!
             </p>
           </div>
 
           {/* Registration Card */}
-          <Card className="w-full shadow-lg shadow-gray-300/50 border">
+          <Card className="w-full shadow-lg shadow-slate-300/50 border">
             <CardContent className="pt-4 sm:pt-6 px-6 sm:px-8 pb-4">
               {/* Back to Home Link */}
               <div className="mb-4">
@@ -171,7 +163,7 @@ export const RegisterPage = () => {
                 </Link>
               </div>
 
-              <h2 className="text-xl font-semibold mb-6 text-center text-slate-800">
+              <h2 className="text-xl font-semibold mb-6 text-center text-slate-900">
                 Register Here
               </h2>
 
@@ -186,11 +178,11 @@ export const RegisterPage = () => {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Name</FormLabel>
+                        <FormLabel className="text-slate-700 font-semibold">Name</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Enter your name"
-                            className="h-10 text-sm"
+                            className="h-10 text-sm border-slate-200 focus:border-cyan-500"
                             {...field}
                           />
                         </FormControl>
@@ -205,11 +197,11 @@ export const RegisterPage = () => {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email ID</FormLabel>
+                        <FormLabel className="text-slate-700 font-semibold">Email ID</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Enter your email"
-                            className="h-10 text-sm"
+                            className="h-10 text-sm border-slate-200 focus:border-cyan-500"
                             {...field}
                           />
                         </FormControl>
@@ -224,14 +216,14 @@ export const RegisterPage = () => {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel className="text-slate-700 font-semibold">Password</FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Input
                               type={showPassword ? "text" : "password"}
                               placeholder="Create your password"
                               autoComplete="new-password"
-                              className="h-10 text-sm pr-10"
+                              className="h-10 text-sm pr-10 border-slate-200 focus:border-cyan-500"
                               {...field}
                             />
                             <button
@@ -256,13 +248,13 @@ export const RegisterPage = () => {
                     name="confirm_password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Confirm Password</FormLabel>
+                        <FormLabel className="text-slate-700 font-semibold">Confirm Password</FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Input
                               type={showConfirmPassword ? "text" : "password"}
                               placeholder="Re-enter your password"
-                              className="h-10 text-sm pr-10"
+                              className="h-10 text-sm pr-10 border-slate-200 focus:border-cyan-500"
                               {...field}
                             />
                             <button
@@ -283,19 +275,24 @@ export const RegisterPage = () => {
 
                   {/* Submit Button */}
                   <div className="pt-2">
-                    <Button className="w-full h-10 text-md bg-slate-900 hover:bg-slate-800">
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      size="md"
+                      className="w-full cursor-pointer"
+                    >
                       Register Now
                     </Button>
                   </div>
 
                   {/* Login Link */}
-                  <div className="flex justify-center text-sm mt-4 text-gray-600">
+                  <div className="flex justify-center text-sm mt-4 text-slate-600">
                     <p>
                       Already have an account?{" "}
                       <Link
                         to="/login"
                         state={{ from, originalState }}
-                        className="font-medium text-blue-600 hover:text-blue-500 hover:underline transition-colors"
+                        className="font-medium text-cyan-600 hover:text-cyan-700 hover:underline transition-colors"
                       >
                         Login now
                       </Link>

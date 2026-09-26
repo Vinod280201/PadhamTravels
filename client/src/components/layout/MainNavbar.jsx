@@ -5,6 +5,7 @@ import { IoPersonCircle } from "react-icons/io5";
 import { FiLogOut, FiMenu, FiX } from "react-icons/fi";
 import { MessageCircle, User as UserIcon } from "lucide-react";
 import { useAuthUser } from "@/hooks/useAuthUser";
+import Button from "@/components/common/Button";
 
 const MainNavbar = () => {
   const { user, logout } = useAuthUser();
@@ -94,41 +95,48 @@ const MainNavbar = () => {
               </Link>
 
               {/* Cyan WhatsApp CTA Button */}
-              <button
+              <Button
+                variant="primary"
+                size="sm"
+                icon={MessageCircle}
                 onClick={handleWhatsAppClick}
-                className="hidden sm:flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white text-xs sm:text-sm font-bold px-4 py-2 rounded-xl transition-all shadow-sm hover:shadow-md cursor-pointer"
+                className="hidden sm:inline-flex cursor-pointer"
               >
-                <MessageCircle size={16} className="fill-current" />
-                <span>Inquire Now</span>
-              </button>
+                Inquire Now
+              </Button>
 
               {/* Logout Action Button */}
-              <button
+              <Button
+                variant="danger"
+                size="sm"
                 onClick={handleLogout}
-                className="hidden lg:flex items-center gap-1 text-xs font-semibold h-9 px-3 rounded-xl text-rose-600 hover:text-rose-700 border border-rose-200 bg-rose-50 hover:bg-rose-100 transition cursor-pointer"
+                className="hidden lg:inline-flex cursor-pointer"
               >
-                <span>Logout</span>
-                <FiLogOut size={14} className="ml-0.5" />
-              </button>
+                Logout
+              </Button>
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <Link
-                to="/login"
-                className="flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:text-cyan-600 border border-slate-200 hover:border-cyan-400 bg-white rounded-xl transition shadow-xs cursor-pointer"
+              <Button
+                variant="outline"
+                size="sm"
+                icon={UserIcon}
+                onClick={() => navigate("/login")}
+                className="cursor-pointer"
               >
-                <UserIcon className="w-4 h-4 text-slate-500" />
-                <span>Sign In</span>
-              </Link>
+                Sign In
+              </Button>
 
               {/* Cyan WhatsApp CTA Button */}
-              <button
+              <Button
+                variant="primary"
+                size="sm"
+                icon={MessageCircle}
                 onClick={handleWhatsAppClick}
-                className="hidden sm:flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white text-xs sm:text-sm font-bold px-4 py-2 rounded-xl transition-all shadow-sm hover:shadow-md cursor-pointer"
+                className="hidden sm:inline-flex cursor-pointer"
               >
-                <MessageCircle size={16} className="fill-current" />
-                <span>Inquire Now</span>
-              </button>
+                Inquire Now
+              </Button>
             </div>
           )}
 
@@ -180,13 +188,14 @@ const MainNavbar = () => {
                   <span>Admin Portal</span>
                 </Link>
               )}
-              <button
+              <Button
+                variant="danger"
+                size="sm"
                 onClick={handleLogout}
-                className="flex w-full items-center justify-center text-xs font-bold py-2 rounded-xl text-rose-600 bg-rose-50 border border-rose-200 hover:bg-rose-100 transition mt-1 cursor-pointer"
+                className="w-full justify-center cursor-pointer mt-1"
               >
                 Logout
-                <FiLogOut size={16} className="ml-1.5" />
-              </button>
+              </Button>
             </div>
           ) : (
             <Link
@@ -199,16 +208,18 @@ const MainNavbar = () => {
             </Link>
           )}
 
-          <button
+          <Button
+            variant="primary"
+            size="md"
+            icon={MessageCircle}
             onClick={() => {
               setIsMenuOpen(false);
               handleWhatsAppClick();
             }}
-            className="flex items-center justify-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2.5 rounded-xl transition text-sm mt-2 cursor-pointer"
+            className="w-full cursor-pointer mt-2"
           >
-            <MessageCircle size={18} />
-            <span>Inquire on WhatsApp</span>
-          </button>
+            Inquire on WhatsApp
+          </Button>
         </div>
       )}
     </header>

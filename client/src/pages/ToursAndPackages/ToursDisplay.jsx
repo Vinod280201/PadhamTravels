@@ -92,11 +92,6 @@ export const ToursDisplay = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <p className="mt-2 text-xs font-semibold text-slate-500 text-right">
-                {loading
-                  ? "Loading packages..."
-                  : `Showing ${filteredTours.length} of ${tours.length} available packages`}
-              </p>
             </div>
           </div>
         </div>
@@ -104,6 +99,24 @@ export const ToursDisplay = () => {
 
       {/* Tours Grid Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        {/* Active Filter & Results Status Bar */}
+        {!error && !loading && (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-3 border-b border-slate-200/80">
+            <p className="text-sm font-medium text-slate-600">
+              Showing <span className="font-bold text-slate-900">{filteredTours.length}</span> of{" "}
+              <span className="font-bold text-slate-900">{tours.length}</span> available packages
+            </p>
+
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="text-xs font-semibold text-cyan-600 hover:text-cyan-700 underline underline-offset-2 self-start sm:self-auto cursor-pointer"
+              >
+                Clear Search
+              </button>
+            )}
+          </div>
+        )}
         {/* Error State */}
         {error ? (
           <div className="max-w-md mx-auto my-12 p-6 bg-slate-50 border border-slate-200 rounded-2xl text-center shadow-xs">
