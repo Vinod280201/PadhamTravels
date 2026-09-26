@@ -24,11 +24,11 @@ async function handleResponse(res) {
 
   // --- AUTH ERROR HANDLING (Modified) ---
   if (res.status === 401 || res.status === 403) {
-    // 🛑 CRITICAL FIX:
-    // If this error comes from "get-user", it just means "Guest Mode".
-    // We should NOT alert or redirect. Just let the hook handle it.
-    if (res.url.includes("/auth/get-user")) {
-      throw new Error("Guest User"); // Throw silently so the hook catches it
+    // If this error comes from "get-user" or "login", handle gracefully without global alert/redirect
+    if (res.url.includes("/auth/get-user") || res.url.includes("/auth/login")) {
+      const err = new Error(msg || "Authentication failed");
+      err.response = { status: res.status, data: { message: msg } };
+      throw err;
     }
 
     // For other routes (like trying to book a flight without login), keep blocking:
@@ -39,12 +39,16 @@ async function handleResponse(res) {
 
     alert(message);
     window.location.assign("/");
-    throw new Error(message);
+    const err = new Error(message);
+    err.response = { status: res.status, data: { message } };
+    throw err;
   }
   // -------------------------------------------
 
   // Other errors
-  throw new Error(msg || `Request failed with status ${res.status}`);
+  const err = new Error(msg || `Request failed with status ${res.status}`);
+  err.response = { status: res.status, data: { message: msg } };
+  throw err;
 }
 
 export async function apiGet(path) {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft, AlertCircle } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -15,14 +15,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import LoginPageImg from "@/assets/loginpageimg1.jpg";
 import { useAuthUser } from "@/hooks/useAuthUser";
+import apiClient from "@/apiClient";
 
 export const LoginPage = () => {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
   const { setUser } = useAuthUser();
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -46,72 +48,99 @@ export const LoginPage = () => {
     },
   });
 
-  /* Handling form submission of Form */
+  /* Handling form submission */
   const handleForm = async (values) => {
+    setErrorMessage("");
+    setLoading(true);
+
     try {
-      const response = await fetch(`${baseUrl}/auth/login`, {
-        method: "Post",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(values),
-      });
+      let responseData = null;
+      let isSuccess = false;
 
-      const data = await response.json();
-
-      if (data.status) {
-        toast("Login Status!", {
-          description: data.message,
-          style: {
-            background: "#3ac435",
-            color: "white",
-          },
+      try {
+        const res = await apiClient.post("/auth/login", {
+          email: values.email.trim().toLowerCase(),
+          password: values.password,
         });
+        responseData = await res.json();
+        isSuccess = res.ok && (responseData?.status || responseData?.success);
+      } catch (clientErr) {
+        if (clientErr.response) {
+          throw clientErr;
+        }
+        const fetchRes = await fetch(`${baseUrl}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            email: values.email.trim().toLowerCase(),
+            password: values.password,
+          }),
+        });
+        responseData = await fetchRes.json().catch(() => ({}));
+        isSuccess = fetchRes.ok && (responseData?.status || responseData?.success);
+        if (!isSuccess) {
+          const err = new Error(responseData?.message || "Login failed");
+          err.response = { status: fetchRes.status, data: responseData };
+          throw err;
+        }
+      }
 
-        // Extract logged in user data
-        const role = data.user?.role || data.role || "user";
-        const userData = data.user || {
-          email: data.email || values.email,
+      if (isSuccess && responseData) {
+        if (responseData.token) {
+          localStorage.setItem("token", responseData.token);
+        }
+        if (responseData.user) {
+          localStorage.setItem("user", JSON.stringify(responseData.user));
+        }
+
+        const role = responseData.user?.role || responseData.role || "user";
+        const userData = responseData.user || {
+          id: responseData.user?.id || responseData.user?._id,
+          email: responseData.email || values.email,
           role: role,
-          name: data.name,
+          name: responseData.name,
         };
-        
-        // Immediately update global AuthContext state & localStorage
+
         setUser(userData);
 
-        // redirect logic using `from`
         if (role === "admin") {
           navigate("/admin/dashboard", { replace: true });
         } else {
           navigate(from, { state: originalState ? { ...originalState } : null, replace: true });
         }
-      } else {
-        toast("Login Status!", {
-          description: data.message,
-          style: {
-            background: "#eb5449",
-            color: "white",
-          },
-        });
       }
-    } catch (error) {
-      toast("Login Status!", {
-        description: "Network error. Please check server connection.",
-        style: {
-          background: "#eb5449",
-          color: "white",
-        },
-      });
+    } catch (err) {
+      console.error("Login error:", err);
+      if (!err.response) {
+        setErrorMessage("Unable to connect to the server. Please check your connection or try again later.");
+      } else if (err.response.status === 400 || err.response.status === 401 || err.response.status === 403) {
+        setErrorMessage(err.response.data?.message || "Invalid email or password.");
+      } else if (err.response.status >= 500) {
+        setErrorMessage("Server error occurred. Please try again in a few moments.");
+      } else {
+        setErrorMessage(err.response.data?.message || "Login failed. Please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     // MAIN CONTAINER: Flex layout, full height
-    <div className="min-h-screen w-full flex bg-sky-100 overflow-hidden">
-      {/* LEFT SIDE: Image Section 
-          - Hidden on mobile (hidden)
-          - Visible on tablet/desktop (md:block)
-          - Width 50% on desktop (w-1/2)
-      */}
+    <div className="min-h-screen w-full flex bg-sky-100 overflow-hidden relative">
+      {/* BACK TO HOME LINK */}
+      <div className="absolute top-6 left-6 z-20">
+        <Link
+          className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white/80 hover:bg-white backdrop-blur border border-slate-200/80 rounded-xl shadow-sm transition"
+          to="/"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Home</span>
+        </Link>
+      </div>
+
+      {/* LEFT SIDE: Image Section */}
       <div className="hidden md:block md:w-1/2 relative">
         <div
           className="absolute inset-0 h-full w-full object-cover bg-cover bg-no-repeat bg-center md:rounded-r-[3rem] border-r-4 border-white shadow-2xl z-10"
@@ -131,11 +160,7 @@ export const LoginPage = () => {
         </div>
       </div>
 
-      {/* RIGHT SIDE: Form Section 
-          - Full width on mobile (w-full)
-          - Half width on desktop (md:w-1/2)
-          - Uses flexbox to center content vertically and horizontally
-      */}
+      {/* RIGHT SIDE: Form Section */}
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center py-6 px-12 sm:p-12">
         <div className="w-full max-w-md flex flex-col gap-6">
           {/* Header Text */}
@@ -154,6 +179,13 @@ export const LoginPage = () => {
               <h2 className="text-xl font-semibold mb-6 text-center text-slate-800">
                 Login Now
               </h2>
+
+              {errorMessage && (
+                <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-500" />
+                  <span>{errorMessage}</span>
+                </div>
+              )}
 
               <Form {...form}>
                 <form
@@ -210,8 +242,12 @@ export const LoginPage = () => {
                   />
 
                   <div className="pt-2">
-                    <Button className="w-full h-10 text-md bg-slate-900 hover:bg-slate-800">
-                      Login
+                    <Button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full h-10 text-md bg-slate-900 hover:bg-slate-800"
+                    >
+                      {loading ? "Logging in..." : "Login"}
                     </Button>
                   </div>
 

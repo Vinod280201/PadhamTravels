@@ -40,23 +40,44 @@ export const Register = async (req, res) => {
   }
 };
 
-export const Login = async (req, res) => {
+export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body || {};
 
-    const user = await User.findOne({ email }).lean().exec();
-    if (!user) {
-      return res.status(403).json({
+    if (!email || !password) {
+      return res.status(400).json({ 
+        success: false, 
         status: false,
-        message: "Invalid login credentials.",
+        message: 'Please provide both email and password.' 
       });
     }
 
-    const verifyPassword = await bcryptjs.compare(password, user.password);
-    if (!verifyPassword) {
-      return res.status(403).json({
+    const cleanEmail = typeof email === 'string' ? email.toLowerCase().trim() : '';
+
+    // Case-insensitive query
+    const user = await User.findOne({ email: cleanEmail });
+    if (!user) {
+      return res.status(400).json({ 
+        success: false, 
         status: false,
-        message: "Invalid login credentials.",
+        message: 'Invalid email or password.' 
+      });
+    }
+
+    if (!user.password) {
+      return res.status(500).json({ 
+        success: false, 
+        status: false,
+        message: 'Authentication setup error. Please contact administrator.' 
+      });
+    }
+
+    const isMatch = await bcryptjs.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ 
+        success: false, 
+        status: false,
+        message: 'Invalid email or password.' 
       });
     }
 
@@ -64,28 +85,22 @@ export const Login = async (req, res) => {
     // If the logged-in user is an admin, trigger the flight API sync immediately
     if (user.role === "admin") {
       try {
-        // Calling without arguments forces it to use .env credentials
         await getAgencyToken();
-        console.log(`✅ Background Agency Sync successful for Admin: ${email}`);
+        console.log(`✅ Background Agency Sync successful for Admin: ${cleanEmail}`);
       } catch (syncError) {
-        // We log the error (like ECONNREFUSED) but allow the login to proceed
         console.error(
           "⚠️ Background Agency Sync failed during login:",
-          syncError.message,
+          syncError.message
         );
       }
     }
 
-    const payload = {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    };
-
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const jwtSecret = process.env.JWT_SECRET || 'fallback_development_secret_key';
+    const token = jwt.sign(
+      { id: user._id, role: user.role, email: user.email },
+      jwtSecret,
+      { expiresIn: '7d' }
+    );
 
     res.cookie("access_token", token, {
       httpOnly: true,
@@ -94,28 +109,34 @@ export const Login = async (req, res) => {
     });
 
     res.status(200).json({
+      success: true,
       status: true,
+      token,
       message: "Login success.",
-      user: { 
+      user: {
         id: user._id,
-        name: user.name, 
-        email: user.email, 
+        _id: user._id,
+        name: user.name,
+        email: user.email,
         role: user.role,
         phone: user.phone,
         dateOfBirth: user.dateOfBirth,
         gender: user.gender,
         address: user.address
       },
-      // Send a flag to frontend so it knows to show the "Active" badge
       isSynced: user.role === "admin",
     });
   } catch (error) {
-    res.status(500).json({
+    console.error('Server login controller error:', error);
+    res.status(500).json({ 
+      success: false, 
       status: false,
-      error,
+      message: 'Server error during login. Please try again.' 
     });
   }
 };
+
+export const Login = login;
 
 export const Logout = async (req, res) => {
   try {
