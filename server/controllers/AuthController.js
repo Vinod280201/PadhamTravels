@@ -54,8 +54,8 @@ export const login = async (req, res) => {
 
     const cleanEmail = typeof email === 'string' ? email.toLowerCase().trim() : '';
 
-    // Case-insensitive query
-    const user = await User.findOne({ email: cleanEmail });
+    // Case-insensitive query with explicit password inclusion
+    const user = await User.findOne({ email: cleanEmail }).select('+password');
     if (!user) {
       return res.status(400).json({ 
         success: false, 
@@ -68,7 +68,7 @@ export const login = async (req, res) => {
       return res.status(500).json({ 
         success: false, 
         status: false,
-        message: 'Authentication setup error. Please contact administrator.' 
+        message: 'Password record missing for this account. Please reset password.' 
       });
     }
 

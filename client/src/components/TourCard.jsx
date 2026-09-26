@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +6,7 @@ import { Star, MapPin, Clock } from "lucide-react";
 import { formatPrice, getTourImageUrl } from "@/lib/utils";
 
 export const TourCard = ({ tour, idx = 0 }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
   const navigate = useNavigate();
   const whatsappPhone = import.meta.env.VITE_WHATSAPP_NUMBER || "919944229209";
   const imageUrl = getTourImageUrl(tour);
@@ -17,18 +18,29 @@ export const TourCard = ({ tour, idx = 0 }) => {
     >
       {/* Package Banner Image */}
       <div className="relative aspect-[16/10] w-full overflow-hidden rounded-t-2xl bg-slate-100 shrink-0">
+        {/* Placeholder Skeleton pulse while downloading */}
+        {!imageLoaded && (
+          <div className="absolute inset-0 bg-slate-200 animate-pulse flex items-center justify-center z-10">
+            <div className="w-8 h-8 rounded-full border-2 border-slate-300 border-t-cyan-500 animate-spin" />
+          </div>
+        )}
+
         <img
           src={imageUrl}
           alt={tour.title || tour.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          onLoad={() => setImageLoaded(true)}
+          className={`w-full h-full object-cover transition-opacity duration-500 ${
+            imageLoaded ? "opacity-100" : "opacity-0"
+          } group-hover:scale-105 transition-transform`}
           loading="lazy"
           onError={(e) => {
+            setImageLoaded(true);
             e.currentTarget.src = "https://via.placeholder.com/800x500?text=Tour+Package";
           }}
         />
 
         {/* Overlaid Category Pill Tag */}
-        <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-cyan-800 text-[10px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full shadow-xs border border-slate-100">
+        <span className="absolute top-3 left-3 z-20 bg-white/90 backdrop-blur-md text-cyan-800 text-[10px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full shadow-xs border border-slate-100">
           {tour.destination || "PACKAGE"}
         </span>
       </div>

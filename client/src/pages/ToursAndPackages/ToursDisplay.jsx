@@ -1,44 +1,11 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { MapPin, Clock, Star, Search, FileText, MessageCircle, ArrowRight, AlertCircle } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Search, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import MainNavbar from "@/components/layout/MainNavbar";
 import { apiGet } from "@/apiClient";
-import { formatPrice, getTourImageUrl } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-
-// Local Banner Image Fallbacks from TripsAndPackages/
-import AndamanImg from "@/assets/TripsAndPackages/AndamanAndNicobar.jpeg";
-import CharDhamImg from "@/assets/TripsAndPackages/CharDhamYatra.jpeg";
-import DubaiImg from "@/assets/TripsAndPackages/Dubai.jpeg";
-import KeralaImg from "@/assets/TripsAndPackages/Kerala.jpg";
-import SikkimImg from "@/assets/TripsAndPackages/SikkimAndDarjeeling.jpg";
-import SingaporeImg from "@/assets/TripsAndPackages/Singapore.jpeg";
-import ThailandImg from "@/assets/TripsAndPackages/Thailand.jpeg";
-import KashmirImg from "@/assets/kashmir.jpg";
-import GoaImg from "@/assets/goa.jpg";
-import ManaliImg from "@/assets/manali.jpg";
-
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
-
-// Helper array of fallback images for tours missing upload images
-const fallbackImages = [
-  KeralaImg,
-  DubaiImg,
-  ThailandImg,
-  AndamanImg,
-  SikkimImg,
-  SingaporeImg,
-  CharDhamImg,
-  KashmirImg,
-  GoaImg,
-  ManaliImg,
-];
-
-const getTourImage = (tour) => {
-  return getTourImageUrl(tour);
-};
+import TourCard from "@/components/TourCard";
+import TourCardSkeleton from "@/components/TourCardSkeleton";
 
 export const ToursDisplay = () => {
   const navigate = useNavigate();
@@ -46,7 +13,6 @@ export const ToursDisplay = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const whatsappPhone = import.meta.env.VITE_WHATSAPP_NUMBER || "919944229209";
 
   const fetchTours = useCallback(async (isBackground = false) => {
     try {
@@ -82,7 +48,7 @@ export const ToursDisplay = () => {
     const term = searchTerm.trim().toLowerCase();
     if (!term) return tours;
     return tours.filter((tour) => {
-      const name = (tour.name || "").toLowerCase();
+      const name = (tour.name || tour.title || "").toLowerCase();
       const destination = (tour.destination || "").toLowerCase();
       const highlights = (tour.highlights || []).map((h) => (h || "").toLowerCase());
       return (
@@ -158,8 +124,10 @@ export const ToursDisplay = () => {
             </button>
           </div>
         ) : loading ? (
-          <div className="py-20 text-center text-slate-500 text-lg font-medium">
-            Loading tour packages...
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[...Array(6)].map((_, i) => (
+              <TourCardSkeleton key={i} />
+            ))}
           </div>
         ) : filteredTours.length === 0 ? (
           <div className="py-16 text-center bg-white rounded-2xl border border-slate-100 p-8 shadow-xs">
@@ -178,145 +146,9 @@ export const ToursDisplay = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredTours.map((tour, idx) => {
-              const tourImgSrc = getTourImage(tour, idx);
-
-              return (
-                <Card
-                  key={tour.id || tour._id}
-                  className="overflow-hidden p-0 bg-white border-slate-100 rounded-2xl shadow-xs hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full group"
-                >
-                  {/* Package Banner Image */}
-                  <div className="relative h-56 w-full overflow-hidden shrink-0 bg-slate-100">
-                    <img
-                      src={getTourImageUrl(tour)}
-                      alt={tour.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      loading="lazy"
-                      onError={(e) => {
-                        e.currentTarget.src = "https://via.placeholder.com/800x500?text=Tour+Package";
-                      }}
-                    />
-
-                    {/* Overlaid Category Pill Tag */}
-                    <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-cyan-800 text-[10px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full shadow-xs border border-slate-100">
-                      {tour.destination || "PACKAGE"}
-                    </span>
-                  </div>
-
-                  <CardContent className="p-5 flex flex-col grow">
-                    {/* Rating & Reviews */}
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                        <span className="font-bold text-slate-900 text-sm">
-                          {tour.rating || 4.8}
-                        </span>
-                      </div>
-                      <span className="text-xs text-slate-400">
-                        ({Number(tour.reviews || 124).toLocaleString()} reviews)
-                      </span>
-                    </div>
-
-                    {/* Tour Title */}
-                    <h3 className="text-xl font-bold text-slate-900 mb-2 line-clamp-1 group-hover:text-cyan-600 transition-colors">
-                      {tour.name}
-                    </h3>
-
-                    {/* Destination & Duration */}
-                    <div className="space-y-1.5 mb-4 text-slate-600 text-xs font-medium">
-                      <div className="flex items-center gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 text-cyan-600 shrink-0" />
-                        <span className="truncate">{tour.destination}</span>
-                      </div>
-                      {tour.duration && (
-                        <div className="flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5 text-cyan-600 shrink-0" />
-                          <span>{tour.duration}</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Highlights Badges */}
-                    <div className="mb-4 grow">
-                      <div className="flex items-center gap-1.5 overflow-hidden flex-wrap">
-                        {(tour.highlights || [])
-                          .slice(0, 3)
-                          .map((highlight, i) => (
-                            <Badge
-                              key={i}
-                              variant="secondary"
-                              className="bg-cyan-50 text-cyan-700 border-cyan-200 text-[11px] font-medium"
-                            >
-                              {highlight}
-                            </Badge>
-                          ))}
-                      </div>
-                    </div>
-
-                    {/* Price & Action Section */}
-                    <div className="flex flex-col pt-3 border-t border-slate-100 mt-auto space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-[11px] font-medium text-slate-400">Starting from</p>
-                          <p className="text-xl font-extrabold text-slate-900">
-                            {formatPrice(tour.price, tour.currency)}
-                            <span className="text-xs text-slate-400 font-normal ml-1 capitalize">
-                              /{tour.pricingUnit || "person"}
-                            </span>
-                          </p>
-                        </div>
-
-                        {tour.itinerary && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              window.open(
-                                tour.itinerary.startsWith("http")
-                                  ? tour.itinerary
-                                  : `${API_BASE}${tour.itinerary}`,
-                                "_blank"
-                              );
-                            }}
-                            className="text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-lg inline-flex items-center gap-1 transition-colors border border-slate-200 cursor-pointer"
-                          >
-                            <FileText className="w-3.5 h-3.5 text-slate-500" />
-                            <span>Itinerary</span>
-                          </button>
-                        )}
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          className="w-full py-2.5 rounded-xl font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors shadow-xs flex items-center justify-center gap-1.5 text-xs cursor-pointer"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const msg = encodeURIComponent(
-                              `Hi Padham Travels, I am interested in booking the ${tour.name} package.`
-                            );
-                            window.open(`https://wa.me/${whatsappPhone}?text=${msg}`, "_blank");
-                          }}
-                        >
-                          <MessageCircle size={14} className="fill-current" />
-                          <span>WhatsApp</span>
-                        </button>
-
-                        <button
-                          className="w-full py-2.5 rounded-xl font-bold text-white bg-cyan-600 hover:bg-cyan-700 transition-colors shadow-xs text-xs cursor-pointer"
-                          onClick={() =>
-                            navigate(`/tours/${tour.id || tour._id}`, {
-                              state: { tour },
-                            })
-                          }
-                        >
-                          View Details
-                        </button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+            {filteredTours.map((tour, idx) => (
+              <TourCard key={tour.id || tour._id} tour={tour} idx={idx} />
+            ))}
           </div>
         )}
       </main>
