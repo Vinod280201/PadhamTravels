@@ -139,11 +139,11 @@ export const TourCard = ({ tour, idx = 0 }) => {
                   e.stopPropagation();
                   navigate(`/tours/${tour.id || tour._id}`, { state: { tour } });
                 }}
-                className="cursor-pointer group/btn"
+                className="cursor-pointer group/btn whitespace-nowrap shrink-0"
                 aria-label={`View details for ${tour.name || tour.title}`}
               >
                 <span>View Details</span>
-                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover/btn:translate-x-0.5 ml-1" />
+                <ArrowRight className="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover/btn:translate-x-0.5 ml-1" />
               </Button>
             </div>
           </div>

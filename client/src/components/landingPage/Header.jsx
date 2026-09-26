@@ -43,10 +43,10 @@ export const Header = () => {
                 variant="primary"
                 size="lg"
                 onClick={() => navigate("/tours-and-packages")}
-                className="cursor-pointer"
+                className="cursor-pointer group whitespace-nowrap"
               >
                 <span>Explore Packages</span>
-                <ArrowRight size={18} className="ml-2" />
+                <ArrowRight className="w-4 h-4 shrink-0 transition-transform group-hover:translate-x-1 ml-1" />
               </Button>
 
               <Button
